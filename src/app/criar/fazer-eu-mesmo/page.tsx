@@ -22,7 +22,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Calendar } from "@/components/ui/calendar";
 import { PagePreview } from "@/components/app/PagePreview";
 import {
@@ -46,6 +46,7 @@ const formSchema = z.object({
   title: z.string(),
   message: z.string().optional(),
   startDate: z.date().optional(),
+  dateDisplayType: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -60,6 +61,7 @@ export default function CreatorStudioPage() {
     defaultValues: {
       title: "",
       message: "",
+      dateDisplayType: "padrão",
     },
   });
 
@@ -113,8 +115,6 @@ export default function CreatorStudioPage() {
       <aside className="w-full lg:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
         <div className="w-full max-w-md mx-auto">
             
-             <h1 className="text-2xl font-bold text-red-500 mb-8">TITULO DA PAGINA</h1>
-            
             <div className="mb-8">
                 <Progress value={(currentStep / totalSteps) * 100} className="bg-zinc-700 h-2 [&>div]:bg-white" />
                 <p className="text-right text-sm text-muted-foreground mt-2">{currentStep}/{totalSteps}</p>
@@ -161,6 +161,7 @@ export default function CreatorStudioPage() {
                     />
                 )}
                 {currentStep === 3 && (
+                    <div className="space-y-6">
                     <FormField
                       control={form.control}
                       name="startDate"
@@ -201,6 +202,49 @@ export default function CreatorStudioPage() {
                         </FormItem>
                       )}
                     />
+                     <FormField
+                        control={form.control}
+                        name="dateDisplayType"
+                        render={({ field }) => (
+                          <FormItem className="space-y-3">
+                            <FormLabel>Modo de mostrar</FormLabel>
+                            <FormControl>
+                              <RadioGroup
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                className="flex flex-col space-y-1"
+                              >
+                                <FormItem className="flex items-center space-x-3 space-y-0">
+                                  <FormControl>
+                                    <RadioGroupItem value="padrão" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    Padrão
+                                  </FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-3 space-y-0">
+                                  <FormControl>
+                                    <RadioGroupItem value="classico" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    Clássico
+                                  </FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-3 space-y-0">
+                                  <FormControl>
+                                    <RadioGroupItem value="simples" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    Simples
+                                  </FormLabel>
+                                </FormItem>
+                              </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                 )}
                 </div>
                 
