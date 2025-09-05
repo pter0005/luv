@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 
 const phrases = [
   "de forma única!",
-  "para uma pessoa especial!",
+  "para alguem especial!",
   "pra quem merece!",
 ];
 
