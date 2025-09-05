@@ -120,7 +120,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
             stretch: 0,
             depth: 100,
             modifier: 1,
-            slideShadows: true,
+            slideShadows: false,
           },
         };
       case 'Cube':
@@ -129,7 +129,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           slidesPerView: 1,
           cubeEffect: {
             shadow: true,
-            slideShadows: true,
+            slideShadows: false,
             shadowOffset: 20,
             shadowScale: 0.94,
           },
@@ -139,7 +139,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           effect: 'flip' as const,
           slidesPerView: 1,
           flipEffect: {
-            slideShadows: true,
+            slideShadows: false,
           },
         };
       case 'Cards':
@@ -148,7 +148,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           effect: 'cards' as const,
           slidesPerView: 1,
           cardsEffect: {
-            slideShadows: true,
+            slideShadows: false,
           },
         };
     }
@@ -164,14 +164,17 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
         .swiper-pagination-bullet-active {
           background: hsl(var(--primary));
         }
-        .swiper-slide-shadow,
         .swiper-slide-shadow-left,
-        .swiper-slide-shadow-right {
-          background: rgba(0, 0, 0, 0.5) !important;
+        .swiper-slide-shadow-right,
+        .swiper-slide-shadow-top,
+        .swiper-slide-shadow-bottom,
+        .swiper-slide-shadow,
+        .swiper-cube-shadow {
+          display: none !important;
         }
         .swiper-slide-coverflow {
-          width: 300px;
-          height: 300px;
+          width: 300px !important;
+          height: 300px !important;
         }
         .swiper-slide-cards {
           width: 350px !important;
@@ -179,6 +182,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
         }
         .swiper-cube-container {
           width: 300px !important;
+          height: 300px !important;
         }
       `}</style>
       <Swiper
@@ -206,7 +210,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
                 src={photo}
                 alt={`User photo ${index + 1}`}
                 fill
-                className="rounded-lg object-cover"
+                className="rounded-lg object-contain"
               />
             </div>
           </SwiperSlide>
@@ -228,7 +232,7 @@ export function PagePreview({ data }: PagePreviewProps) {
                 <div className="w-3 h-3 rounded-full bg-green-500"></div>
             </div>
             <div className="flex-grow bg-zinc-900 rounded-md px-3 py-1 text-sm text-zinc-400 text-center">
-                https://luv.com/p/{data.title?.toLowerCase().replace(/\s/g, '-') || 'pagina'}
+                https://luv.com/p/{data.title?.toLowerCase().replace(/\\s/g, '-') || 'pagina'}
             </div>
         </div>
 
@@ -267,6 +271,3 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
-
-
-    
