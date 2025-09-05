@@ -8,7 +8,6 @@ import * as z from "zod";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormControl,
@@ -41,6 +40,7 @@ import { suggestSentimentEnhancements } from "@/ai/flows/suggest-sentiment-enhan
 import { generateUniqueBackground } from "@/ai/flows/generate-unique-background";
 import { Progress } from "@/components/ui/progress";
 import { format } from "date-fns";
+import { Editor } from "@/components/ui/editor";
 
 const formSchema = z.object({
   title: z.string(),
@@ -113,6 +113,8 @@ export default function CreatorStudioPage() {
       <aside className="w-full lg:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
         <div className="w-full max-w-md mx-auto">
             
+             <h1 className="text-2xl font-bold text-red-500 mb-8">TITULO DA PAGINA</h1>
+            
             <div className="mb-8">
                 <Progress value={(currentStep / totalSteps) * 100} className="bg-zinc-700 h-2 [&>div]:bg-white" />
                 <p className="text-right text-sm text-muted-foreground mt-2">{currentStep}/{totalSteps}</p>
@@ -147,7 +149,11 @@ export default function CreatorStudioPage() {
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
-                            <Textarea placeholder="Escreva sua mensagem aqui..." {...field} className="min-h-[120px]" />
+                            <Editor
+                              value={field.value}
+                              onChange={field.onChange}
+                              placeholder="Escreva sua mensagem aqui..."
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

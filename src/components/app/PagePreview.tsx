@@ -54,7 +54,10 @@ export function PagePreview({ data }: PagePreviewProps) {
                 <h1 className="text-4xl font-handwriting text-red-600">{data.title || ""}</h1>
                 
                 {data.message && (
-                     <p className="mt-8 text-zinc-300 whitespace-pre-wrap break-words">{data.message}</p>
+                    <div 
+                        className="mt-12 text-zinc-300 whitespace-pre-wrap break-words" 
+                        dangerouslySetInnerHTML={{ __html: data.message }} 
+                    />
                 )}
 
                 {data.startDate && (
