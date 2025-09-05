@@ -382,7 +382,7 @@ export default function CreatorPage() {
                 </ul>
               </CardContent>
               <div className="p-6 pt-0 mt-4">
-                <Button variant="outline" className="w-full">Fazer um Orçamento</Button>
+                <Button className="w-full">Fazer um Orçamento</Button>
               </div>
             </Card>
 
