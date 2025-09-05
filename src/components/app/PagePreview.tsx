@@ -18,8 +18,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 
 const formSchema = z.object({
-  name1: z.string().min(2, "Please enter a name."),
-  name2: z.string().min(2, "Please enter a name."),
+  title: z.string().min(2, "Please enter a title."),
   startDate: z.date({ required_error: "A date is required." }),
   message: z
     .string()
@@ -102,7 +101,7 @@ export function PagePreview({ data }: PagePreviewProps) {
                 <div className="w-3 h-3 rounded-full bg-green-500"></div>
             </div>
             <div className="flex-grow bg-zinc-900 rounded-md px-3 py-1 text-sm text-zinc-400 text-center">
-                https://luv.com/p/{data.name1 || 'nome1'}-{data.name2 || 'nome2'}
+                https://luv.com/p/{data.title || 'pagina'}
             </div>
         </div>
 
@@ -121,9 +120,7 @@ export function PagePreview({ data }: PagePreviewProps) {
                 )}
 
                 <div className="flex items-center justify-center gap-4 text-4xl md:text-5xl font-display font-bold">
-                <span>{data.name1 || "Nome 1"}</span>
-                <Heart className="w-10 h-10 text-red-400 fill-current" />
-                <span>{data.name2 || "Nome 2"}</span>
+                  <h1 className="text-4xl font-bold text-red-600">{data.title || "Titulo da pagina"}</h1>
                 </div>
 
                 {data.startDate && (
@@ -171,3 +168,5 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
+
+    

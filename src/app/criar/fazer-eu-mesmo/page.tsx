@@ -42,8 +42,7 @@ import { generateUniqueBackground } from "@/ai/flows/generate-unique-background"
 import { Progress } from "@/components/ui/progress";
 
 const formSchema = z.object({
-  name1: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
-  name2: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
+  title: z.string().min(2, "O título deve ter pelo menos 2 caracteres."),
   startDate: z.date({
     required_error: "A data de início é obrigatória.",
   }),
@@ -73,13 +72,12 @@ export default function CreatorStudioPage() {
   const [isAiLoading, setIsAiLoading] = React.useState(false);
   const [isBgLoading, setIsBgLoading] = React.useState(false);
   const [currentStep, setCurrentStep] = React.useState(1);
-  const totalSteps = 7;
+  const totalSteps = 6;
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name1: "",
-      name2: "",
+      title: "",
       startDate: undefined,
       message: "",
       images: [],
@@ -164,8 +162,8 @@ export default function CreatorStudioPage() {
 
   const stepsContent = [
     {
-        title: "Nomes do Casal",
-        description: "Quem são as estrelas desta história de amor?",
+        title: "Título da página",
+        description: "Escreva o título dedicatório para a página. Ex: João & Maria ou Feliz Aniversário ou etc!",
     },
     {
         title: "Data Especial",
@@ -200,25 +198,11 @@ export default function CreatorStudioPage() {
             <div className="space-y-4 mt-6">
                <FormField
                   control={form.control}
-                  name="name1"
+                  name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Seu Nome</FormLabel>
                       <FormControl>
-                        <Input placeholder="Ex: Maria" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="name2"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Nome da Pessoa Amada</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Ex: João" {...field} />
+                        <Input placeholder="Escreva o titulo dedicatório para a página. Ex: João & Maria ou Feliz Aniversário ou etc!" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -415,7 +399,7 @@ export default function CreatorStudioPage() {
       {/* Form Section */}
       <aside className="w-full lg:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
         <div className="w-full max-w-md mx-auto">
-            <h1 className="text-4xl font-bold text-red-600 mb-8">TITULO DA PAGINA</h1>
+            
             <div className="mb-8">
                 <Progress value={(currentStep / totalSteps) * 100} className="bg-zinc-700 h-2 [&>div]:bg-white" />
                 <p className="text-right text-sm text-muted-foreground mt-2">{currentStep}/{totalSteps}</p>
@@ -435,7 +419,7 @@ export default function CreatorStudioPage() {
                             <ArrowLeft className="mr-2 h-4 w-4" />
                             Voltar etapa
                         </Button>
-                        {currentStep < 7 ? (
+                        {currentStep < totalSteps ? (
                             <Button onClick={handleNextStep} className="w-full bg-red-600 hover:bg-red-700">
                                 Próxima etapa
                                 <ChevronRight className="ml-2 h-4 w-4" />
