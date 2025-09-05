@@ -43,26 +43,7 @@ import { Progress } from "@/components/ui/progress";
 
 const formSchema = z.object({
   title: z.string().min(2, "O título deve ter pelo menos 2 caracteres."),
-  startDate: z.date({
-    required_error: "A data de início é obrigatória.",
-  }).optional(),
-  message: z
-    .string()
-    .min(10, "A mensagem deve ter pelo menos 10 caracteres.")
-    .max(1000, "A mensagem não pode ter mais de 1000 caracteres.").optional(),
-  images: z
-    .array(z.string())
-    .max(8, "Você pode enviar no máximo 8 imagens.")
-    .optional(),
-  musicUrl: z
-    .string()
-    .url("Por favor, insira uma URL do YouTube válida.")
-    .optional()
-    .or(z.literal("")),
-  background: z
-    .string()
-    .default("linear-gradient(to top, #fbc2eb 0%, #a6c1ee 100%)"),
-  backgroundPrompt: z.string().optional(),
+  message: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -77,10 +58,6 @@ export default function CreatorStudioPage() {
     defaultValues: {
       title: "",
       message: "",
-      images: [],
-      musicUrl: "",
-      background: "#000",
-      backgroundPrompt: "",
     },
   });
 
@@ -133,7 +110,7 @@ export default function CreatorStudioPage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Textarea placeholder="QUERO QUE A MENSAGEM APAREÇA ASSIM" {...field} className="min-h-[120px]" />
+                        <Textarea placeholder="Escreva sua mensagem aqui..." {...field} className="min-h-[120px]" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
