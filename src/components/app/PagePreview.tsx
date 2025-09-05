@@ -55,6 +55,7 @@ export function PagePreview({ data }: PagePreviewProps) {
         >
             <div className="relative z-10 w-full">
                 <h1 className="text-4xl font-handwriting text-red-600">{data.title || "Titulo da pagina"}</h1>
+                 <p className="mt-4 text-zinc-300">{data.message || "QUERO QUE A MENSAGEM APAREÇA ASSIM"}</p>
             </div>
         </div>
     </div>

@@ -70,7 +70,7 @@ type FormData = z.infer<typeof formSchema>;
 export default function CreatorStudioPage() {
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = React.useState(1);
-  const totalSteps = 1;
+  const totalSteps = 2;
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -98,6 +98,10 @@ export default function CreatorStudioPage() {
     {
         title: "Título da página",
         description: "Escreva o título dedicatório para a página. Ex: João & Maria ou Feliz Aniversário ou etc!",
+    },
+    {
+        title: "Mensagem",
+        description: "Escreva uma mensagem especial. Seja criativo e demonstre todo seu carinho.",
     }
   ]
   
@@ -113,6 +117,23 @@ export default function CreatorStudioPage() {
                     <FormItem>
                       <FormControl>
                         <Input placeholder="Escreva o titulo dedicatório para a página. Ex: João & Maria ou Feliz Aniversário ou etc!" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+            </div>
+        )
+      case 2:
+        return (
+            <div className="space-y-4 mt-6">
+                <FormField
+                  control={form.control}
+                  name="message"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Textarea placeholder="QUERO QUE A MENSAGEM APAREÇA ASSIM" {...field} className="min-h-[120px]" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -187,5 +208,3 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
-
-    
