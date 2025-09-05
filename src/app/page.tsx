@@ -184,11 +184,10 @@ export default function CreatorPage() {
     <>
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-headline font-bold text-primary">
-          Craft Your Love Story
+          Declare your love in a unique way
         </h1>
         <p className="mt-4 text-lg text-foreground/80 max-w-2xl mx-auto">
-          Create a beautiful, personalized page for your special someone. Fill
-          in the details below to generate a unique digital keepsake.
+          Create a personalized page for someone you love and surprise them with a special declaration that will last forever.
         </p>
       </div>
 
