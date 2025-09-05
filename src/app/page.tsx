@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, Globe, QrCode, Gamepad2, PlayCircle, Eye } from "lucide-react";
+import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, Globe, QrCode, Gamepad2, PlayCircle, Eye, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -110,7 +110,7 @@ export default function CreatorPage() {
        <section className="relative overflow-hidden section-padding pt-24 md:pt-32">
         <div className="container relative z-10 grid lg:grid-cols-2 gap-12 items-center">
           <div className="text-center lg:text-left">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4 text-foreground font-display leading-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground font-display leading-tight">
               Declare seu amor
               <TypingAnimation />
             </h1>
@@ -123,7 +123,6 @@ export default function CreatorPage() {
             </Button>
           </div>
           <div className="relative w-full max-w-md mx-auto lg:max-w-none lg:mx-0">
-             <div className="absolute inset-0 bg-primary/10 rounded-full blur-3xl animate-float"></div>
              <Image
               src="https://picsum.photos/800/800"
               alt="Casal feliz"
@@ -248,7 +247,8 @@ export default function CreatorPage() {
               {testimonials.map((testimonial, index) => (
                   <Card 
                     key={index} 
-                    className="bg-card/80 border-border p-6 text-left flex flex-col justify-between"
+                    className="bg-card/80 border-border p-6 text-left flex flex-col justify-between opacity-0 animate-fade-in-up"
+                    style={{ animationDelay: `${index * 0.2}s` }}
                   >
                     <div>
                       <div className="flex items-center gap-4 mb-4">
@@ -409,12 +409,6 @@ export default function CreatorPage() {
           </Button>
         </div>
       </section>
-
     </>
   );
 }
-
-// Adicionei a importação dos ícones Check e X que estava faltando
-import { Check, X } from "lucide-react";
-
-    
