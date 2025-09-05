@@ -314,60 +314,77 @@ export default function CreatorPage() {
       {/* Pricing Section */}
       <section id="planos" className="section-padding bg-secondary/30 backdrop-blur-md relative z-10">
         <div className="container text-center">
-          <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Nossos <span className="gradient-text">Passaportes</span></h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Escolha o acesso ideal para sua jornada de amor. Cada plano é um convite para uma experiência memorável e duradoura.</p>
-          <div className="grid lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Nossos <span className="gradient-text">Planos</span></h2>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Escolha o plano ideal para sua jornada de amor. Cada um é um convite para uma experiência memorável.</p>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            
             <Card className="bg-card/80 border-border flex flex-col">
-              <CardHeader className="items-center pb-4">
+              <CardHeader className="pb-4">
                 <CardTitle className="text-2xl">Mensal</CardTitle>
-                <CardDescription>Esse plano possui um período de 1 mês.</CardDescription>
+                <CardDescription>Ideal para uma surpresa pontual e encantadora.</CardDescription>
                 <p className="text-4xl font-bold pt-4">R$20,00 <span className="text-lg font-normal text-muted-foreground">/mês</span></p>
               </CardHeader>
               <CardContent className="flex-grow">
-                <ul className="space-y-3 text-muted-foreground">
+                <ul className="space-y-3 text-muted-foreground text-left">
                   <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Texto dedicado</span></li>
                   <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Contador em tempo real</span></li>
                   <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Data de início</span></li>
                   <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>QR Code exclusivo</span></li>
                   <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Máximo de 4 imagens</span></li>
                   <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>URL personalizada</span></li>
-                  <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Suporte 24 horas</span></li>
                   <li className="flex items-center gap-3"><X className="w-5 h-5 text-red-500" /><span>Sem música</span></li>
                   <li className="flex items-center gap-3"><X className="w-5 h-5 text-red-500" /><span>Sem fundo dinâmico</span></li>
-                  <li className="flex items-center gap-3"><X className="w-5 h-5 text-red-500" /><span>Sem animações exclusivas</span></li>
+                  <li className="flex items-center gap-3"><X className="w-5 h-5 text-red-500" /><span>Sem jogo 2D</span></li>
                 </ul>
               </CardContent>
-              <div className="p-6 pt-0">
+              <div className="p-6 pt-0 mt-4">
                 <Button className="w-full">Criar minha página</Button>
               </div>
             </Card>
+
              <Card className="bg-card/80 border-primary/50 relative flex flex-col shadow-2xl shadow-primary/20">
               <div className="absolute top-0 right-4 -translate-y-1/2 bg-primary text-primary-foreground px-3 py-1 text-sm font-semibold rounded-full">Recomendado</div>
-              <CardHeader className="items-center pb-4">
+              <CardHeader className="pb-4">
                 <CardTitle className="text-2xl">Para sempre</CardTitle>
                 <CardDescription>Acesso vitalício à sua obra de arte digital.</CardDescription>
-                <p className="text-4xl font-bold pt-4">R$34,99 <span className="text-lg font-normal text-muted-foreground">/uma vez</span></p>
+                <p className="text-4xl font-bold pt-4">R$34,99</p>
                 <p className="line-through text-muted-foreground">R$79,90</p>
               </CardHeader>
               <CardContent className="flex-grow">
-                <ul className="space-y-3 text-muted-foreground">
-                    <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Texto dedicado</span></li>
-                    <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Contador em tempo real</span></li>
-                    <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Data de início</span></li>
-                    <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>QR Code exclusivo</span></li>
-                    <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Imagens ilimitadas</span></li>
-                    <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>URL personalizada</span></li>
-                    <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Suporte 24 horas</span></li>
+                <ul className="space-y-3 text-muted-foreground text-left">
+                    <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Tudo do plano Mensal</span></li>
+                    <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Imagens ilimitadas</span></li>
                     <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Trilha Sonora Personalizada</span></li>
                     <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Fundo Dinâmico e Interativo</span></li>
                     <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Animações Exclusivas</span></li>
-                    <li className="flex items-center gap-3 text-foreground font-semibold"><Gamepad2 className="w-5 h-5 text-primary" /><span>Jogo 2D com enigma para uma revelação inesquecível</span></li>
+                    <li className="flex items-center gap-3 text-foreground font-semibold"><Gamepad2 className="w-5 h-5 text-primary" /><span>Jogo 2D com enigma</span></li>
                 </ul>
               </CardContent>
-              <div className="p-6 pt-0">
+              <div className="p-6 pt-0 mt-4">
                 <Button className="w-full">Adquirir Passaporte Eterno</Button>
               </div>
             </Card>
+
+            <Card className="bg-card/80 border-border flex flex-col">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-2xl">Sob Medida</CardTitle>
+                <CardDescription>Para ideias que transcendem. Crie algo único.</CardDescription>
+                <p className="text-4xl font-bold pt-4">Consulte</p>
+              </CardHeader>
+              <CardContent className="flex-grow">
+                <ul className="space-y-3 text-muted-foreground text-left">
+                  <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Tudo do plano Para Sempre</span></li>
+                  <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Conteúdo e jogo personalizados</span></li>
+                  <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Designs de página exclusivos</span></li>
+                  <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Vídeos e animações sob demanda</span></li>
+                  <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Suporte premium dedicado</span></li>
+                </ul>
+              </CardContent>
+              <div className="p-6 pt-0 mt-4">
+                <Button variant="outline" className="w-full">Fazer um Orçamento</Button>
+              </div>
+            </Card>
+
           </div>
         </div>
       </section>
@@ -437,3 +454,5 @@ export default function CreatorPage() {
     </>
   );
 }
+
+    
