@@ -298,7 +298,7 @@ export default function CreatorStudioPage() {
                                             accept="image/*"
                                             multiple
                                             onChange={(e) => {
-                                                const files = Array.from(e.target.files);
+                                                const files = Array.from(e.target.files ?? []);
                                                 const imageUrls = files.map(file => URL.createObjectURL(file));
                                                 field.onChange(imageUrls);
                                             }}
@@ -315,7 +315,7 @@ export default function CreatorStudioPage() {
                                     {watchedData.images && watchedData.images.length > 0 && (
                                         <div className="mt-4 grid grid-cols-4 gap-2">
                                             {watchedData.images.map((img, i) => (
-                                                <img key={i} src={img} className="rounded-md aspect-square object-cover" />
+                                                <img key={i} src={img} className="rounded-md aspect-square object-cover" alt={`Preview ${i}`} />
                                             ))}
                                         </div>
                                     )}
@@ -411,26 +411,30 @@ export default function CreatorStudioPage() {
       <aside className="w-full lg:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
         <div className="w-full max-w-md mx-auto">
             <div className="mb-8">
-                <Progress value={(currentStep / totalSteps) * 100} className="bg-zinc-700" />
+                <Progress value={(currentStep / totalSteps) * 100} className="bg-zinc-700 h-2 [&>div]:bg-white" />
                 <p className="text-right text-sm text-muted-foreground mt-2">{currentStep}/{totalSteps}</p>
             </div>
 
             <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 {renderStep()}
 
-                {currentStep < 7 && (
+                
                     <div className="flex items-center gap-4 mt-8">
                         <Button variant="secondary" onClick={handlePrevStep} disabled={currentStep === 1} className="w-full bg-zinc-800 hover:bg-zinc-700">
                             <ArrowLeft className="mr-2 h-4 w-4" />
                             Voltar etapa
                         </Button>
-                        <Button onClick={handleNextStep} className="w-full bg-red-600 hover:bg-red-700">
-                            Próxima etapa
-                             <ChevronRight className="ml-2 h-4 w-4" />
-                        </Button>
+                        {currentStep < 7 ? (
+                            <Button onClick={handleNextStep} className="w-full bg-red-600 hover:bg-red-700">
+                                Próxima etapa
+                                <ChevronRight className="ml-2 h-4 w-4" />
+                            </Button>
+                        ) : (
+                             <Button type="submit" size="lg" className="w-full bg-red-600 hover:bg-red-700">Salvar e Obter Link</Button>
+                        )}
                     </div>
-                )}
+                
             </form>
             </Form>
         </div>
@@ -445,5 +449,3 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
-
-    

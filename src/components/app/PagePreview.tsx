@@ -3,7 +3,8 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { intervalToDuration, formatDuration } from "date-fns";
+import { intervalToDuration, formatDuration, format } from "date-fns";
+import { ptBR } from 'date-fns/locale';
 import * as z from "zod";
 import { Heart, Music } from "lucide-react";
 
@@ -49,19 +50,35 @@ export function PagePreview({ data }: PagePreviewProps) {
   const [duration, setDuration] = React.useState<string>("");
 
   React.useEffect(() => {
-    if (!data.startDate) return;
+    if (!data.startDate) {
+        setDuration('');
+        return;
+    };
 
     const calculateDuration = () => {
-      const d = intervalToDuration({
-        start: data.startDate,
-        end: new Date(),
-      });
-      setDuration(
-        formatDuration(d, {
+      try {
+        const d = intervalToDuration({
+          start: new Date(data.startDate),
+          end: new Date(),
+        });
+        
+        let formattedDuration = formatDuration(d, {
           format: ["years", "months", "days", "hours", "minutes", "seconds"],
-          delimiter: ', '
-        })
-      );
+          delimiter: ', ',
+          locale: ptBR,
+        });
+
+        // Replace last comma with 'e'
+        const lastCommaIndex = formattedDuration.lastIndexOf(',');
+        if (lastCommaIndex !== -1) {
+            formattedDuration = formattedDuration.substring(0, lastCommaIndex) + ' e' + formattedDuration.substring(lastCommaIndex + 1);
+        }
+
+        setDuration(formattedDuration);
+
+      } catch (error) {
+        setDuration('');
+      }
     };
 
     calculateDuration();
@@ -85,7 +102,7 @@ export function PagePreview({ data }: PagePreviewProps) {
                 <div className="w-3 h-3 rounded-full bg-green-500"></div>
             </div>
             <div className="flex-grow bg-zinc-900 rounded-md px-3 py-1 text-sm text-zinc-400 text-center">
-                https://luv.com/p/seu-link
+                https://luv.com/p/{data.name1 || 'nome1'}-{data.name2 || 'nome2'}
             </div>
         </div>
 
@@ -95,7 +112,7 @@ export function PagePreview({ data }: PagePreviewProps) {
             style={backgroundStyle}
         >
             <div className="absolute inset-0 bg-black/50 z-0" />
-            <div className="relative z-10">
+            <div className="relative z-10 w-full">
 
                 {data.musicUrl && (
                 <audio src={data.musicUrl} autoPlay loop>
@@ -103,21 +120,26 @@ export function PagePreview({ data }: PagePreviewProps) {
                 </audio>
                 )}
 
-                <div className="flex items-center justify-center gap-4 text-4xl md:text-5xl font-headline font-bold">
+                <div className="flex items-center justify-center gap-4 text-4xl md:text-5xl font-display font-bold">
                 <span>{data.name1 || "Nome 1"}</span>
                 <Heart className="w-10 h-10 text-red-400 fill-current" />
                 <span>{data.name2 || "Nome 2"}</span>
                 </div>
 
+                {data.startDate && (
+                  <p className="font-semibold text-lg mt-4 text-zinc-300">
+                    Juntos desde {format(new Date(data.startDate), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                  </p>
+                )}
+
                 {duration && (
-                <div className="mt-4">
-                    <p className="font-semibold text-lg">Juntos há</p>
-                    <p className="text-xl font-bold text-red-300 tracking-wider">{duration}</p>
+                <div className="mt-4 text-zinc-200">
+                    <p className="text-sm tracking-wider">{duration}</p>
                 </div>
                 )}
 
-                <p className="mt-8 text-lg italic max-w-2xl mx-auto">
-                "{data.message || "Sua mensagem especial aparecerá aqui."}"
+                <p className="mt-8 text-lg italic max-w-2xl mx-auto text-zinc-100">
+                {data.message || "Sua mensagem especial aparecerá aqui."}
                 </p>
 
                 {data.images && data.images.length > 0 && (
@@ -149,5 +171,3 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
-
-    
