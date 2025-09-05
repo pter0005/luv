@@ -38,10 +38,10 @@ export default function CreatorPage() {
       <section className="relative overflow-hidden section-padding">
         <div className="container relative z-10 text-center">
           <h1 className="text-5xl lg:text-7xl font-bold tracking-tighter mb-4 text-foreground font-display">
-            Declare seu <span className="gradient-text">amor</span> de forma única
+            Sua história de amor, <span className="gradient-text">imortalizada</span>.
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-            Crie uma página personalizada para quem você ama e surpreenda com uma declaração que ficará para sempre.
+            Transforme seus sentimentos em uma obra de arte digital. Uma experiência exclusiva, criada para celebrar momentos que merecem ser eternos.
           </p>
           <Button size="lg" className="h-14 group relative">
             Criar minha página
@@ -64,8 +64,8 @@ export default function CreatorPage() {
       {/* Features Section */}
       <section id="recursos" className="section-padding bg-background/50 backdrop-blur-md relative z-10">
         <div className="container text-center">
-          <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Recursos <span className="gradient-text">Exclusivos</span></h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Nossa plataforma oferece recursos incríveis para você criar a página personalizada perfeita.</p>
+          <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Uma Experiência <span className="gradient-text">Incomparável</span></h2>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Cada detalhe foi pensado para proporcionar uma declaração de amor que transcende o comum. Oferecemos mais que uma página, uma memória viva.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               { icon: Calendar, title: "Contador de tempo", description: "Mostre há quanto tempo vocês estão juntos com um contador em tempo real." },
@@ -94,8 +94,8 @@ export default function CreatorPage() {
       {/* Themes Section */}
       <section id="temas" className="section-padding bg-secondary/30 backdrop-blur-md relative z-10">
         <div className="container text-center">
-          <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Temas <span className="gradient-text">Luv</span></h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Escolha o tema ideal para a página personalizada. Você pode escolher entre os temas abaixo.</p>
+          <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Temas <span className="gradient-text">Exclusivos Luv</span></h2>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Selecione o cenário perfeito para sua história. Cada tema é uma tela em branco para suas emoções, desenhado para encantar e surpreender.</p>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <Card className="bg-card/80 border-border overflow-hidden group">
               <CardHeader>
@@ -130,8 +130,8 @@ export default function CreatorPage() {
       {/* Testimonials Section */}
       <section id="avaliacoes" className="section-padding bg-background/50 backdrop-blur-md relative z-10">
         <div className="container text-center">
-          <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">O que nossos <span className="gradient-text">clientes</span> dizem</h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Avaliações de clientes que já utilizaram nossos serviços e tiveram uma experiência incrível.</p>
+          <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Histórias que <span className="gradient-text">Inspiram</span></h2>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Relatos de quem escolheu a Luv para eternizar seus momentos e vivenciou uma experiência única e emocionante.</p>
           <Carousel opts={{ loop: true }} className="w-full max-w-4xl mx-auto">
             <CarouselContent>
               {testimonials.map((testimonial, index) => (
@@ -165,8 +165,8 @@ export default function CreatorPage() {
       {/* Pricing Section */}
       <section id="planos" className="section-padding bg-secondary/30 backdrop-blur-md relative z-10">
         <div className="container text-center">
-          <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Nossos <span className="gradient-text">Planos</span></h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Escolha o plano ideal para sua página personalizada.</p>
+          <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Nossos <span className="gradient-text">Passaportes</span></h2>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Escolha o acesso ideal para sua jornada de amor. Cada plano é um convite para uma experiência memorável e duradoura.</p>
           <div className="grid lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
             <Card className="bg-card/80 border-border flex flex-col">
               <CardHeader className="items-center pb-4">
@@ -196,7 +196,7 @@ export default function CreatorPage() {
               <div className="absolute top-0 right-4 -translate-y-1/2 bg-primary text-primary-foreground px-3 py-1 text-sm font-semibold rounded-full">Recomendado</div>
               <CardHeader className="items-center pb-4">
                 <CardTitle className="text-2xl">Para sempre</CardTitle>
-                <CardDescription>Esse plano é vitalício, não precisa renovar.</CardDescription>
+                <CardDescription>Acesso vitalício à sua obra de arte digital.</CardDescription>
                 <p className="text-4xl font-bold pt-4">R$34,99 <span className="text-lg font-normal text-muted-foreground">/uma vez</span></p>
                 <p className="line-through text-muted-foreground">R$79,90</p>
               </CardHeader>
@@ -209,14 +209,14 @@ export default function CreatorPage() {
                     <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Imagens ilimitadas</span></li>
                     <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>URL personalizada</span></li>
                     <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Suporte 24 horas</span></li>
-                    <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Com música</span></li>
-                    <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Fundo dinâmico</span></li>
-                    <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Com animações exclusivas</span></li>
+                    <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Trilha Sonora Personalizada</span></li>
+                    <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Fundo Dinâmico e Interativo</span></li>
+                    <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Animações Exclusivas</span></li>
                     <li className="flex items-center gap-3 text-foreground font-semibold"><Gamepad2 className="w-5 h-5 text-primary" /><span>Jogo 2D com enigma para uma revelação inesquecível</span></li>
                 </ul>
               </CardContent>
               <div className="p-6 pt-0">
-                <Button className="w-full">Criar minha página</Button>
+                <Button className="w-full">Adquirir Passaporte Eterno</Button>
               </div>
             </Card>
           </div>
@@ -228,43 +228,43 @@ export default function CreatorPage() {
         <div className="container max-w-4xl">
           <div className="text-center">
             <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Perguntas <span className="gradient-text">Frequentes</span></h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12">Aqui estão algumas perguntas frequentes para ajudar você a entender melhor a Luv.</p>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12">Respostas para as dúvidas mais comuns sobre a experiência Luv.</p>
           </div>
           <Accordion type="single" collapsible className="w-full">
              <AccordionItem value="item-1">
               <AccordionTrigger>O que é a Luv?</AccordionTrigger>
               <AccordionContent>
-                Luv é uma plataforma que permite criar páginas personalizadas para pessoas especiais. Você pode adicionar fotos, uma mensagem e também o tempo da união.
+                Luv é uma plataforma exclusiva para a criação de páginas personalizadas e imersivas, transformando declarações de amor em experiências digitais inesquecíveis.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2">
               <AccordionTrigger>Como posso criar uma página personalizada?</AccordionTrigger>
               <AccordionContent>
-                Para criar sua página personalizada, siga as etapas preenchendo o formulário com as informações solicitadas. Após o preenchimento, você será direcionado para o pagamento.
+                Nosso processo guiado é simples e intuitivo. Basta preencher o formulário com suas memórias e sentimentos e, após o pagamento, nossa mágica acontece.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-3">
               <AccordionTrigger>O que está incluído na minha página?</AccordionTrigger>
               <AccordionContent>
-                Sua página personalizada contará com tudo o que preencher no formulário, dependendo do plano escolhido.
+                Sua página é um reflexo da sua história, com todos os elementos que você escolheu no formulário, de acordo com o passaporte selecionado.
               </AccordionContent>
             </AccordionItem>
              <AccordionItem value="item-4">
               <AccordionTrigger>Como recebo minha página após o pagamento?</AccordionTrigger>
               <AccordionContent>
-                Após a confirmação do pagamento, você receberá um QR code e um link via email para compartilhar e acessar a página.
+                Após a confirmação, você receberá um QR code e um link exclusivo por email, prontos para compartilhar e encantar.
               </AccordionContent>
             </AccordionItem>
              <AccordionItem value="item-5">
               <AccordionTrigger>A página personalizada tem validade?</AccordionTrigger>
               <AccordionContent>
-                Sim, no plano básico, a página estará disponível por 1 ano. No plano avançado, a página será vitalícia.
+                Sim. O plano mensal garante acesso por 1 mês, enquanto o passaporte "Para Sempre" torna sua declaração vitalícia, um legado digital do seu amor.
               </AccordionContent>
             </AccordionItem>
           </Accordion>
            <div className="text-center mt-12">
             <p className="text-muted-foreground">Ainda tem dúvidas?</p>
-            <Button variant="link" className="text-base text-primary">Entre em contato por aqui</Button>
+            <Button variant="link" className="text-base text-primary">Fale com um de nossos especialistas</Button>
           </div>
         </div>
       </section>
@@ -273,10 +273,10 @@ export default function CreatorPage() {
       <section className="section-padding bg-secondary/30 backdrop-blur-md relative z-10">
          <div className="container text-center">
           <h2 className="text-4xl lg:text-5xl font-bold tracking-tighter mb-4 text-foreground font-display">
-            Declare seu <span className="gradient-text">amor</span> de forma única
+            Comece a sua <span className="gradient-text">obra de arte</span>
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-            Crie uma página personalizada para quem você ama e surpreenda com uma declaração que ficará para sempre.
+            Não espere uma data especial para criar um momento especial. Surpreenda hoje com uma declaração que será lembrada para sempre.
           </p>
           <Button size="lg" className="h-14 group relative">
             Comece agora, é grátis
@@ -288,3 +288,5 @@ export default function CreatorPage() {
     </>
   );
 }
+
+    
