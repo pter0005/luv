@@ -126,6 +126,9 @@ export default function CreatorStudioPage() {
   const handleNextStep = () => {
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
+      if (currentStep === 1) {
+        form.setValue("message", "");
+      }
     }
   };
 

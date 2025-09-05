@@ -9,10 +9,7 @@ import * as z from "zod";
 const formSchema = z.object({
   title: z.string().min(2, "Please enter a title."),
   startDate: z.date({ required_error: "A date is required." }).optional(),
-  message: z
-    .string()
-    .min(10, "Message must be at least 10 characters.")
-    .max(1000, "Message must be 1000 characters or less.").optional(),
+  message: z.string().optional(),
   images: z
     .array(z.string())
     .max(8, "You can upload up to 8 images.")
@@ -55,7 +52,7 @@ export function PagePreview({ data }: PagePreviewProps) {
         >
             <div className="relative z-10 w-full">
                 <h1 className="text-4xl font-handwriting text-red-600">{data.title || ""}</h1>
-                 <p className="mt-4 text-zinc-300">{data.message || ""}</p>
+                 <p className="mt-8 text-zinc-300 whitespace-pre-wrap break-words">{data.message || ""}</p>
             </div>
         </div>
     </div>
