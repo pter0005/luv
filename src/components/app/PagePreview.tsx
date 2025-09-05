@@ -141,12 +141,6 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           },
         };
       case 'Cards':
-        return {
-          effect: 'cards',
-          cardsEffect: {
-             slideShadows: true,
-          }
-        };
       default:
         return {
           effect: 'cards',
@@ -156,6 +150,8 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
         };
     }
   };
+  
+  const isCube = displayType === 'Cube';
 
   return (
     <div className="w-full mb-8 relative h-[400px] flex items-center justify-center">
@@ -173,29 +169,31 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           display: flex;
           justify-content: center;
           align-items: center;
-          width: 300px;
-          height: 300px;
+          background-size: cover;
+          background-position: center;
         }
          .swiper-slide.swiper-slide-cards {
           width: 350px !important;
           height: 350px !important;
         }
+        .swiper.swiper-cube {
+          width: 300px !important;
+        }
       `}</style>
       <Swiper
-        modules={[EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination, Navigation]}
+        modules={[EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination]}
         grabCursor={true}
         centeredSlides={true}
         slidesPerView={'auto'}
-        navigation={photos.length > 1 && displayType !== 'Cards'}
         pagination={{ clickable: true }}
-        className="mySwiper w-full h-full"
+        className={cn("mySwiper w-full h-full", isCube ? 'swiper-cube' : '')}
         loop
         {...getSwiperEffect()}
       >
         {photos.map((photo, index) => (
           <SwiperSlide key={index} className={cn(displayType === 'Cards' ? 'swiper-slide-cards' : '')}>
             <div className="relative w-full h-full">
-              <Image
+               <Image
                 src={photo}
                 alt={`User photo ${index + 1}`}
                 fill
