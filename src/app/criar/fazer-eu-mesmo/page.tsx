@@ -315,8 +315,8 @@ export default function CreatorStudioPage() {
       </aside>
 
       {/* Preview Section */}
-      <main className="w-full lg:w-1/2 p-4 hidden lg:flex items-center justify-center bg-black">
-        <div className="w-full h-[90vh] rounded-2xl overflow-hidden shadow-2xl shadow-black/50 border-4 border-zinc-800">
+      <main className="w-full lg:w-1/2 p-4 hidden lg:flex flex-col justify-start pt-24 bg-black">
+        <div className="w-full h-[75vh] rounded-2xl overflow-hidden shadow-2xl shadow-black/50 border-4 border-zinc-800">
           <PagePreview data={{...fieldHistory, ...form.getValues()}} />
         </div>
       </main>

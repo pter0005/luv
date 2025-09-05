@@ -35,8 +35,8 @@ function Calendar({
           buttonVariants({ variant: "outline" }),
           "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
         ),
-        nav_button_previous: "absolute left-1",
-        nav_button_next: "absolute right-1",
+        nav_button_previous: "hidden",
+        nav_button_next: "hidden",
         table: "w-full border-collapse space-y-1",
         head_row: "flex",
         head_cell:
@@ -63,7 +63,7 @@ function Calendar({
         IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
         IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
         Dropdown: (props: DropdownProps) => {
-          const { fromYear, toYear, fromMonth, toMonth } = (props as any).options;
+          const { fromYear, toYear } = (props as any).options;
 
           const options =
             props.name === "months"
@@ -75,21 +75,20 @@ function Calendar({
                   value: fromYear! + i,
                   label: (fromYear! + i).toString(),
                 }));
+          
+          const handleValueChange = (value: string) => {
+            if (props.onChange) {
+                const changeEvent = {
+                    target: { value: value },
+                } as React.ChangeEvent<HTMLSelectElement>;
+                props.onChange(changeEvent);
+            }
+          };
 
           return (
             <Select
-              onValueChange={(value) => {
-                const changeEvent = new Event("change", { bubbles: true });
-                if (props.onChange) {
-                    const select = document.createElement('select');
-                    select.name = props.name;
-                    select.value = value;
-                    (changeEvent as any).target = select;
-                    props.onChange(changeEvent as React.ChangeEvent<HTMLSelectElement>);
-                }
-              }}
+              onValueChange={handleValueChange}
               value={props.value?.toString()}
-              
             >
               <SelectTrigger className="bg-zinc-800 border-zinc-700 w-[48%] capitalize">
                 <SelectValue placeholder={props.caption} />
@@ -120,4 +119,3 @@ Calendar.displayName = "Calendar"
 import { format } from "date-fns";
 
 export { Calendar }
-
