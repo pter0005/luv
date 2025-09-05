@@ -67,12 +67,12 @@ function TypingAnimation() {
 
 export default function CreatorPage() {
   const testimonials = [
-    { name: "Mariana e João", time: "1 mês atrás", message: "Adorei a experiência! Pude criar uma página especial para o João com nossas fotos favoritas, uma playlist personalizada e um texto que representa nossa história. Ele ficou super emocionado quando viu!", image: "https://picsum.photos/100/100?random=1" },
-    { name: "Ana e Pedro", time: "2 dias atrás", message: "Com a Luv, pude expressar meu amor de um jeito totalmente diferente. Adorei criar uma página só para nós dois.", image: "https://picsum.photos/100/100?random=2" },
-    { name: "Lucas e Carol", time: "3 meses atrás", message: "Montei uma página surpresa para a Carol, com nossas fotos de viagem e uma mensagem sincera. Ela adorou! Com certeza vou usar de novo.", image: "https://picsum.photos/100/100?random=3" },
-    { name: "Camila e Felipe", time: "4 meses atrás", message: "A interface é simples e criar uma página com nossas fotos e músicas favoritas foi super especial!", image: "https://picsum.photos/100/100?random=4" },
-    { name: "Bia e Henrique", time: "1 ano atrás", message: "A página ficou incrível e personalizada! Ele não esperava por algo tão emocionante.", image: "https://picsum.photos/100/100?random=5" },
-    { name: "Clara e Rafael", time: "2 meses atrás", message: "Usar a Luv foi incrível! A plataforma é muito intuitiva e fácil de usar. Conseguimos montar um presente digital perfeito com músicas que marcaram nossa relação.", image: "https://picsum.photos/100/100?random=6" },
+    { name: "Mariana & João", date: "15 de Maio, 2024", message: "Adorei a experiência! Pude criar uma página especial para o João com nossas fotos favoritas, uma playlist personalizada e um texto que representa nossa história. Ele ficou super emocionado quando viu!", image: "https://picsum.photos/100/100?random=1" },
+    { name: "Ana & Pedro", date: "2 de Junho, 2024", message: "Com a Luv, pude expressar meu amor de um jeito totalmente diferente. Adorei criar uma página só para nós dois.", image: "https://picsum.photos/100/100?random=2" },
+    { name: "Lucas & Carol", date: "20 de Março, 2024", message: "Montei uma página surpresa para a Carol, com nossas fotos de viagem e uma mensagem sincera. Ela adorou! Com certeza vou usar de novo.", image: "https://picsum.photos/100/100?random=3" },
+    { name: "Camila & Felipe", date: "1 de Fevereiro, 2024", message: "A interface é simples e criar uma página com nossas fotos e músicas favoritas foi super especial!", image: "https://picsum.photos/100/100?random=4" },
+    { name: "Bia & Henrique", date: "12 de Setembro, 2023", message: "A página ficou incrível e personalizada! Ele não esperava por algo tão emocionante.", image: "https://picsum.photos/100/100?random=5" },
+    { name: "Clara & Rafael", date: "5 de Abril, 2024", message: "Usar a Luv foi incrível! A plataforma é muito intuitiva e fácil de usar. Conseguimos montar um presente digital perfeito com músicas que marcaram nossa relação.", image: "https://picsum.photos/100/100?random=6" },
   ];
 
   const features = [
@@ -281,37 +281,33 @@ export default function CreatorPage() {
       </section>
 
       {/* Testimonials Section */}
-      <section id="avaliacoes" className="section-padding bg-background/50 backdrop-blur-md relative z-10">
+      <section id="avaliacoes" className="section-padding bg-background/50 backdrop-blur-md relative z-10 overflow-hidden">
         <div className="container text-center">
           <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Histórias que <span className="gradient-text">Inspiram</span></h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Relatos de quem escolheu a Luv para eternizar seus momentos e vivenciou uma experiência única e emocionante.</p>
-          <Carousel opts={{ loop: true }} className="w-full max-w-4xl mx-auto">
-            <CarouselContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {testimonials.map((testimonial, index) => (
-                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                  <div className="p-1 h-full">
-                    <Card className="bg-card/80 border-border h-full flex flex-col justify-between">
-                      <CardContent className="p-6">
-                        <div className="flex items-center gap-4 mb-4">
-                          <Image src={testimonial.image} alt={testimonial.name} width={48} height={48} className="rounded-full" data-ai-hint="person"/>
-                          <div>
-                            <p className="font-semibold text-foreground">{testimonial.name}</p>
-                            <p className="text-sm text-muted-foreground">{testimonial.time}</p>
-                          </div>
+                  <Card 
+                    key={index} 
+                    className="bg-card/80 border-border p-6 text-left flex flex-col justify-between animate-fade-in-up"
+                    style={{ animationDelay: `${index * 150}ms` }}
+                  >
+                    <div>
+                      <div className="flex items-center gap-4 mb-4">
+                        <Image src={testimonial.image} alt={testimonial.name} width={48} height={48} className="rounded-full" data-ai-hint="person"/>
+                        <div>
+                          <p className="font-semibold text-foreground">{testimonial.name}</p>
+                          <p className="text-sm text-muted-foreground">{testimonial.date}</p>
                         </div>
-                        <p className="text-muted-foreground italic">"{testimonial.message}"</p>
-                      </CardContent>
-                      <div className="flex p-6 pt-0">
-                        {[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 text-amber-400 fill-amber-400" />)}
                       </div>
-                    </Card>
-                  </div>
-                </CarouselItem>
+                      <p className="text-muted-foreground italic mb-4">"{testimonial.message}"</p>
+                    </div>
+                    <div className="flex pt-4 border-t border-border">
+                        {[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 text-amber-400 fill-amber-400" />)}
+                    </div>
+                  </Card>
               ))}
-            </CarouselContent>
-            <CarouselPrevious className="left-[-50px]" />
-            <CarouselNext className="right-[-50px]" />
-          </Carousel>
+          </div>
         </div>
       </section>
 
