@@ -152,6 +152,9 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
   };
   
   const isCube = displayType === 'Cube';
+  const isCards = displayType === 'Cards';
+  const showNavigation = !isCards;
+
 
   return (
     <div className="w-full mb-8 relative h-[400px] flex items-center justify-center">
@@ -163,15 +166,15 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
             background: hsl(var(--primary));
         }
         .swiper-slide-shadow, .swiper-slide-shadow-left, .swiper-slide-shadow-right {
-          background: none !important;
+          background: rgba(0,0,0,0.5) !important;
         }
         .swiper-slide {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          background-size: cover;
           background-position: center;
+          background-size: cover;
+          width: 300px;
+          height: 300px;
         }
+
          .swiper-slide.swiper-slide-cards {
           width: 350px !important;
           height: 350px !important;
@@ -186,18 +189,19 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
         centeredSlides={true}
         slidesPerView={'auto'}
         pagination={{ clickable: true }}
+        navigation={showNavigation}
         className={cn("mySwiper w-full h-full", isCube ? 'swiper-cube' : '')}
         loop
         {...getSwiperEffect()}
       >
         {photos.map((photo, index) => (
-          <SwiperSlide key={index} className={cn(displayType === 'Cards' ? 'swiper-slide-cards' : '')}>
-            <div className="relative w-full h-full">
+          <SwiperSlide key={index} className={cn(isCards ? 'swiper-slide-cards' : '')}>
+            <div className="relative w-full h-full flex items-center justify-center">
                <Image
                 src={photo}
                 alt={`User photo ${index + 1}`}
                 fill
-                className="rounded-lg object-contain"
+                className="rounded-lg object-cover"
               />
             </div>
           </SwiperSlide>
@@ -258,3 +262,4 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
+
