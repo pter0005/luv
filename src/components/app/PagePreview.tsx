@@ -19,7 +19,7 @@ interface PagePreviewProps {
   data: PageData;
 }
 
-const Countdown = ({ startDate }: { startDate: Date }) => {
+const Countdown = ({ startDate, displayType }: { startDate: Date; displayType?: string }) => {
   const [duration, setDuration] = React.useState({
     years: 0,
     months: 0,
@@ -30,8 +30,14 @@ const Countdown = ({ startDate }: { startDate: Date }) => {
   });
 
   React.useEffect(() => {
+    if(!startDate) return;
     const interval = setInterval(() => {
-      const newDuration = intervalToDuration({ start: startDate, end: new Date() });
+      const now = new Date();
+      if (startDate.getTime() > now.getTime()) {
+         setDuration({ years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 });
+         return;
+      }
+      const newDuration = intervalToDuration({ start: startDate, end: now });
       setDuration(newDuration);
     }, 1000);
 
@@ -47,6 +53,24 @@ const Countdown = ({ startDate }: { startDate: Date }) => {
     { label: 'segundos', value: duration.seconds },
   ];
 
+  if (displayType === "classico") {
+    return (
+       <div className="text-center text-zinc-300 text-lg">
+        <p>Compartilhando momentos há {duration.years} anos {String(duration.months).padStart(2, '0')} meses {String(duration.days).padStart(2, '0')} dias {String(duration.hours).padStart(2, '0')} horas</p>
+        <p>{String(duration.minutes).padStart(2, '0')} minutos {String(duration.seconds).padStart(2, '0')} segundos ❤️‍🔥</p>
+      </div>
+    )
+  }
+
+  if (displayType === 'simples') {
+    return (
+      <p className="text-zinc-300 text-lg">
+        Desde {format(startDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+      </p>
+    )
+  }
+
+  // Fallback to "padrão"
   return (
     <div className="text-center">
         <h2 className="font-display text-2xl mb-6">Compartilhando momentos há</h2>
@@ -76,33 +100,27 @@ export function PagePreview({ data }: PagePreviewProps) {
                 <div className="w-3 h-3 rounded-full bg-green-500"></div>
             </div>
             <div className="flex-grow bg-zinc-900 rounded-md px-3 py-1 text-sm text-zinc-400 text-center">
-                https://luv.com/p/{data.title || 'pagina'}
+                https://luv.com/p/{data.title?.toLowerCase().replace(/\s/g, '-') || 'pagina'}
             </div>
         </div>
 
         {/* Page Content */}
         <div
-            className="flex-grow p-8 flex flex-col items-center justify-start text-center relative overflow-auto bg-black"
+            className="flex-grow p-8 flex flex-col items-center justify-start text-center relative overflow-y-auto bg-black"
         >
             <div className="relative z-10 w-full">
                 <h1 className="text-4xl font-handwriting text-red-600">{data.title || ""}</h1>
                 
                 {data.message && (
                     <div 
-                        className="mt-12 text-zinc-300 whitespace-pre-wrap break-words prose dark:prose-invert" 
+                        className="mt-12 text-zinc-300 whitespace-pre-wrap break-words prose dark:prose-invert max-w-full" 
                         dangerouslySetInnerHTML={{ __html: data.message }} 
                     />
                 )}
 
                 {data.startDate && (
                      <div className="mt-8">
-                        {data.dateDisplayType === "padrão" && <Countdown startDate={data.startDate} />}
-                        {data.dateDisplayType === "classico" && <p>Estilo Clássico</p>}
-                        {data.dateDisplayType === "simples" && (
-                            <p className="text-zinc-300 text-lg">
-                                Desde {format(data.startDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
-                            </p>
-                        )}
+                        <Countdown startDate={data.startDate} displayType={data.dateDisplayType} />
                      </div>
                 )}
             </div>
