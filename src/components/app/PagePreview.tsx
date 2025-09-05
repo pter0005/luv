@@ -150,7 +150,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
         };
     }
   };
-
+  
   const isCube = displayType === 'Cube';
   const isCards = displayType === 'Cards';
   const isCoverflow = displayType === 'Coverflow';
@@ -188,7 +188,6 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
         }
       `}</style>
       <Swiper
-        modules={[EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination]}
         grabCursor={true}
         centeredSlides={true}
         pagination={{ clickable: true }}
@@ -274,3 +273,5 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
+
+    
