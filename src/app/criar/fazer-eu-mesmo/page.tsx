@@ -84,11 +84,6 @@ export default function CreatorStudioPage() {
 
   const steps = [
     {
-      name: "photos" as const,
-      title: "Fotos",
-      description: "Anexe fotos e escolha o modo de exibição para personalizar a página. Você pode adicionar até 8 fotos.",
-    },
-    {
       name: "title" as const,
       title: "Título da página",
       description: "Escreva o título dedicatório para a página.",
@@ -102,6 +97,11 @@ export default function CreatorStudioPage() {
       name: "startDate" as const,
       title: "Data de início",
       description: "Informe a data que simboliza o início de uma união.",
+    },
+    {
+      name: "photos" as const,
+      title: "Fotos",
+      description: "Anexe fotos e escolha o modo de exibição para personalizar a página. Você pode adicionar até 8 fotos.",
     },
   ];
 
@@ -172,6 +172,167 @@ export default function CreatorStudioPage() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8">
               <div className="min-h-[350px]">
                 {currentStep === 1 && (
+                  <div className="space-y-8">
+                    <FormField
+                      control={form.control}
+                      key="title"
+                      name="title"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input placeholder="Escreva o título aqui..." {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      key="titleColor"
+                      name="titleColor"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Cor do Título</FormLabel>
+                          <FormControl>
+                             <div className="flex items-center gap-4 pt-2">
+                                <div 
+                                    className="w-24 h-24 rounded-lg border-2 border-zinc-700 cursor-pointer"
+                                    style={{ backgroundColor: field.value }}
+                                    onClick={() => colorPickerRef.current?.click()}
+                                />
+                                <div className="flex flex-col">
+                                    <span className="text-sm text-muted-foreground">Clique no quadrado para escolher uma cor</span>
+                                    <span className="font-mono text-lg">{field.value}</span>
+                                </div>
+                                <input
+                                    ref={colorPickerRef}
+                                    type="color"
+                                    value={field.value}
+                                    onChange={(e) => field.onChange(e.target.value)}
+                                    className="sr-only"
+                                />
+                             </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                )}
+                {currentStep === 2 && (
+                  <div className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="messageFontSize"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Tamanho do Texto</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione um tamanho" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="text-sm">Pequeno</SelectItem>
+                              <SelectItem value="text-base">Padrão</SelectItem>
+                              <SelectItem value="text-lg">Médio</SelectItem>
+                              <SelectItem value="text-xl">Grande</SelectItem>
+                              <SelectItem value="text-2xl">Extra Grande</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      key="message"
+                      name="message"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Editor
+                                value={field.value || ''}
+                                onChange={field.onChange}
+                                placeholder="Escreva sua mensagem aqui..."
+                              />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                )}
+                {currentStep === 3 && (
+                   <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-start">
+                    <FormField
+                      control={form.control}
+                      key="startDate"
+                      name="startDate"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col items-center">
+                           <FormControl>
+                              <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={field.onChange}
+                                disabled={(date) =>
+                                  date > new Date() || date < new Date("1900-01-01")
+                                }
+                                initialFocus
+                                fromYear={1960}
+                                toYear={new Date().getFullYear()}
+                                captionLayout="dropdown-buttons"
+                              />
+                           </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      key="dateDisplayType"
+                      name="dateDisplayType"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel className="font-semibold">Modo de Exibição</FormLabel>
+                          <FormControl>
+                            <RadioGroup
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                              className="flex flex-col gap-3"
+                            >
+                              <FormItem>
+                                <FormControl>
+                                  <RadioGroupItem value="padrão" id="padrão">
+                                    Padrão
+                                  </RadioGroupItem>
+                                </FormControl>
+                              </FormItem>
+                              <FormItem>
+                                <FormControl>
+                                  <RadioGroupItem value="classico" id="classico">
+                                    Clássico
+                                  </RadioGroupItem>
+                                </FormControl>
+                              </FormItem>
+                              <FormItem>
+                                <FormControl>
+                                  <RadioGroupItem value="simples" id="simples">
+                                     Simples
+                                  </RadioGroupItem>
+                                </FormControl>
+                              </FormItem>
+                            </RadioGroup>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                )}
+                {currentStep === 4 && (
                    <div className="space-y-8">
                     <FormField
                       control={form.control}
@@ -253,167 +414,6 @@ export default function CreatorStudioPage() {
                               <FormItem>
                                 <FormControl>
                                   <RadioGroupItem value="Flip" id="flip">Flip</RadioGroupItem>
-                                </FormControl>
-                              </FormItem>
-                            </RadioGroup>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                )}
-                {currentStep === 2 && (
-                  <div className="space-y-8">
-                    <FormField
-                      control={form.control}
-                      key="title"
-                      name="title"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input placeholder="Escreva o título aqui..." {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      key="titleColor"
-                      name="titleColor"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Cor do Título</FormLabel>
-                          <FormControl>
-                             <div className="flex items-center gap-4 pt-2">
-                                <div 
-                                    className="w-24 h-24 rounded-lg border-2 border-zinc-700 cursor-pointer"
-                                    style={{ backgroundColor: field.value }}
-                                    onClick={() => colorPickerRef.current?.click()}
-                                />
-                                <div className="flex flex-col">
-                                    <span className="text-sm text-muted-foreground">Clique no quadrado para escolher uma cor</span>
-                                    <span className="font-mono text-lg">{field.value}</span>
-                                </div>
-                                <input
-                                    ref={colorPickerRef}
-                                    type="color"
-                                    value={field.value}
-                                    onChange={(e) => field.onChange(e.target.value)}
-                                    className="sr-only"
-                                />
-                             </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                )}
-                {currentStep === 3 && (
-                  <div className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="messageFontSize"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Tamanho do Texto</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Selecione um tamanho" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="text-sm">Pequeno</SelectItem>
-                              <SelectItem value="text-base">Padrão</SelectItem>
-                              <SelectItem value="text-lg">Médio</SelectItem>
-                              <SelectItem value="text-xl">Grande</SelectItem>
-                              <SelectItem value="text-2xl">Extra Grande</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      key="message"
-                      name="message"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Editor
-                                value={field.value || ''}
-                                onChange={field.onChange}
-                                placeholder="Escreva sua mensagem aqui..."
-                              />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                )}
-                {currentStep === 4 && (
-                   <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-start">
-                    <FormField
-                      control={form.control}
-                      key="startDate"
-                      name="startDate"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col items-center">
-                           <FormControl>
-                              <Calendar
-                                mode="single"
-                                selected={field.value}
-                                onSelect={field.onChange}
-                                disabled={(date) =>
-                                  date > new Date() || date < new Date("1900-01-01")
-                                }
-                                initialFocus
-                                fromYear={1960}
-                                toYear={new Date().getFullYear()}
-                                captionLayout="dropdown-buttons"
-                              />
-                           </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      key="dateDisplayType"
-                      name="dateDisplayType"
-                      render={({ field }) => (
-                        <FormItem className="space-y-3">
-                          <FormLabel className="font-semibold">Modo de Exibição</FormLabel>
-                          <FormControl>
-                            <RadioGroup
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                              className="flex flex-col gap-3"
-                            >
-                              <FormItem>
-                                <FormControl>
-                                  <RadioGroupItem value="padrão" id="padrão">
-                                    Padrão
-                                  </RadioGroupItem>
-                                </FormControl>
-                              </FormItem>
-                              <FormItem>
-                                <FormControl>
-                                  <RadioGroupItem value="classico" id="classico">
-                                    Clássico
-                                  </RadioGroupItem>
-                                </FormControl>
-                              </FormItem>
-                              <FormItem>
-                                <FormControl>
-                                  <RadioGroupItem value="simples" id="simples">
-                                     Simples
-                                  </RadioGroupItem>
                                 </FormControl>
                               </FormItem>
                             </RadioGroup>
