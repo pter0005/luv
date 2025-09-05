@@ -51,7 +51,7 @@ function Calendar({
         ),
         day_range_end: "day-range-end",
         day_selected:
-          "bg-zinc-700 text-white hover:bg-zinc-600 focus:bg-zinc-700",
+          "bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary focus:text-primary-foreground",
         day_today: "bg-accent text-accent-foreground",
         day_outside:
           "day-outside text-muted-foreground opacity-50 aria-selected:bg-accent/50 aria-selected:text-muted-foreground",
@@ -64,13 +64,13 @@ function Calendar({
       components={{
         IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
         IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
-        Dropdown: (props: DropdownProps) => {
-           if (props.name === "years" && (!fromYear || !toYear)) {
+        Dropdown: (dropdownProps: DropdownProps) => {
+           if (dropdownProps.name === "years" && (!fromYear || !toYear)) {
             return null;
           }
 
           const options =
-            props.name === "months"
+            dropdownProps.name === "months"
               ? Array.from({ length: 12 }, (_, i) => ({
                   value: i,
                   label: format(new Date(2023, i), "MMMM", { locale: ptBR }),
@@ -81,21 +81,21 @@ function Calendar({
                 }));
           
           const handleValueChange = (value: string) => {
-            if (props.onChange) {
+            if (dropdownProps.onChange) {
                 const changeEvent = {
                     target: { value: value },
                 } as React.ChangeEvent<HTMLSelectElement>;
-                props.onChange(changeEvent);
+                dropdownProps.onChange(changeEvent);
             }
           };
 
           return (
             <Select
               onValueChange={handleValueChange}
-              value={props.value?.toString()}
+              value={dropdownProps.value?.toString()}
             >
               <SelectTrigger className="bg-zinc-800 border-zinc-700 w-[48%] capitalize">
-                <SelectValue placeholder={props.caption} />
+                <SelectValue placeholder={dropdownProps.caption} />
               </SelectTrigger>
               <SelectContent className="max-h-60 bg-zinc-900 border-zinc-800 text-white">
                 <ScrollArea>
