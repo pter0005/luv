@@ -27,7 +27,6 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Editor } from "@/components/ui/editor";
 import { Progress } from "@/components/ui/progress";
-import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
@@ -86,12 +85,15 @@ export default function CreatorStudioPage() {
     const isValid = await form.trigger(currentFieldName);
 
     if (isValid) {
-      const currentValues = form.getValues();
-      setFieldHistory(prev => ({...prev, ...currentValues}));
-      
-      if (currentStep < totalSteps) {
-        setCurrentStep(currentStep + 1);
-      }
+        // Keep history of all fields
+        setFieldHistory(prev => ({...prev, ...form.getValues()}));
+        
+        if (currentStep < totalSteps) {
+            const nextStepFieldName = steps[currentStep].name;
+            // Clear the field for the next step so it doesn't show old values
+            form.setValue(nextStepFieldName, undefined, { shouldValidate: false });
+            setCurrentStep(currentStep + 1);
+        }
     }
   };
 
@@ -102,7 +104,6 @@ export default function CreatorStudioPage() {
   };
 
   const currentFieldName = steps[currentStep - 1].name;
-
 
   return (
     <div className="flex flex-col lg:flex-row w-full min-h-screen bg-[#111111] text-white">
