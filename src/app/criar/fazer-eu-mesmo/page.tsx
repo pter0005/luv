@@ -40,10 +40,12 @@ import { useToast } from "@/hooks/use-toast";
 import { suggestSentimentEnhancements } from "@/ai/flows/suggest-sentiment-enhancements";
 import { generateUniqueBackground } from "@/ai/flows/generate-unique-background";
 import { Progress } from "@/components/ui/progress";
+import { format } from "date-fns";
 
 const formSchema = z.object({
   title: z.string().min(2, "O título deve ter pelo menos 2 caracteres."),
   message: z.string().optional(),
+  startDate: z.date().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -51,7 +53,7 @@ type FormData = z.infer<typeof formSchema>;
 export default function CreatorStudioPage() {
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = React.useState(1);
-  const totalSteps = 2;
+  const totalSteps = 3;
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -79,6 +81,10 @@ export default function CreatorStudioPage() {
     {
         title: "Mensagem",
         description: "Escreva uma mensagem especial. Seja criativo e demonstre todo seu carinho.",
+    },
+    {
+        title: "Data de início",
+        description: "Informe a data de início que simbolize o início de uma união, relacionamento, amizade, etc.",
     }
   ]
   
@@ -118,6 +124,51 @@ export default function CreatorStudioPage() {
                 />
             </div>
         )
+      case 3:
+        return (
+            <div className="space-y-4 mt-6">
+                <FormField
+                  control={form.control}
+                  name="startDate"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-full pl-3 text-left font-normal bg-zinc-800 border-none hover:bg-zinc-700 h-12",
+                                !field.value && "text-zinc-500"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Selecione uma data</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={(date) =>
+                              date > new Date() || date < new Date("1900-01-01")
+                            }
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+            </div>
+        )
       default:
         return null;
     }
@@ -125,10 +176,10 @@ export default function CreatorStudioPage() {
 
   const handleNextStep = () => {
     if (currentStep < totalSteps) {
-      setCurrentStep(currentStep + 1);
-      if (currentStep === 1) {
-        form.setValue("message", "");
+      if (currentStep === 2) {
+         form.setValue("message", watchedData.message); 
       }
+      setCurrentStep(currentStep + 1);
     }
   };
 

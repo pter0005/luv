@@ -52,7 +52,17 @@ export function PagePreview({ data }: PagePreviewProps) {
         >
             <div className="relative z-10 w-full">
                 <h1 className="text-4xl font-handwriting text-red-600">{data.title || ""}</h1>
-                 <p className="mt-8 text-zinc-300 whitespace-pre-wrap break-words">{data.message || ""}</p>
+                
+                {data.message && (
+                     <p className="mt-8 text-zinc-300 whitespace-pre-wrap break-words">{data.message}</p>
+                )}
+
+                {data.startDate && (
+                     <p className="mt-8 text-zinc-300 text-lg">
+                        Desde {format(data.startDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                     </p>
+                )}
+
             </div>
         </div>
     </div>
