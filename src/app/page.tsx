@@ -134,7 +134,7 @@ export default function CreatorPage() {
           </div>
         </div>
       </div>
-       <section id="how-work" className="py-24 bg-gradient-to-b from-black via-black to-red-950/20 relative">
+      <section id="how-work" className="py-24 bg-gradient-to-b from-black via-black to-red-950/20 relative">
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center">
             <div className="w-auto z-10 rounded-full bg-red-900/10 text-white text-xs font-semibold inline-flex items-center px-3 py-1.5 space-x-1 mb-5">
@@ -172,6 +172,18 @@ export default function CreatorPage() {
               <AccordionTrigger>O que está incluído na minha página personalizada?</AccordionTrigger>
               <AccordionContent>
                 Sua página personalizada contará com tudo o que preencher no formulário, dependendo do plano escolhido.
+              </AccordionContent>
+            </AccordionItem>
+             <AccordionItem value="item-4">
+              <AccordionTrigger>Como recebo minha página personalizada após o pagamento?</AccordionTrigger>
+              <AccordionContent>
+                Após a confirmação do pagamento, você receberá um QR code e um link via email para compartilhar e acessar a página.
+              </AccordionContent>
+            </AccordionItem>
+             <AccordionItem value="item-5">
+              <AccordionTrigger>A página personalizada tem validade?</AccordionTrigger>
+              <AccordionContent>
+                Sim, no plano básico, a página estará disponível por 1 ano. No plano avançado, a página será vitalícia.
               </AccordionContent>
             </AccordionItem>
           </Accordion>
