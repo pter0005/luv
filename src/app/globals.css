@@ -16,7 +16,7 @@
     --secondary-foreground: 0 0% 98%;
     --muted: 257 40% 15%;
     --muted-foreground: 0 0% 63.9%;
-    --accent: 300 80% 60%;
+    --accent: 25 95% 53%; /* Laranja */
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
@@ -39,7 +39,7 @@
     --secondary-foreground: 0 0% 98%;
     --muted: 257 40% 15%;
     --muted-foreground: 0 0% 63.9%;
-    --accent: 300 80% 60%;
+    --accent: 25 95% 53%; /* Laranja */
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
