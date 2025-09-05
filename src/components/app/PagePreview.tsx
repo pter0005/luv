@@ -8,7 +8,7 @@ import * as z from "zod";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination, Navigation } from 'swiper/modules';
+import { EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination } from 'swiper/modules';
 
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
@@ -16,7 +16,6 @@ import 'swiper/css/effect-cube';
 import 'swiper/css/effect-flip';
 import 'swiper/css/effect-cards';
 import 'swiper/css/pagination';
-import 'swiper/css/navigation';
 
 const formSchema = z.object({
   title: z.string(),
@@ -153,15 +152,10 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
   
   const isCube = displayType === 'Cube';
   const isCards = displayType === 'Cards';
-  const showNavigation = !isCards;
-
-
+  
   return (
     <div className="w-full mb-8 relative h-[400px] flex items-center justify-center">
       <style jsx global>{`
-        .swiper-button-next, .swiper-button-prev {
-            color: hsl(var(--primary));
-        }
         .swiper-pagination-bullet-active {
             background: hsl(var(--primary));
         }
@@ -184,12 +178,11 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
         }
       `}</style>
       <Swiper
-        modules={[EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination, Navigation]}
+        modules={[EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination]}
         grabCursor={true}
         centeredSlides={true}
         slidesPerView={'auto'}
         pagination={{ clickable: true }}
-        navigation={showNavigation}
         className={cn("mySwiper w-full h-full", isCube ? 'swiper-cube' : '')}
         loop
         {...getSwiperEffect()}
@@ -262,4 +255,3 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
-
