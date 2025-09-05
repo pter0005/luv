@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, Globe, QrCode, Link as LinkIcon, Users, Check, X, Gamepad2 } from "lucide-react";
+import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, Globe, QrCode, Link as LinkIcon, Users, Check, X, Gamepad2, PlayCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -19,6 +19,40 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { AnimatedBackground } from "@/components/app/AnimatedBackground";
+import Link from "next/link";
+
+function TypingAnimation() {
+  const [index, setIndex] = React.useState(0);
+  const [subIndex, setSubIndex] = React.useState(0);
+  const [reverse, setReverse] = React.useState(false);
+  const phrases = ["Para alguém especial.", "De forma única.", "Para seu amor."];
+
+  React.useEffect(() => {
+    if (subIndex === phrases[index].length + 1 && !reverse) {
+      setReverse(true);
+      return;
+    }
+
+    if (subIndex === 0 && reverse) {
+      setReverse(false);
+      setIndex((prev) => (prev + 1) % phrases.length);
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      setSubIndex((prev) => prev + (reverse ? -1 : 1));
+    }, Math.max(reverse ? 75 : subIndex === phrases[index].length ? 2000 : 150, 75));
+
+    return () => clearTimeout(timeout);
+  }, [subIndex, index, reverse, phrases]);
+
+  return (
+    <h2 className="font-cursive text-4xl lg:text-5xl text-primary mb-8 h-20">
+      {`${phrases[index].substring(0, subIndex)}`}
+      <span className="animate-blink">|</span>
+    </h2>
+  );
+}
 
 
 export default function CreatorPage() {
@@ -31,31 +65,43 @@ export default function CreatorPage() {
     { name: "Clara e Rafael", time: "2 meses atrás", message: "Usar a Luv foi incrível! A plataforma é muito intuitiva e fácil de usar. Conseguimos montar um presente digital perfeito com músicas que marcaram nossa relação.", image: "https://picsum.photos/100/100?random=6" },
   ];
 
+  const features = [
+    { icon: Gamepad2, title: "Jogo Enigmático 2D", description: "Uma revelação inesquecível através de um enigma personalizado." },
+    { icon: Calendar, title: "Contador de tempo", description: "Mostre há quanto tempo vocês estão juntos com um contador em tempo real." },
+    { icon: ImageIcon, title: "Animações de fundo", description: "Escolha entre várias animações de fundo para personalizar a página." },
+    { icon: Music, title: "Música dedicada", description: "Dedique uma música especial. A música será reproduzida automaticamente." },
+    { icon: Globe, title: "Em todo lugar", description: "Crie e compartilhe de qualquer lugar do mundo. Aceitamos pagamentos internacionais." },
+    { icon: QrCode, title: "QR Code exclusivo", description: "Crie um QR Code exclusivo para sua página, gerado automaticamente." },
+  ]
+
   return (
     <>
       <AnimatedBackground />
       {/* Hero Section */}
-      <section className="relative overflow-hidden section-padding">
-        <div className="container relative z-10 text-center">
-          <h1 className="text-5xl lg:text-7xl font-bold tracking-tighter mb-4 text-foreground font-display">
-            Sua história de amor, <span className="gradient-text">imortalizada</span>.
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-            Transforme seus sentimentos em uma obra de arte digital. Uma experiência exclusiva, criada para celebrar momentos que merecem ser eternos.
-          </p>
-          <Button size="lg" className="h-14 group relative">
-            Criar minha página
-            <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-          </Button>
-          <div className="relative w-full max-w-4xl mx-auto mt-20">
-            <div className="absolute inset-0 bg-primary/10 rounded-full blur-3xl animate-float"></div>
-            <Image
-              src="https://picsum.photos/1200/600"
-              alt="Preview da página de amor"
-              width={1200}
+       <section className="relative overflow-hidden section-padding">
+        <div className="container relative z-10 grid lg:grid-cols-2 gap-12 items-center">
+          <div className="text-center lg:text-left">
+            <h1 className="text-5xl lg:text-7xl font-bold tracking-tighter mb-4 text-foreground font-display">
+              Declare seu <span className="gradient-text">amor</span>.
+            </h1>
+            <TypingAnimation />
+            <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 mb-8">
+              Transforme seus sentimentos em uma obra de arte digital. Uma experiência exclusiva, criada para celebrar momentos que merecem ser eternos.
+            </p>
+            <Button size="lg" className="h-14 group relative">
+              Criar minha página
+              <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </div>
+          <div className="relative w-full max-w-md mx-auto lg:max-w-none lg:mx-0">
+             <div className="absolute inset-0 bg-primary/10 rounded-full blur-3xl animate-float"></div>
+             <Image
+              src="https://picsum.photos/600/600"
+              alt="Casal feliz"
+              width={600}
               height={600}
-              className="rounded-xl shadow-2xl shadow-primary/20 relative animate-float"
-              data-ai-hint="love couple webpage"
+              className="rounded-full shadow-2xl shadow-primary/20 relative animate-float aspect-square object-cover"
+              data-ai-hint="happy couple"
             />
           </div>
         </div>
@@ -67,14 +113,7 @@ export default function CreatorPage() {
           <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Uma Experiência <span className="gradient-text">Incomparável</span></h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Cada detalhe foi pensado para proporcionar uma declaração de amor que transcende o comum. Oferecemos mais que uma página, uma memória viva.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              { icon: Calendar, title: "Contador de tempo", description: "Mostre há quanto tempo vocês estão juntos com um contador em tempo real." },
-              { icon: ImageIcon, title: "Animações de fundo", description: "Escolha entre várias animações de fundo para personalizar a página." },
-              { icon: Music, title: "Música dedicada", description: "Dedique uma música especial. A música será reproduzida automaticamente." },
-              { icon: Globe, title: "Em todo lugar", description: "Crie e compartilhe de qualquer lugar do mundo. Aceitamos pagamentos internacionais." },
-              { icon: QrCode, title: "QR Code exclusivo", description: "Crie um QR Code exclusivo para sua página, gerado automaticamente." },
-              { icon: LinkIcon, title: "URL personalizada", description: "Crie uma URL personalizada para sua página, gerada automaticamente." },
-            ].map((feature, i) => (
+            {features.map((feature, i) => (
               <Card key={i} className="bg-card/80 border-border hover:border-primary/50 hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-primary/10 fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
                 <CardHeader className="items-center">
                   <div className="p-4 bg-primary/10 rounded-full mb-4">
@@ -88,6 +127,20 @@ export default function CreatorPage() {
               </Card>
             ))}
           </div>
+           <Card className="mt-12 bg-gradient-to-r from-primary/20 to-accent/20 border-primary/30 p-8 text-center fade-in-up" style={{animationDelay: '0.7s'}}>
+            <CardHeader className="p-0 mb-4 items-center">
+                <div className="p-3 bg-background rounded-full mb-3">
+                    <PlayCircle className="w-10 h-10 text-primary" />
+                </div>
+                <CardTitle className="text-3xl">Veja o Jogo em Ação</CardTitle>
+                <CardDescription className="text-lg text-foreground/80 mt-2">Descubra como funciona a experiência interativa que torna sua declaração inesquecível.</CardDescription>
+            </CardHeader>
+            <CardContent className="p-0">
+                <Link href="/como-funciona">
+                    <Button size="lg" variant="outline" className="bg-background/80 hover:bg-background">Como funciona?</Button>
+                </Link>
+            </CardContent>
+        </Card>
         </div>
       </section>
 
@@ -288,5 +341,3 @@ export default function CreatorPage() {
     </>
   );
 }
-
-    
