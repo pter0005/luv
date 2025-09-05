@@ -415,12 +415,13 @@ export default function CreatorStudioPage() {
       {/* Form Section */}
       <aside className="w-full lg:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
         <div className="w-full max-w-md mx-auto">
+            <h1 className="text-4xl font-bold text-red-600 mb-8">TITULO DA PAGINA</h1>
             <div className="mb-8">
                 <Progress value={(currentStep / totalSteps) * 100} className="bg-zinc-700 h-2 [&>div]:bg-white" />
                 <p className="text-right text-sm text-muted-foreground mt-2">{currentStep}/{totalSteps}</p>
             </div>
 
-            <div className="mb-8">
+            <div>
                 <h2 className="text-3xl font-bold">{stepsContent[currentStep-1].title}</h2>
                 <p className="text-muted-foreground mt-2">{stepsContent[currentStep-1].description}</p>
             </div>
