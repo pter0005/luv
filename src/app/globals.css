@@ -16,7 +16,7 @@
     --secondary-foreground: 0 0% 98%;
     --muted: 257 40% 15%;
     --muted-foreground: 0 0% 63.9%;
-    --accent: 257 80% 60%; /* Roxo */
+    --accent: 257 80% 60%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
@@ -39,7 +39,7 @@
     --secondary-foreground: 0 0% 98%;
     --muted: 257 40% 15%;
     --muted-foreground: 0 0% 63.9%;
-    --accent: 257 80% 60%; /* Roxo */
+    --accent: 257 80% 60%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
@@ -106,7 +106,7 @@
 }
 
 .section-padding {
-  @apply py-20 lg:py-32;
+  @apply py-16 md:py-20 lg:py-32;
 }
 
 @keyframes purple-fog {
@@ -162,4 +162,3 @@
 .animate-blink {
   animation: blink 1s step-end infinite;
 }
-    

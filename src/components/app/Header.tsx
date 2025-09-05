@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Heart, Menu } from "lucide-react";
@@ -7,6 +8,7 @@ import {
   Sheet,
   SheetContent,
   SheetTrigger,
+  SheetClose
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import React from "react";
@@ -36,9 +38,9 @@ export function Header() {
       "sticky top-0 left-0 w-full z-50 transition-all duration-300",
       isScrolled ? "bg-background/80 backdrop-blur-lg border-b border-border" : "bg-transparent"
     )}>
-      <div className="container flex items-center justify-between h-20">
+      <div className="container flex items-center justify-between h-16 md:h-20">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="https://i.imgur.com/EMwsRdt.png" alt="Luv Logo" width={80} height={80} />
+          <Image src="https://i.imgur.com/EMwsRdt.png" alt="Luv Logo" width={80} height={80} className="w-16 h-16 md:w-20 md:h-20" />
         </Link>
         <nav className="hidden md:flex items-center space-x-8">
           {navLinks.map(link => (
@@ -60,11 +62,13 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right">
-              <nav className="flex flex-col space-y-4 mt-8">
+              <nav className="flex flex-col space-y-2 mt-8">
                 {navLinks.map(link => (
-                  <Link key={link.href} href={link.href} className="text-lg font-medium hover:text-primary transition-colors">
-                    {link.label}
-                  </Link>
+                  <SheetClose asChild key={link.href}>
+                    <Link href={link.href} className="text-lg font-medium hover:text-primary transition-colors p-2 rounded-md">
+                      {link.label}
+                    </Link>
+                  </SheetClose>
                 ))}
               </nav>
               <div className="mt-8 pt-8 border-t border-border space-y-4">

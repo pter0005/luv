@@ -20,16 +20,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 import { AnimatedBackground } from "@/components/app/AnimatedBackground";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
 
 function TypingAnimation() {
   const [index, setIndex] = React.useState(0);
@@ -158,12 +150,12 @@ export default function CreatorPage() {
             <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 mb-8">
               Transforme seus sentimentos em uma obra de arte digital. Uma experiência exclusiva, criada para celebrar momentos que merecem ser eternos.
             </p>
-            <Button size="lg" className="h-14 group relative">
+            <Button size="lg" className="h-12 md:h-14 group relative">
               Criar minha página
               <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
           </div>
-          <div className="relative w-full max-w-md mx-auto lg:max-w-none lg:mx-0">
+          <div className="relative w-full max-w-sm md:max-w-md mx-auto lg:max-w-none lg:mx-0">
              <div className="absolute inset-0 bg-primary/10 rounded-full blur-3xl animate-float"></div>
              <Image
               src="https://picsum.photos/600/600"
@@ -181,7 +173,7 @@ export default function CreatorPage() {
       <section id="recursos" className="section-padding bg-background/50 backdrop-blur-md relative z-10">
         <div className="container text-center">
           <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Uma Experiência <span className="gradient-text">Incomparável</span></h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Cada detalhe foi pensado para proporcionar uma declaração de amor que transcende o comum. Oferecemos mais que uma página, uma memória viva.</p>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16">Cada detalhe foi pensado para proporcionar uma declaração de amor que transcende o comum. Oferecemos mais que uma página, uma memória viva.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, i) => (
               <Dialog key={i}>
@@ -196,9 +188,9 @@ export default function CreatorPage() {
                     />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent" />
                   <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
-                    <feature.icon className="w-10 h-10 mb-4 text-primary drop-shadow-lg" />
-                    <h3 className="text-2xl font-bold font-display">{feature.title}</h3>
-                    <p className="text-white/80 mb-4">{feature.description}</p>
+                    <feature.icon className="w-8 h-8 md:w-10 md:h-10 mb-4 text-primary drop-shadow-lg" />
+                    <h3 className="text-xl md:text-2xl font-bold font-display">{feature.title}</h3>
+                    <p className="text-white/80 mb-4 text-sm md:text-base">{feature.description}</p>
                     <DialogTrigger asChild>
                       <Button variant="outline" className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/20 text-white w-full mt-auto">
                         Ver exemplo
@@ -206,9 +198,9 @@ export default function CreatorPage() {
                     </DialogTrigger>
                   </div>
                 </div>
-                <DialogContent className="bg-card/95 backdrop-blur-lg text-foreground max-w-4xl p-0 border-0">
+                <DialogContent className="bg-card/95 backdrop-blur-lg text-foreground max-w-3xl p-0 border-0">
                   <DialogHeader className="p-6">
-                    <DialogTitle className="text-3xl font-display text-primary flex items-center gap-3"><feature.icon className="w-8 h-8" /> {feature.example.title}</DialogTitle>
+                    <DialogTitle className="text-2xl md:text-3xl font-display text-primary flex items-center gap-3"><feature.icon className="w-6 h-6 md:w-8 md:h-8" /> {feature.example.title}</DialogTitle>
                     <DialogDescription className="text-base pt-2 text-muted-foreground">
                       {feature.example.description}
                     </DialogDescription>
@@ -227,13 +219,13 @@ export default function CreatorPage() {
                </Dialog>
             ))}
           </div>
-           <Card className="mt-12 bg-gradient-to-r from-primary/20 to-accent/20 border-primary/30 p-8 text-center">
+           <Card className="mt-12 bg-gradient-to-r from-primary/20 to-accent/20 border-primary/30 p-6 md:p-8 text-center">
             <CardHeader className="p-0 mb-4 items-center">
                 <div className="p-3 bg-background rounded-full mb-3">
-                    <PlayCircle className="w-10 h-10 text-primary" />
+                    <PlayCircle className="w-8 h-8 md:w-10 md:h-10 text-primary" />
                 </div>
-                <CardTitle className="text-3xl">Veja o Jogo em Ação</CardTitle>
-                <CardDescription className="text-lg text-foreground/80 mt-2">Descubra como funciona a experiência interativa que torna sua declaração inesquecível.</CardDescription>
+                <CardTitle className="text-2xl md:text-3xl">Veja o Jogo em Ação</CardTitle>
+                <CardDescription className="text-base md:text-lg text-foreground/80 mt-2">Descubra como funciona a experiência interativa que torna sua declaração inesquecível.</CardDescription>
             </CardHeader>
             <CardContent className="p-0">
                 <Link href="/como-funciona">
@@ -248,8 +240,8 @@ export default function CreatorPage() {
       <section id="temas" className="section-padding bg-secondary/30 backdrop-blur-md relative z-10">
         <div className="container text-center">
           <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Temas <span className="gradient-text">Exclusivos Luv</span></h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Selecione o cenário perfeito para sua história. Cada tema é uma tela em branco para suas emoções, desenhado para encantar e surpreender.</p>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16">Selecione o cenário perfeito para sua história. Cada tema é uma tela em branco para suas emoções, desenhado para encantar e surpreender.</p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
             <Card className="bg-card/80 border-border overflow-hidden group">
               <CardHeader>
                 <CardTitle>Padrão</CardTitle>
@@ -284,13 +276,13 @@ export default function CreatorPage() {
       <section id="avaliacoes" className="section-padding bg-background/50 backdrop-blur-md relative z-10 overflow-hidden">
         <div className="container text-center">
           <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Histórias que <span className="gradient-text">Inspiram</span></h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Relatos de quem escolheu a Luv para eternizar seus momentos e vivenciou uma experiência única e emocionante.</p>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16">Relatos de quem escolheu a Luv para eternizar seus momentos e vivenciou uma experiência única e emocionante.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {testimonials.map((testimonial, index) => (
                   <Card 
                     key={index} 
                     className="bg-card/80 border-border p-6 text-left flex flex-col justify-between"
-                    style={{ animation: `fade-in-up 0.8s ease-out forwards`, animationDelay: `${index * 150}ms` }}
+                    style={{ animation: `fade-in-up 0.8s ease-out forwards`, animationDelay: `${index * 150}ms`, opacity: 0 }}
                   >
                     <div>
                       <div className="flex items-center gap-4 mb-4">
@@ -316,7 +308,7 @@ export default function CreatorPage() {
         <AnimatedBackground />
         <div className="container relative z-10 text-center">
           <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Nossos <span className="gradient-text">Planos</span></h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Escolha o plano ideal para sua jornada de amor. Cada um é um convite para uma experiência memorável.</p>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16">Escolha o plano ideal para sua jornada de amor. Cada um é um convite para uma experiência memorável.</p>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
             
             <Card className="bg-card/80 border-border flex flex-col">
@@ -382,7 +374,7 @@ export default function CreatorPage() {
                 </ul>
               </CardContent>
               <div className="p-6 pt-0 mt-4">
-                <Button className="w-full">Fazer um Orçamento</Button>
+                 <Button className="w-full" variant="default">Fazer um Orçamento</Button>
               </div>
             </Card>
 
@@ -445,7 +437,7 @@ export default function CreatorPage() {
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
             Não espere uma data especial para criar um momento especial. Surpreenda hoje com uma declaração que será lembrada para sempre.
           </p>
-          <Button size="lg" className="h-14 group relative">
+          <Button size="lg" className="h-12 md:h-14 group relative">
             Comece agora, é grátis
             <Heart className="w-5 h-5 ml-2 group-hover:fill-red-400 transition-colors" />
           </Button>

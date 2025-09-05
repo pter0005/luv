@@ -1,3 +1,4 @@
+
 "use client";
 
 import { AnimatedBackground } from "@/components/app/AnimatedBackground";
@@ -25,16 +26,16 @@ export default function ComoFuncionaPage() {
         <section className="section-padding pt-32">
           <div className="container text-center">
             <div className="inline-block p-4 bg-primary/10 rounded-full mb-6">
-                <Gamepad2 className="w-12 h-12 text-primary" />
+                <Gamepad2 className="w-10 h-10 md:w-12 md:h-12 text-primary" />
             </div>
-            <h1 className="text-5xl lg:text-7xl font-bold tracking-tighter mb-4 text-foreground font-display">
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold tracking-tighter mb-4 text-foreground font-display">
               Uma Revelação <span className="gradient-text">Inesquecível</span>
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-16">
+            <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16">
               O Jogo Enigmático 2D é a forma mais criativa e emocionante de revelar sua página personalizada. Em vez de apenas enviar um link, você entrega uma experiência única.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto text-left mb-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto text-left mb-12 md:mb-16">
                 <Card className="bg-card/80 p-6">
                     <div className="flex items-start gap-4">
                         <div className="p-3 bg-primary/10 rounded-lg">
@@ -63,9 +64,8 @@ export default function ComoFuncionaPage() {
             
             <Card className="max-w-4xl mx-auto bg-card/50 border-2 border-primary/20 shadow-2xl shadow-primary/10 overflow-hidden">
                 <CardContent className="p-2">
-                    <div className="aspect-video bg-black/50 rounded-lg flex items-center justify-center">
-                        <p className="text-muted-foreground">Vídeo de demonstração em breve.</p>
-                        <Image 
+                    <div className="aspect-video bg-black/50 rounded-lg flex items-center justify-center relative">
+                         <Image 
                             src="https://picsum.photos/1280/720"
                             alt="Demonstração do jogo"
                             width={1280}
@@ -73,6 +73,9 @@ export default function ComoFuncionaPage() {
                             className="w-full h-full object-cover opacity-30"
                             data-ai-hint="pixel art game"
                         />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                             <p className="text-muted-foreground">Vídeo de demonstração em breve.</p>
+                        </div>
                     </div>
                 </CardContent>
             </Card>
