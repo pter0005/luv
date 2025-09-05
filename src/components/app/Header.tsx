@@ -51,7 +51,9 @@ export function Header() {
         </nav>
         <div className="hidden md:flex items-center space-x-4">
           <Button variant="ghost">Entrar</Button>
-          <Button>Criar Página</Button>
+          <Link href="/criar">
+            <Button>Criar Página</Button>
+          </Link>
         </div>
         <div className="md:hidden">
           <Sheet>
@@ -73,7 +75,9 @@ export function Header() {
               </nav>
               <div className="mt-8 pt-8 border-t border-border space-y-4">
                  <Button variant="ghost" className="w-full">Entrar</Button>
-                 <Button className="w-full">Criar Página</Button>
+                 <Link href="/criar" className="w-full">
+                    <Button className="w-full">Criar Página</Button>
+                 </Link>
               </div>
             </SheetContent>
           </Sheet>
@@ -82,3 +86,5 @@ export function Header() {
     </header>
   );
 }
+
+    

@@ -105,22 +105,26 @@ export default function CreatorPage() {
 
   return (
     <>
-      <AnimatedBackground />
+      <div className="hidden lg:block">
+        <AnimatedBackground fixed />
+      </div>
       {/* Hero Section */}
        <section className="relative overflow-hidden section-padding pt-24 md:pt-32">
         <div className="container relative z-10 grid lg:grid-cols-2 gap-12 items-center">
           <div className="text-center lg:text-left">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground font-display leading-tight">
-              Declare seu amor
-              <TypingAnimation />
+             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground font-display leading-tight">
+              Declare seu amor <br />
+              <span className="font-handwriting text-primary text-5xl md:text-6xl lg:text-7xl">de forma única!</span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 my-8">
               Transforme seus sentimentos em uma obra de arte digital. Uma experiência exclusiva, criada para celebrar momentos que merecem ser eternos.
             </p>
-            <Button size="lg" className="h-12 text-base md:h-14 group relative w-full sm:w-auto">
-              Criar minha página
-              <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            <Link href="/criar">
+                <Button size="lg" className="h-12 text-base md:h-14 group relative w-full sm:w-auto">
+                Criar minha página
+                <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                </Button>
+            </Link>
           </div>
           <div className="relative w-full max-w-md mx-auto lg:max-w-none lg:mx-0">
              <Image
@@ -217,7 +221,7 @@ export default function CreatorPage() {
                 <Image src="https://picsum.photos/600/400?random=10" alt="Tema Padrão" width={600} height={400} className="rounded-lg mb-4 group-hover:scale-105 transition-transform duration-500" data-ai-hint="love letter" />
                 <div className="flex justify-between items-center">
                   <Button variant="ghost">Experimentar agora</Button>
-                  <Button>Criar página</Button>
+                  <Link href="/criar"><Button>Criar página</Button></Link>
                 </div>
               </CardContent>
             </Card>
@@ -230,7 +234,7 @@ export default function CreatorPage() {
                 <Image src="https://picsum.photos/600/400?random=11" alt="Tema Netflix" width={600} height={400} className="rounded-lg mb-4 group-hover:scale-105 transition-transform duration-500" data-ai-hint="movie streaming" />
                 <div className="flex justify-between items-center">
                   <Button variant="ghost">Experimentar agora</Button>
-                  <Button>Criar página</Button>
+                  <Link href="/criar"><Button>Criar página</Button></Link>
                 </div>
               </CardContent>
             </Card>
@@ -297,7 +301,7 @@ export default function CreatorPage() {
                 </ul>
               </CardContent>
               <div className="p-6 pt-0 mt-4">
-                <Button className="w-full">Criar minha página</Button>
+                <Link href="/criar"><Button className="w-full">Criar minha página</Button></Link>
               </div>
             </Card>
 
@@ -320,7 +324,7 @@ export default function CreatorPage() {
                 </ul>
               </CardContent>
               <div className="p-6 pt-0 mt-4">
-                <Button className="w-full">Adquirir Passaporte Eterno</Button>
+                <Link href="/criar"><Button className="w-full">Adquirir Passaporte Eterno</Button></Link>
               </div>
             </Card>
 
@@ -340,7 +344,7 @@ export default function CreatorPage() {
                 </ul>
               </CardContent>
               <div className="p-6 pt-0 mt-4">
-                 <Button className="w-full" variant="default">Fazer um Orçamento</Button>
+                 <Link href="/criar"><Button className="w-full" variant="default">Fazer um Orçamento</Button></Link>
               </div>
             </Card>
 
@@ -403,12 +407,16 @@ export default function CreatorPage() {
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
             Não espere uma data especial para criar um momento especial. Surpreenda hoje com uma declaração que será lembrada para sempre.
           </p>
-          <Button size="lg" className="h-12 md:h-14 group relative">
-            Comece agora, é grátis
-            <Heart className="w-5 h-5 ml-2 group-hover:fill-red-400 transition-colors" />
-          </Button>
+          <Link href="/criar">
+            <Button size="lg" className="h-12 md:h-14 group relative">
+                Comece agora, é grátis
+                <Heart className="w-5 h-5 ml-2 group-hover:fill-red-400 transition-colors" />
+            </Button>
+          </Link>
         </div>
       </section>
     </>
   );
 }
+
+    
