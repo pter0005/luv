@@ -4,6 +4,7 @@
 import * as React from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { DayPicker, DropdownProps } from "react-day-picker"
+import { ptBR } from 'date-fns/locale';
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
@@ -20,13 +21,15 @@ function Calendar({
 }: CalendarProps) {
   return (
     <DayPicker
+      locale={ptBR}
       showOutsideDays={showOutsideDays}
-      className={cn("p-3 bg-zinc-900 rounded-lg border border-zinc-800", className)}
+      className={cn("p-3 bg-[#18181B] rounded-lg border border-zinc-800", className)}
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4",
         caption: "flex justify-center pt-1 relative items-center",
         caption_label: "text-sm font-medium hidden",
+        caption_dropdowns: "flex gap-2 w-full justify-between",
         nav: "space-x-1 flex items-center",
         nav_button: cn(
           buttonVariants({ variant: "outline" }),
@@ -46,7 +49,7 @@ function Calendar({
         ),
         day_range_end: "day-range-end",
         day_selected:
-          "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
+          "bg-zinc-700 text-white hover:bg-zinc-600 focus:bg-zinc-700",
         day_today: "bg-accent text-accent-foreground",
         day_outside:
           "day-outside text-muted-foreground opacity-50 aria-selected:bg-accent/50 aria-selected:text-muted-foreground",
@@ -54,48 +57,41 @@ function Calendar({
         day_range_middle:
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
-        caption_dropdowns: "flex gap-2 w-full justify-between",
         ...classNames,
       }}
       components={{
         IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
         IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
         Dropdown: (props: DropdownProps) => {
-          const { fromYear, toYear, fromMonth, toMonth, fromDate, toDate } =
-            useDayPicker();
-          
+          const { fromYear, toYear, fromMonth, toMonth } = (props as any).options;
+
           const options =
             props.name === "months"
               ? Array.from({ length: 12 }, (_, i) => ({
                   value: i,
-                  label: format(new Date(2023, i), "MMMM"),
+                  label: format(new Date(2023, i), "MMMM", { locale: ptBR }),
                 }))
               : Array.from({ length: toYear! - fromYear! + 1 }, (_, i) => ({
                   value: fromYear! + i,
                   label: (fromYear! + i).toString(),
                 }));
 
-          const handleChange = (newValue: string) => {
-            const el = document.getElementsByName(
-              props.name === "months" ? "month" : "year"
-            )[0];
-            if (el) {
-              el.ariaValueText = newValue;
-            }
-          };
-
           return (
             <Select
               onValueChange={(value) => {
-                props.onChange?.(
-                  new Event("change") as any
-                );
-                handleChange(value);
+                const changeEvent = new Event("change", { bubbles: true });
+                if (props.onChange) {
+                    const select = document.createElement('select');
+                    select.name = props.name;
+                    select.value = value;
+                    (changeEvent as any).target = select;
+                    props.onChange(changeEvent as React.ChangeEvent<HTMLSelectElement>);
+                }
               }}
               value={props.value?.toString()}
               
             >
-              <SelectTrigger className="bg-zinc-800 border-zinc-700 w-[48%]">
+              <SelectTrigger className="bg-zinc-800 border-zinc-700 w-[48%] capitalize">
                 <SelectValue placeholder={props.caption} />
               </SelectTrigger>
               <SelectContent className="max-h-60 bg-zinc-900 border-zinc-800 text-white">
@@ -104,6 +100,7 @@ function Calendar({
                     <SelectItem
                       key={option.value}
                       value={option.value.toString()}
+                      className="capitalize"
                     >
                       {option.label}
                     </SelectItem>
@@ -120,16 +117,7 @@ function Calendar({
 }
 Calendar.displayName = "Calendar"
 
-function useDayPicker() {
-    return {
-        fromYear: 1900,
-        toYear: new Date().getFullYear(),
-        fromMonth: new Date(1900, 0),
-        toMonth: new Date(),
-        fromDate: new Date(1900, 0, 1),
-        toDate: new Date()
-    }
-}
 import { format } from "date-fns";
 
 export { Calendar }
+
