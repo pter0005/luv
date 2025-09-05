@@ -56,8 +56,8 @@ const Countdown = ({ startDate, displayType }: { startDate: Date; displayType?: 
   if (displayType === "classico") {
     return (
        <div className="text-center text-zinc-300 text-lg">
-        <p>Compartilhando momentos há {duration.years} anos {String(duration.months).padStart(2, '0')} meses {String(duration.days).padStart(2, '0')} dias {String(duration.hours).padStart(2, '0')} horas</p>
-        <p>{String(duration.minutes).padStart(2, '0')} minutos {String(duration.seconds).padStart(2, '0')} segundos ❤️‍🔥</p>
+        <p>Compartilhando momentos há {duration.years || 0} anos {String(duration.months || 0).padStart(2, '0')} meses {String(duration.days || 0).padStart(2, '0')} dias {String(duration.hours || 0).padStart(2, '0')} horas</p>
+        <p>{String(duration.minutes || 0).padStart(2, '0')} minutos {String(duration.seconds || 0).padStart(2, '0')} segundos ❤️‍🔥</p>
       </div>
     )
   }
@@ -77,7 +77,7 @@ const Countdown = ({ startDate, displayType }: { startDate: Date; displayType?: 
         <div className="grid grid-cols-3 gap-4">
             {timeUnits.map(unit => (
                 <div key={unit.label} className="bg-zinc-800/50 p-4 rounded-lg">
-                    <div className="text-4xl font-bold">{String(unit.value).padStart(2, '0')}</div>
+                    <div className="text-4xl font-bold">{String(unit.value || 0).padStart(2, '0')}</div>
                     <div className="text-sm text-muted-foreground">{unit.label}</div>
                 </div>
             ))}
@@ -113,7 +113,7 @@ export function PagePreview({ data }: PagePreviewProps) {
                 
                 {data.message && (
                     <div 
-                        className="mt-12 text-zinc-300 whitespace-pre-wrap break-words prose dark:prose-invert max-w-full" 
+                        className="mt-8 text-zinc-300 whitespace-pre-wrap break-words prose dark:prose-invert max-w-full" 
                         dangerouslySetInnerHTML={{ __html: data.message }} 
                     />
                 )}

@@ -17,23 +17,17 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Calendar } from "@/components/ui/calendar";
 import { PagePreview } from "@/components/app/PagePreview";
 import {
   ArrowLeft,
-  CalendarIcon,
   ChevronRight,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { format } from "date-fns";
 import { Editor } from "@/components/ui/editor";
 import { Progress } from "@/components/ui/progress";
+import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
@@ -92,39 +86,23 @@ export default function CreatorStudioPage() {
     const isValid = await form.trigger(currentFieldName);
 
     if (isValid) {
-      setFieldHistory(prev => ({...prev, [currentFieldName]: form.getValues(currentFieldName)}));
+      const currentValues = form.getValues();
+      setFieldHistory(prev => ({...prev, ...currentValues}));
       
-      if (currentStep < totalSteps) {
-          const nextFieldName = steps[currentStep].name;
-          const currentFieldValue = form.getValues(currentFieldName);
-          
-          form.reset({
-            ...fieldHistory,
-            [currentFieldName]: currentFieldValue, // keep current value in history
-            [nextFieldName]: fieldHistory[nextFieldName] || form.getValues(nextFieldName) || ''
-          });
-
-          // After resetting, we might need to clear the visual input of the *previous* step if it's not handled by reset
-           const prevFieldDom = document.getElementsByName(currentFieldName)[0];
-            if (prevFieldDom) {
-               // This is a bit of a hack, ideally reset would handle this.
-            }
-      }
-
       if (currentStep < totalSteps) {
         setCurrentStep(currentStep + 1);
       }
     }
   };
 
-
   const handlePrevStep = () => {
     if (currentStep > 1) {
         setCurrentStep(currentStep - 1);
-        const prevFieldName = steps[currentStep - 2].name;
-        form.setValue(prevFieldName, fieldHistory[prevFieldName] || '');
     }
   };
+
+  const currentFieldName = steps[currentStep - 1].name;
+
 
   return (
     <div className="flex flex-col lg:flex-row w-full min-h-screen bg-[#111111] text-white">
@@ -142,11 +120,12 @@ export default function CreatorStudioPage() {
           </div>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8">
-              <div className="space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8">
+              <div className="min-h-[280px]">
                 {currentStep === 1 && (
                   <FormField
                     control={form.control}
+                    key="title"
                     name="title"
                     render={({ field }) => (
                       <FormItem>
@@ -161,6 +140,7 @@ export default function CreatorStudioPage() {
                 {currentStep === 2 && (
                   <FormField
                     control={form.control}
+                    key="message"
                     name="message"
                     render={({ field }) => (
                       <FormItem>
@@ -177,32 +157,14 @@ export default function CreatorStudioPage() {
                   />
                 )}
                 {currentStep === 3 && (
-                  <div className="space-y-6">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                     <FormField
                       control={form.control}
+                      key="startDate"
                       name="startDate"
                       render={({ field }) => (
                         <FormItem className="flex flex-col">
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <FormControl>
-                                <Button
-                                  variant={"outline"}
-                                  className={cn(
-                                    "w-full pl-3 text-left font-normal bg-zinc-800 border-none hover:bg-zinc-700 h-12",
-                                    !field.value && "text-zinc-500"
-                                  )}
-                                >
-                                  {field.value instanceof Date && !isNaN(field.value.getTime()) ? (
-                                    format(field.value, "PPP")
-                                  ) : (
-                                    <span>Selecione uma data</span>
-                                  )}
-                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                </Button>
-                              </FormControl>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
+                           <FormControl>
                               <Calendar
                                 mode="single"
                                 selected={field.value}
@@ -211,48 +173,48 @@ export default function CreatorStudioPage() {
                                   date > new Date() || date < new Date("1900-01-01")
                                 }
                                 initialFocus
+                                fromYear={1960}
+                                toYear={new Date().getFullYear()}
+                                captionLayout="dropdown-buttons"
                               />
-                            </PopoverContent>
-                          </Popover>
+                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                     <FormField
                       control={form.control}
+                      key="dateDisplayType"
                       name="dateDisplayType"
                       render={({ field }) => (
                         <FormItem className="space-y-3">
-                          <FormLabel>Modo de Exibição</FormLabel>
+                          <FormLabel className="font-semibold">Modo de Exibição</FormLabel>
                           <FormControl>
                             <RadioGroup
                               onValueChange={field.onChange}
                               defaultValue={field.value}
-                              className="flex items-center gap-4"
+                              className="flex flex-col gap-3"
                             >
-                              <FormItem className="flex items-center space-x-2 space-y-0">
+                              <FormItem>
                                 <FormControl>
-                                  <RadioGroupItem value="padrão" id="padrão" />
+                                  <RadioGroupItem value="padrão" id="padrão">
+                                    Padrão
+                                  </RadioGroupItem>
                                 </FormControl>
-                                <FormLabel htmlFor="padrão" className="font-normal">
-                                  Padrão
-                                </FormLabel>
                               </FormItem>
-                              <FormItem className="flex items-center space-x-2 space-y-0">
+                              <FormItem>
                                 <FormControl>
-                                  <RadioGroupItem value="classico" id="classico"/>
+                                  <RadioGroupItem value="classico" id="classico">
+                                    Clássico
+                                  </RadioGroupItem>
                                 </FormControl>
-                                <FormLabel htmlFor="classico" className="font-normal">
-                                  Clássico
-                                </FormLabel>
                               </FormItem>
-                              <FormItem className="flex items-center space-x-2 space-y-0">
+                              <FormItem>
                                 <FormControl>
-                                  <RadioGroupItem value="simples" id="simples"/>
+                                  <RadioGroupItem value="simples" id="simples">
+                                     Simples
+                                  </RadioGroupItem>
                                 </FormControl>
-                                <FormLabel htmlFor="simples" className="font-normal">
-                                  Simples
-                                </FormLabel>
                               </FormItem>
                             </RadioGroup>
                           </FormControl>
@@ -285,7 +247,7 @@ export default function CreatorStudioPage() {
       {/* Preview Section */}
       <main className="w-full lg:w-1/2 p-4 hidden lg:flex items-center justify-center bg-black">
         <div className="w-full h-[90vh] rounded-2xl overflow-hidden shadow-2xl shadow-black/50 border-4 border-zinc-800">
-          <PagePreview data={{...watchedData, ...fieldHistory}} />
+          <PagePreview data={{...fieldHistory, [currentFieldName]: watchedData[currentFieldName]}} />
         </div>
       </main>
     </div>

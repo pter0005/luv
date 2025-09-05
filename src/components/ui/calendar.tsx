@@ -1,11 +1,14 @@
+
 "use client"
 
 import * as React from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import { DayPicker } from "react-day-picker"
+import { DayPicker, DropdownProps } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select"
+import { ScrollArea } from "./scroll-area"
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>
 
@@ -18,12 +21,12 @@ function Calendar({
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
-      className={cn("p-3", className)}
+      className={cn("p-3 bg-zinc-900 rounded-lg border border-zinc-800", className)}
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4",
         caption: "flex justify-center pt-1 relative items-center",
-        caption_label: "text-sm font-medium",
+        caption_label: "text-sm font-medium hidden",
         nav: "space-x-1 flex items-center",
         nav_button: cn(
           buttonVariants({ variant: "outline" }),
@@ -46,25 +49,87 @@ function Calendar({
           "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
         day_today: "bg-accent text-accent-foreground",
         day_outside:
-          "day-outside text-muted-foreground aria-selected:bg-accent/50 aria-selected:text-muted-foreground",
+          "day-outside text-muted-foreground opacity-50 aria-selected:bg-accent/50 aria-selected:text-muted-foreground",
         day_disabled: "text-muted-foreground opacity-50",
         day_range_middle:
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
+        caption_dropdowns: "flex gap-2 w-full justify-between",
         ...classNames,
       }}
       components={{
-        IconLeft: ({ className, ...props }) => (
-          <ChevronLeft className={cn("h-4 w-4", className)} {...props} />
-        ),
-        IconRight: ({ className, ...props }) => (
-          <ChevronRight className={cn("h-4 w-4", className)} {...props} />
-        ),
+        IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
+        IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
+        Dropdown: (props: DropdownProps) => {
+          const { fromYear, toYear, fromMonth, toMonth, fromDate, toDate } =
+            useDayPicker();
+          
+          const options =
+            props.name === "months"
+              ? Array.from({ length: 12 }, (_, i) => ({
+                  value: i,
+                  label: format(new Date(2023, i), "MMMM"),
+                }))
+              : Array.from({ length: toYear! - fromYear! + 1 }, (_, i) => ({
+                  value: fromYear! + i,
+                  label: (fromYear! + i).toString(),
+                }));
+
+          const handleChange = (newValue: string) => {
+            const el = document.getElementsByName(
+              props.name === "months" ? "month" : "year"
+            )[0];
+            if (el) {
+              el.ariaValueText = newValue;
+            }
+          };
+
+          return (
+            <Select
+              onValueChange={(value) => {
+                props.onChange?.(
+                  new Event("change") as any
+                );
+                handleChange(value);
+              }}
+              value={props.value?.toString()}
+              
+            >
+              <SelectTrigger className="bg-zinc-800 border-zinc-700 w-[48%]">
+                <SelectValue placeholder={props.caption} />
+              </SelectTrigger>
+              <SelectContent className="max-h-60 bg-zinc-900 border-zinc-800 text-white">
+                <ScrollArea>
+                   {options.map((option) => (
+                    <SelectItem
+                      key={option.value}
+                      value={option.value.toString()}
+                    >
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </ScrollArea>
+              </SelectContent>
+            </Select>
+          )
+        }
       }}
       {...props}
     />
   )
 }
 Calendar.displayName = "Calendar"
+
+function useDayPicker() {
+    return {
+        fromYear: 1900,
+        toYear: new Date().getFullYear(),
+        fromMonth: new Date(1900, 0),
+        toMonth: new Date(),
+        fromDate: new Date(1900, 0, 1),
+        toDate: new Date()
+    }
+}
+import { format } from "date-fns";
 
 export { Calendar }
