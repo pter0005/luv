@@ -30,12 +30,21 @@ import { Progress } from "@/components/ui/progress";
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
+  titleColor: z.string().optional(),
   message: z.string().optional(),
   startDate: z.date().optional(),
   dateDisplayType: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
+
+const colorOptions = [
+  { value: "#FFFFFF", label: "Branco" },
+  { value: "#FF6B6B", label: "Vermelho Coral" },
+  { value: "#4ECDC4", label: "Turquesa" },
+  { value: "#45B7D1", label: "Azul Céu" },
+  { value: "#F7D96F", label: "Amarelo Baunilha" },
+];
 
 export default function CreatorStudioPage() {
   const { toast } = useToast();
@@ -47,6 +56,7 @@ export default function CreatorStudioPage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
+      titleColor: "#FFFFFF",
       message: "",
       dateDisplayType: "padrão",
     },
@@ -85,21 +95,16 @@ export default function CreatorStudioPage() {
     const isValid = await form.trigger(currentFieldName);
 
     if (isValid) {
-        // Keep history of all fields
-        setFieldHistory(prev => ({...prev, ...form.getValues()}));
-        
-        if (currentStep < totalSteps) {
-            const nextStepFieldName = steps[currentStep].name;
-            // Clear the field for the next step so it doesn't show old values
-            form.setValue(nextStepFieldName, undefined, { shouldValidate: false });
-            setCurrentStep(currentStep + 1);
-        }
+      setFieldHistory((prev) => ({ ...prev, ...form.getValues() }));
+      if (currentStep < totalSteps) {
+        setCurrentStep(currentStep + 1);
+      }
     }
   };
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
-        setCurrentStep(currentStep - 1);
+      setCurrentStep(currentStep - 1);
     }
   };
 
@@ -124,19 +129,51 @@ export default function CreatorStudioPage() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8">
               <div className="min-h-[280px]">
                 {currentStep === 1 && (
-                  <FormField
-                    control={form.control}
-                    key="title"
-                    name="title"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input placeholder="Escreva o título aqui..." {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="space-y-8">
+                    <FormField
+                      control={form.control}
+                      key="title"
+                      name="title"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input placeholder="Escreva o título aqui..." {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      key="titleColor"
+                      name="titleColor"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Cor do Título</FormLabel>
+                          <FormControl>
+                            <div className="flex items-center gap-3 pt-2">
+                              {colorOptions.map((color) => (
+                                <button
+                                  type="button"
+                                  key={color.value}
+                                  className={cn(
+                                    "w-8 h-8 rounded-full border-2 transition-transform",
+                                    field.value === color.value
+                                      ? "border-white scale-110"
+                                      : "border-transparent"
+                                  )}
+                                  style={{ backgroundColor: color.value }}
+                                  onClick={() => field.onChange(color.value)}
+                                  aria-label={color.label}
+                                />
+                              ))}
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 )}
                 {currentStep === 2 && (
                   <FormField
@@ -248,9 +285,11 @@ export default function CreatorStudioPage() {
       {/* Preview Section */}
       <main className="w-full lg:w-1/2 p-4 hidden lg:flex items-center justify-center bg-black">
         <div className="w-full h-[90vh] rounded-2xl overflow-hidden shadow-2xl shadow-black/50 border-4 border-zinc-800">
-          <PagePreview data={{...fieldHistory, [currentFieldName]: watchedData[currentFieldName]}} />
+          <PagePreview data={{...fieldHistory, ...form.getValues()}} />
         </div>
       </main>
     </div>
   );
 }
+
+    

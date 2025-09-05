@@ -8,6 +8,7 @@ import * as z from "zod";
 
 const formSchema = z.object({
   title: z.string(),
+  titleColor: z.string().optional(),
   message: z.string().optional(),
   startDate: z.date().optional(),
   dateDisplayType: z.string().optional(),
@@ -109,7 +110,12 @@ export function PagePreview({ data }: PagePreviewProps) {
             className="flex-grow p-8 flex flex-col items-center justify-start text-center relative overflow-y-auto bg-black"
         >
             <div className="relative z-10 w-full">
-                <h1 className="text-4xl font-handwriting text-red-600">{data.title || ""}</h1>
+                <h1 
+                    className="text-4xl font-handwriting"
+                    style={{ color: data.titleColor || '#FFFFFF' }}
+                >
+                    {data.title || ""}
+                </h1>
                 
                 {data.message && (
                     <div 
@@ -128,3 +134,5 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
+
+    
