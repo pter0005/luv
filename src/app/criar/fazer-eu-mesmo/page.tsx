@@ -87,21 +87,10 @@ export default function CreatorStudioPage() {
   const handleNextStep = async () => {
     const currentFieldName = steps[currentStep - 1].name;
     const isValid = await form.trigger(currentFieldName);
-
+  
     if (isValid) {
       setFieldHistory((prev) => ({ ...prev, ...form.getValues() }));
       
-      const nextStepIndex = currentStep;
-      if (nextStepIndex < steps.length) {
-        const nextFieldName = steps[nextStepIndex].name;
-        // This keeps the preview updated, but clears the form field for the next step
-        form.reset({
-          ...form.getValues(),
-          [currentFieldName]: fieldHistory[currentFieldName] || '',
-          [nextFieldName]: fieldHistory[nextFieldName] || form.formState.defaultValues?.[nextFieldName],
-        });
-      }
-
       if (currentStep < totalSteps) {
         setCurrentStep(currentStep + 1);
       }
@@ -110,12 +99,6 @@ export default function CreatorStudioPage() {
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
-      const prevStepIndex = currentStep - 2;
-      const prevFieldName = steps[prevStepIndex].name;
-      form.reset({
-        ...form.getValues(),
-        [prevFieldName]: fieldHistory[prevFieldName] || form.formState.defaultValues?.[prevFieldName],
-      });
       setCurrentStep(currentStep - 1);
     }
   };
