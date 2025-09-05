@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Heart, ChevronRight, Star, ListNumbers, QrCode, Share2, DollarSign, ListOrdered } from "lucide-react";
+import { Heart, ChevronRight, Star, ListOrdered, DollarSign, QrCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -135,7 +135,7 @@ export default function CreatorPage() {
           </div>
         </div>
       </div>
-      <section id="how-work" className="py-24 bg-gradient-to-b from-black via-black to-red-950/20 relative">
+      <section id="how-work" className="py-12 bg-gradient-to-b from-black via-black to-red-950/20 relative">
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center">
             <div className="w-auto z-10 rounded-full bg-red-900/10 text-white text-xs font-semibold inline-flex items-center px-3 py-1.5 space-x-1 mb-5">
