@@ -19,6 +19,8 @@ function Calendar({
   showOutsideDays = true,
   ...props
 }: CalendarProps) {
+  const { fromYear, toYear } = props;
+  
   return (
     <DayPicker
       locale={ptBR}
@@ -63,7 +65,9 @@ function Calendar({
         IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
         IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
         Dropdown: (props: DropdownProps) => {
-          const { fromYear, toYear } = (props as any).options;
+           if (props.name === "years" && (!fromYear || !toYear)) {
+            return null;
+          }
 
           const options =
             props.name === "months"
