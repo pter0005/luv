@@ -1,9 +1,18 @@
+
 "use client";
 
 import * as React from "react";
 import Image from "next/image";
-import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, Globe, QrCode, Link as LinkIcon, Users, Check, X, Gamepad2, PlayCircle } from "lucide-react";
+import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, Globe, QrCode, Gamepad2, PlayCircle, Eye, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Accordion,
   AccordionContent,
@@ -66,13 +75,73 @@ export default function CreatorPage() {
   ];
 
   const features = [
-    { icon: Gamepad2, title: "Jogo Enigmático 2D", description: "Uma revelação inesquecível através de um enigma personalizado." },
-    { icon: Calendar, title: "Contador de tempo", description: "Mostre há quanto tempo vocês estão juntos com um contador em tempo real." },
-    { icon: ImageIcon, title: "Animações de fundo", description: "Escolha entre várias animações de fundo para personalizar a página." },
-    { icon: Music, title: "Música dedicada", description: "Dedique uma música especial. A música será reproduzida automaticamente." },
-    { icon: Globe, title: "Em todo lugar", description: "Crie e compartilhe de qualquer lugar do mundo. Aceitamos pagamentos internacionais." },
-    { icon: QrCode, title: "QR Code exclusivo", description: "Crie um QR Code exclusivo para sua página, gerado automaticamente." },
-  ]
+    { 
+      icon: Gamepad2, 
+      title: "Jogo Enigmático 2D", 
+      description: "Uma revelação inesquecível através de um enigma personalizado.",
+      example: {
+        title: "Exemplo: Jogo Enigmático 2D",
+        description: "Surpreenda com um mini-jogo 2D. Ao resolver um enigma, a pessoa amada descobre a página que você criou. É uma experiência interativa e emocionante que transforma a revelação em um momento único.",
+        image: "https://picsum.photos/800/600?random=20",
+        imageHint: "pixel art game"
+      }
+    },
+    { 
+      icon: Calendar, 
+      title: "Contador de tempo", 
+      description: "Mostre há quanto tempo vocês estão juntos com um contador em tempo real.",
+      example: {
+        title: "Exemplo: Contador de Tempo",
+        description: "Visualize o tempo do seu relacionamento em anos, meses, dias, horas e até segundos. Um lembrete constante do tempo precioso que vocês compartilham, atualizado em tempo real.",
+        image: "https://picsum.photos/800/600?random=21",
+        imageHint: "time counter"
+      }
+    },
+    { 
+      icon: ImageIcon, 
+      title: "Animações de fundo", 
+      description: "Escolha entre várias animações de fundo para personalizar a página.",
+      example: {
+        title: "Exemplo: Animações de Fundo",
+        description: "Dê vida à sua página com fundos animados. Escolha entre corações flutuantes, uma névoa suave ou outras animações para criar a atmosfera perfeita para a sua declaração de amor.",
+        image: "https://picsum.photos/800/600?random=22",
+        imageHint: "animated background"
+      }
+    },
+    { 
+      icon: Music, 
+      title: "Música dedicada", 
+      description: "Dedique uma música especial. A música será reproduzida automaticamente.",
+      example: {
+        title: "Exemplo: Música Dedicada",
+        description: "Adicione a trilha sonora do seu amor. A música que você escolher tocará automaticamente, criando uma imersão completa e tornando a experiência ainda mais emocionante e pessoal.",
+        image: "https://picsum.photos/800/600?random=23",
+        imageHint: "music player"
+      }
+    },
+    { 
+      icon: Globe, 
+      title: "Em todo lugar", 
+      description: "Crie e compartilhe de qualquer lugar do mundo. Aceitamos pagamentos internacionais.",
+      example: {
+        title: "Exemplo: Acesso Global",
+        description: "Não importa onde você ou seu amor estejam, a Luv conecta vocês. Crie sua página de qualquer lugar e compartilhe com o mundo. O amor não tem fronteiras, e sua declaração também não deveria ter.",
+        image: "https://picsum.photos/800/600?random=24",
+        imageHint: "world map"
+      }
+    },
+    { 
+      icon: QrCode, 
+      title: "QR Code exclusivo", 
+      description: "Crie um QR Code exclusivo para sua página, gerado automaticamente.",
+      example: {
+        title: "Exemplo: QR Code Exclusivo",
+        description: "Receba um QR Code único para sua página. Perfeito para imprimir em um cartão, presentear ou usar em uma caça ao tesouro romântica. Aponte a câmera e a mágica acontece.",
+        image: "https://picsum.photos/800/600?random=25",
+        imageHint: "qr code"
+      }
+    },
+  ];
 
   return (
     <>
@@ -114,20 +183,48 @@ export default function CreatorPage() {
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Cada detalhe foi pensado para proporcionar uma declaração de amor que transcende o comum. Oferecemos mais que uma página, uma memória viva.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, i) => (
-              <Card key={i} className="bg-card/80 border-border hover:border-primary/50 hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-primary/10 fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
-                <CardHeader className="items-center">
-                  <div className="p-4 bg-primary/10 rounded-full mb-4">
-                    <feature.icon className="w-8 h-8 text-primary" />
+               <Dialog key={i}>
+                <Card className="bg-card/80 border-border hover:border-primary/50 hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-primary/10 flex flex-col">
+                  <CardHeader className="items-center">
+                    <div className="p-4 bg-primary/10 rounded-full mb-4">
+                      <feature.icon className="w-8 h-8 text-primary" />
+                    </div>
+                    <CardTitle>{feature.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-grow">
+                    <p className="text-muted-foreground">{feature.description}</p>
+                  </CardContent>
+                  <div className="p-6 pt-0 mt-auto">
+                    <DialogTrigger asChild>
+                      <Button variant="ghost" className="w-full">
+                        <Eye className="mr-2 h-4 w-4" />
+                        Ver exemplo
+                      </Button>
+                    </DialogTrigger>
                   </div>
-                  <CardTitle>{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">{feature.description}</p>
-                </CardContent>
-              </Card>
+                </Card>
+                <DialogContent className="bg-card/95 backdrop-blur-lg text-foreground max-w-2xl">
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl font-display text-primary flex items-center gap-3"><feature.icon className="w-6 h-6" /> {feature.example.title}</DialogTitle>
+                    <DialogDescription className="text-base pt-2 text-muted-foreground">
+                      {feature.example.description}
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="mt-4">
+                     <Image 
+                        src={feature.example.image}
+                        alt={feature.example.title}
+                        width={800}
+                        height={600}
+                        className="rounded-lg object-cover w-full h-auto"
+                        data-ai-hint={feature.example.imageHint}
+                      />
+                  </div>
+                </DialogContent>
+               </Dialog>
             ))}
           </div>
-           <Card className="mt-12 bg-gradient-to-r from-primary/20 to-accent/20 border-primary/30 p-8 text-center fade-in-up" style={{animationDelay: '0.7s'}}>
+           <Card className="mt-12 bg-gradient-to-r from-primary/20 to-accent/20 border-primary/30 p-8 text-center">
             <CardHeader className="p-0 mb-4 items-center">
                 <div className="p-3 bg-background rounded-full mb-3">
                     <PlayCircle className="w-10 h-10 text-primary" />
