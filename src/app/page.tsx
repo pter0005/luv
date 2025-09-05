@@ -18,6 +18,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { AnimatedBackground } from "@/components/app/AnimatedBackground";
+
 
 export default function CreatorPage() {
   const testimonials = [
@@ -31,9 +33,9 @@ export default function CreatorPage() {
 
   return (
     <>
+      <AnimatedBackground />
       {/* Hero Section */}
-      <section className="relative overflow-hidden section-padding animated-gradient-bg">
-        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm"></div>
+      <section className="relative overflow-hidden section-padding">
         <div className="container relative z-10 text-center">
           <h1 className="text-5xl lg:text-7xl font-bold tracking-tighter mb-4 text-foreground font-display">
             Declare seu <span className="gradient-text">amor</span> de forma única
@@ -60,7 +62,7 @@ export default function CreatorPage() {
       </section>
 
       {/* Features Section */}
-      <section id="recursos" className="section-padding bg-background">
+      <section id="recursos" className="section-padding bg-background/50 backdrop-blur-md relative z-10">
         <div className="container text-center">
           <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Recursos <span className="gradient-text">Exclusivos</span></h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Nossa plataforma oferece recursos incríveis para você criar a página personalizada perfeita.</p>
@@ -73,7 +75,7 @@ export default function CreatorPage() {
               { icon: QrCode, title: "QR Code exclusivo", description: "Crie um QR Code exclusivo para sua página, gerado automaticamente." },
               { icon: LinkIcon, title: "URL personalizada", description: "Crie uma URL personalizada para sua página, gerada automaticamente." },
             ].map((feature, i) => (
-              <Card key={i} className="bg-card border-border hover:border-primary/50 hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-primary/10 fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
+              <Card key={i} className="bg-card/80 border-border hover:border-primary/50 hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-primary/10 fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
                 <CardHeader className="items-center">
                   <div className="p-4 bg-primary/10 rounded-full mb-4">
                     <feature.icon className="w-8 h-8 text-primary" />
@@ -90,12 +92,12 @@ export default function CreatorPage() {
       </section>
 
       {/* Themes Section */}
-      <section id="temas" className="section-padding bg-secondary/30">
+      <section id="temas" className="section-padding bg-secondary/30 backdrop-blur-md relative z-10">
         <div className="container text-center">
           <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Temas <span className="gradient-text">Luv</span></h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Escolha o tema ideal para a página personalizada. Você pode escolher entre os temas abaixo.</p>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <Card className="bg-card border-border overflow-hidden group">
+            <Card className="bg-card/80 border-border overflow-hidden group">
               <CardHeader>
                 <CardTitle>Padrão</CardTitle>
                 <CardDescription>Tema padrão com contador de tempo e animações de fundo.</CardDescription>
@@ -108,7 +110,7 @@ export default function CreatorPage() {
                 </div>
               </CardContent>
             </Card>
-            <Card className="bg-card border-border overflow-hidden group">
+            <Card className="bg-card/80 border-border overflow-hidden group">
               <CardHeader>
                 <CardTitle>Netflix</CardTitle>
                 <CardDescription>Tema inspirado na Netflix com data e episódios (fotos) favoritos.</CardDescription>
@@ -126,7 +128,7 @@ export default function CreatorPage() {
       </section>
 
       {/* Testimonials Section */}
-      <section id="avaliacoes" className="section-padding bg-background">
+      <section id="avaliacoes" className="section-padding bg-background/50 backdrop-blur-md relative z-10">
         <div className="container text-center">
           <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">O que nossos <span className="gradient-text">clientes</span> dizem</h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Avaliações de clientes que já utilizaram nossos serviços e tiveram uma experiência incrível.</p>
@@ -135,7 +137,7 @@ export default function CreatorPage() {
               {testimonials.map((testimonial, index) => (
                 <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                   <div className="p-1 h-full">
-                    <Card className="bg-card border-border h-full flex flex-col justify-between">
+                    <Card className="bg-card/80 border-border h-full flex flex-col justify-between">
                       <CardContent className="p-6">
                         <div className="flex items-center gap-4 mb-4">
                           <Image src={testimonial.image} alt={testimonial.name} width={48} height={48} className="rounded-full" data-ai-hint="person"/>
@@ -161,12 +163,12 @@ export default function CreatorPage() {
       </section>
 
       {/* Pricing Section */}
-      <section id="planos" className="section-padding bg-secondary/30">
+      <section id="planos" className="section-padding bg-secondary/30 backdrop-blur-md relative z-10">
         <div className="container text-center">
           <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Nossos <span className="gradient-text">Planos</span></h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Escolha o plano ideal para sua página personalizada.</p>
           <div className="grid lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <Card className="bg-card border-border flex flex-col">
+            <Card className="bg-card/80 border-border flex flex-col">
               <CardHeader className="items-center pb-4">
                 <CardTitle className="text-2xl">Anual</CardTitle>
                 <CardDescription>Esse plano possui um período de 1 ano.</CardDescription>
@@ -191,7 +193,7 @@ export default function CreatorPage() {
                 <Button className="w-full">Criar minha página</Button>
               </div>
             </Card>
-             <Card className="bg-card border-primary/50 relative flex flex-col shadow-2xl shadow-primary/20">
+             <Card className="bg-card/80 border-primary/50 relative flex flex-col shadow-2xl shadow-primary/20">
               <div className="absolute top-0 right-4 -translate-y-1/2 bg-primary text-primary-foreground px-3 py-1 text-sm font-semibold rounded-full">Recomendado</div>
               <CardHeader className="items-center pb-4">
                 <CardTitle className="text-2xl">Para sempre</CardTitle>
@@ -222,7 +224,7 @@ export default function CreatorPage() {
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="section-padding bg-background">
+      <section id="faq" className="section-padding bg-background/50 backdrop-blur-md relative z-10">
         <div className="container max-w-4xl">
           <div className="text-center">
             <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Perguntas <span className="gradient-text">Frequentes</span></h2>
@@ -268,7 +270,7 @@ export default function CreatorPage() {
       </section>
       
       {/* Final CTA */}
-      <section className="section-padding animated-gradient-bg">
+      <section className="section-padding bg-secondary/30 backdrop-blur-md relative z-10">
          <div className="container text-center">
           <h2 className="text-4xl lg:text-5xl font-bold tracking-tighter mb-4 text-foreground font-display">
             Declare seu <span className="gradient-text">amor</span> de forma única
@@ -286,3 +288,5 @@ export default function CreatorPage() {
     </>
   );
 }
+
+    
