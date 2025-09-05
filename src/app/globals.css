@@ -16,7 +16,7 @@
     --secondary-foreground: 0 0% 98%;
     --muted: 257 40% 15%;
     --muted-foreground: 0 0% 63.9%;
-    --accent: 25 95% 53%; /* Laranja */
+    --accent: 257 80% 60%; /* Roxo */
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
@@ -39,7 +39,7 @@
     --secondary-foreground: 0 0% 98%;
     --muted: 257 40% 15%;
     --muted-foreground: 0 0% 63.9%;
-    --accent: 25 95% 53%; /* Laranja */
+    --accent: 257 80% 60%; /* Roxo */
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
@@ -103,10 +103,6 @@
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-.fade-in-up {
-  animation: fade-in-up 0.8s ease-out forwards;
 }
 
 .section-padding {
