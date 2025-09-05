@@ -24,6 +24,8 @@ import {
   ArrowLeft,
   ChevronRight,
   Palette,
+  Upload,
+  X as XIcon,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Editor } from "@/components/ui/editor";
@@ -35,6 +37,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Image from "next/image";
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
@@ -43,6 +46,7 @@ const formSchema = z.object({
   messageFontSize: z.string().optional(),
   startDate: z.date().optional(),
   dateDisplayType: z.string().optional(),
+  photos: z.array(z.string()).optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -51,8 +55,9 @@ export default function CreatorStudioPage() {
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = React.useState(1);
   const [fieldHistory, setFieldHistory] = React.useState<Partial<FormData>>({});
-  const totalSteps = 3;
+  const totalSteps = 4;
   const colorPickerRef = React.useRef<HTMLInputElement>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -62,6 +67,7 @@ export default function CreatorStudioPage() {
       message: "",
       messageFontSize: "text-base",
       dateDisplayType: "padrão",
+      photos: [],
     },
   });
 
@@ -91,6 +97,11 @@ export default function CreatorStudioPage() {
       title: "Data de início",
       description: "Informe a data que simboliza o início de uma união.",
     },
+    {
+      name: "photos" as const,
+      title: "Adicione suas fotos",
+      description: "Selecione as imagens que contam a sua história.",
+    },
   ];
 
   const handleNextStep = async () => {
@@ -110,6 +121,32 @@ export default function CreatorStudioPage() {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      const currentPhotos = form.getValues("photos") || [];
+      const newPhotos: string[] = [];
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (typeof e.target?.result === 'string') {
+            newPhotos.push(e.target.result);
+            if (newPhotos.length === files.length) {
+              form.setValue("photos", [...currentPhotos, ...newPhotos]);
+            }
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  };
+
+  const removePhoto = (index: number) => {
+    const currentPhotos = form.getValues("photos") || [];
+    const updatedPhotos = currentPhotos.filter((_, i) => i !== index);
+    form.setValue("photos", updatedPhotos);
   };
 
 
@@ -288,6 +325,57 @@ export default function CreatorStudioPage() {
                               </FormItem>
                             </RadioGroup>
                           </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                )}
+                {currentStep === 4 && (
+                  <div className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="photos"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <>
+                              <input
+                                type="file"
+                                ref={fileInputRef}
+                                multiple
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                className="hidden"
+                              />
+                              <Button type="button" variant="outline" onClick={() => fileInputRef.current?.click()}>
+                                <Upload className="mr-2 h-4 w-4" />
+                                Adicionar Fotos
+                              </Button>
+                            </>
+                          </FormControl>
+                          <div className="grid grid-cols-3 gap-4 mt-4">
+                            {(field.value || []).map((photo, index) => (
+                              <div key={index} className="relative group">
+                                <Image
+                                  src={photo}
+                                  alt={`Preview ${index}`}
+                                  width={150}
+                                  height={150}
+                                  className="rounded-md object-cover w-full h-32"
+                                />
+                                <Button
+                                  type="button"
+                                  variant="destructive"
+                                  size="icon"
+                                  className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                                  onClick={() => removePhoto(index)}
+                                >
+                                  <XIcon className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            ))}
+                          </div>
                           <FormMessage />
                         </FormItem>
                       )}

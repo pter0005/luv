@@ -6,6 +6,7 @@ import { format, intervalToDuration } from "date-fns";
 import { ptBR } from 'date-fns/locale';
 import * as z from "zod";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 const formSchema = z.object({
   title: z.string(),
@@ -14,6 +15,7 @@ const formSchema = z.object({
   messageFontSize: z.string().optional(),
   startDate: z.date().optional(),
   dateDisplayType: z.string().optional(),
+  photos: z.array(z.string()).optional(),
 });
 
 type PageData = z.infer<typeof formSchema>;
@@ -133,6 +135,23 @@ export function PagePreview({ data }: PagePreviewProps) {
                      <div className="mt-8">
                         <Countdown startDate={data.startDate} displayType={data.dateDisplayType} />
                      </div>
+                )}
+
+                {data.photos && data.photos.length > 0 && (
+                    <div className="mt-12">
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            {data.photos.map((photo, index) => (
+                                <div key={index} className="relative aspect-square">
+                                    <Image
+                                        src={photo}
+                                        alt={`User photo ${index + 1}`}
+                                        fill
+                                        className="rounded-lg object-cover"
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 )}
             </div>
         </div>
