@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Heart, ChevronRight, Star, ListOrdered, DollarSign, QrCode } from "lucide-react";
+import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, Globe, QrCode, Link as LinkIcon, Users, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -10,210 +10,245 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 export default function CreatorPage() {
+  const testimonials = [
+    { name: "Mariana e João", time: "1 mês atrás", message: "Adorei a experiência! Pude criar uma página especial para o João com nossas fotos favoritas, uma playlist personalizada e um texto que representa nossa história. Ele ficou super emocionado quando viu!", image: "https://picsum.photos/100/100?random=1" },
+    { name: "Ana e Pedro", time: "2 dias atrás", message: "Com a Luv, pude expressar meu amor de um jeito totalmente diferente. Adorei criar uma página só para nós dois.", image: "https://picsum.photos/100/100?random=2" },
+    { name: "Lucas e Carol", time: "3 meses atrás", message: "Montei uma página surpresa para a Carol, com nossas fotos de viagem e uma mensagem sincera. Ela adorou! Com certeza vou usar de novo.", image: "https://picsum.photos/100/100?random=3" },
+    { name: "Camila e Felipe", time: "4 meses atrás", message: "A interface é simples e criar uma página com nossas fotos e músicas favoritas foi super especial!", image: "https://picsum.photos/100/100?random=4" },
+    { name: "Bia e Henrique", time: "1 ano atrás", message: "A página ficou incrível e personalizada! Ele não esperava por algo tão emocionante.", image: "https://picsum.photos/100/100?random=5" },
+    { name: "Clara e Rafael", time: "2 meses atrás", message: "Usar a Luv foi incrível! A plataforma é muito intuitiva e fácil de usar. Conseguimos montar um presente digital perfeito com músicas que marcaram nossa relação.", image: "https://picsum.photos/100/100?random=6" },
+  ];
+
   return (
     <>
-      <div className="h-full overflow-x-hidden bg-black" id="start">
-        <div className="relative flex items-center justify-center pb-20 pt-16">
-          <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_0%,black)]"></div>
-          
-          <div className="container">
-            <section className="mt-[10rem] lg:mt-[8rem] xl:mt-[10rem] flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-36 relative z-10">
-              <div className="w-full lg:w-1/2">
-                <div className="w-auto z-10 rounded-full bg-red-900/20 text-white text-xs font-semibold inline-flex items-center px-4 py-2 space-x-2 mb-6">
-                  <span>Vamos começar?</span>
-                </div>
-                <h1 className="text-white text-5xl lg:text-6xl font-sans pt-3 relative z-20 font-bold tracking-tight mb-1">
-                  Declare seu amor
-                </h1>
-                <div className="font-headline text-5xl md:text-6xl text-red-500 font-bold mb-6 -mt-1.5 leading-tight">
-                  <span>para alguém especial</span>
-                  <span className="animate-pulse">|</span>
-                </div>
-                <p className="text-white/90 text-lg md:text-xl mb-8 leading-relaxed max-w-xl">
-                  Crie uma página personalizada para quem você ama e surpreenda a
-                  pessoa com uma declaração especial que ficará para sempre.
-                </p>
-                <Button
-                  size="lg"
-                  className="h-14 max-w-md relative group inline-flex items-center justify-center overflow-hidden rounded-lg animate-pulse bg-gradient-to-br from-red-500 to-pink-600 p-0.5 font-medium text-white hover:text-white focus:outline-none focus:ring-4 focus:ring-red-300/50 w-full"
-                >
-                  <span className="w-full relative rounded-md bg-black/20 backdrop-blur-sm px-8 py-6 md:px-12 md:py-8 transition-all duration-200 ease-in group-hover:bg-black/0 flex items-center h-14 justify-center">
-                    <span className="flex items-center justify-center gap-3">
-                      <Heart className="w-6 h-6 text-white" />
-                      <span className="tracking-wider font-bold text-lg">
-                        Criar minha página
-                      </span>
-                      <ChevronRight className="w-5 h-5 ml-2" />
-                    </span>
-                  </span>
-                </Button>
-                <div className="flex items-center justify-center lg:justify-start gap-4 mt-6">
-                  <div className="flex -space-x-2">
-                    <Image
-                      className="inline-block h-8 w-8 rounded-full ring-2 ring-black"
-                      src="https://picsum.photos/32/32?random=1"
-                      alt="User 1"
-                      width={32}
-                      height={32}
-                      data-ai-hint="person"
-                    />
-                    <Image
-                      className="inline-block h-8 w-8 rounded-full ring-2 ring-black"
-                      src="https://picsum.photos/32/32?random=2"
-                      alt="User 2"
-                      width={32}
-                      height={32}
-                      data-ai-hint="person"
-                    />
-                    <Image
-                      className="inline-block h-8 w-8 rounded-full ring-2 ring-black"
-                      src="https://picsum.photos/32/32?random=3"
-                      alt="User 3"
-                      width={32}
-                      height={32}
-                      data-ai-hint="person"
-                    />
-                    <Image
-                      className="inline-block h-8 w-8 rounded-full ring-2 ring-black"
-                      src="https://picsum.photos/32/32?random=4"
-                      alt="User 4"
-                      width={32}
-                      height={32}
-                      data-ai-hint="person"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <div className="flex">
-                      <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                      <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                      <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                      <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                      <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                    </div>
-                    <p className="text-xs text-white">
-                      Mais de 40.325 usuários satisfeitos
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="relative w-full lg:w-1/2 flex items-center justify-center py-10">
-                <div className="absolute w-[300px] h-[300px] rounded-full bg-gradient-to-r from-red-500/20 to-pink-500/20 blur-[80px] -z-10"></div>
-                <div className="relative w-full max-w-[300px] aspect-[9/16] animate-float group">
-                  <div
-                    className="relative w-full h-full rounded-[40px] overflow-hidden transition-transform duration-500 ease-out group-hover:scale-105"
-                    style={{ transform: "rotate(-1deg)" }}
-                  >
-                    <div className="absolute inset-0 z-10 w-[91%] h-[97%] mx-auto mt-[2%] rounded-3xl overflow-hidden shadow-inner">
-                      <Image
-                        src="https://picsum.photos/400/800"
-                        alt="App Preview"
-                        fill
-                        objectFit="cover"
-                        className="w-full h-full"
-                        data-ai-hint="love couple"
-                      />
-                       <div className="absolute inset-0 shadow-[inset_0_0_30px_rgba(0,0,0,0.4)] pointer-events-none"></div>
-                    </div>
-                    <Image
-                      alt="Mockup"
-                      className="absolute top-0 left-0 z-20 w-full h-full pointer-events-none"
-                      src="https://storage.googleapis.com/app-prototyping-public-artifacts/mockup.webp"
-                      width={300}
-                      height={600}
-                    />
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-        </div>
-      </div>
-      <section id="how-work" className="py-24 relative bg-black">
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center">
-            <div className="w-auto z-10 rounded-full bg-red-900/10 text-white text-xs font-semibold inline-flex items-center px-3 py-1.5 space-x-1 mb-5">
-              <span>Como funciona?</span>
-            </div>
-            <h2 className="bg-clip-text text-center text-transparent bg-gradient-to-b from-neutral-200 to-white text-3xl lg:text-5xl font-sans py-2 relative z-20 font-bold tracking-tight mb-2">Crie sua página em poucos passos</h2>
-            <p className="text-white/80 text-lg max-w-2xl mx-auto mb-16">Personalize uma página especial para surpreender alguém querido. O processo é simples e rápido.</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
-            <div className="relative">
-              <div className="bg-neutral-900/50 rounded-xl p-6 border border-neutral-800/40 h-full">
-                <div className="mb-4 h-12 flex items-center justify-center text-red-400">
-                  <ListOrdered className="w-10 h-10" />
-                </div>
-                <h3 className="text-xl font-bold mb-3 text-white text-center">Personalize</h3>
-                <p className="text-white/70 leading-relaxed text-center">Personalize sua página com fotos, mensagens, efeitos especiais e muito mais.</p>
-              </div>
-              <div className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center text-xl font-bold text-white">1</div>
-            </div>
-            <div className="relative">
-              <div className="bg-neutral-900/50 rounded-xl p-6 border border-neutral-800/40 h-full">
-                <div className="mb-4 h-12 flex items-center justify-center text-red-400">
-                  <DollarSign className="w-10 h-10" />
-                </div>
-                <h3 className="text-xl font-bold mb-3 text-white text-center">Faça o pagamento</h3>
-                <p className="text-white/70 leading-relaxed text-center">Escolha seu plano preferido e faça o pagamento de forma rápida e segura.</p>
-              </div>
-              <div className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center text-xl font-bold text-white">2</div>
-            </div>
-            <div className="relative">
-              <div className="bg-neutral-900/50 rounded-xl p-6 border border-neutral-800/40 h-full">
-                <div className="mb-4 h-12 flex items-center justify-center text-red-400">
-                  <QrCode className="w-10 h-10" />
-                </div>
-                <h3 className="text-xl font-bold mb-3 text-white text-center">Receba seu acesso</h3>
-                <p className="text-white/70 leading-relaxed text-center">Você receberá por email um QR code e link para acessar sua página.</p>
-              </div>
-              <div className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center text-xl font-bold text-white">3</div>
-            </div>
-            <div className="relative">
-              <div className="bg-neutral-900/50 rounded-xl p-6 border border-neutral-800/40 h-full">
-                <div className="mb-4 h-12 flex items-center justify-center text-red-400">
-                  <Heart className="w-10 h-10" />
-                </div>
-                <h3 className="text-xl font-bold mb-3 text-white text-center">Compartilhe o amor</h3>
-                <p className="text-white/70 leading-relaxed text-center">Compartilhe a página com a pessoa amada e surpreenda-a de forma especial.</p>
-              </div>
-              <div className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center text-xl font-bold text-white">4</div>
-            </div>
+      {/* Hero Section */}
+      <section className="relative overflow-hidden section-padding animated-gradient-bg">
+        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm"></div>
+        <div className="container relative z-10 text-center">
+          <h1 className="text-5xl lg:text-7xl font-bold tracking-tighter mb-4 text-foreground font-display">
+            Declare seu <span className="gradient-text">amor</span> de forma única
+          </h1>
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+            Crie uma página personalizada para quem você ama e surpreenda com uma declaração que ficará para sempre.
+          </p>
+          <Button size="lg" className="h-14 group relative">
+            Criar minha página
+            <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+          </Button>
+          <div className="relative w-full max-w-4xl mx-auto mt-20">
+            <div className="absolute inset-0 bg-primary/10 rounded-full blur-3xl animate-float"></div>
+            <Image
+              src="https://picsum.photos/1200/600"
+              alt="Preview da página de amor"
+              width={1200}
+              height={600}
+              className="rounded-xl shadow-2xl shadow-primary/20 relative animate-float"
+              data-ai-hint="love couple webpage"
+            />
           </div>
         </div>
       </section>
-      <section id="faq" className="py-12 lg:py-32 container md:flex justify-between w-full gap-12 bg-black">
-        <div className="w-full md:w-1/2 mb-12 md:mb-0">
-           <div className="w-auto z-10 rounded-full bg-red-900/10 text-white text-xs font-semibold inline-flex items-center px-3 py-1.5 space-x-1 mb-5">
-              <span>F.A.Q</span>
-            </div>
-          <h2 className="bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-white text-3xl lg:text-5xl font-sans py-2 relative z-20 font-bold tracking-tight">Perguntas Frequentes</h2>
-          <p className="max-w-xl text-left text-base md:text-lg text-neutral-300 mt-2 mb-8">Aqui estão algumas perguntas frequentes para ajudar você a entender melhor a Heartzzu. Caso tenha alguma dúvida, entre em contato conosco.</p>
-          <a className="text-left text-sm md:text-lg text-neutral-500 mt-8 underline" href="#">Dúvidas? Entre em contato por aqui</a>
+
+      {/* Features Section */}
+      <section id="recursos" className="section-padding bg-background">
+        <div className="container text-center">
+          <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Recursos <span className="gradient-text">Exclusivos</span></h2>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Nossa plataforma oferece recursos incríveis para você criar a página personalizada perfeita.</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              { icon: Calendar, title: "Contador de tempo", description: "Mostre há quanto tempo vocês estão juntos com um contador em tempo real." },
+              { icon: ImageIcon, title: "Animações de fundo", description: "Escolha entre várias animações de fundo para personalizar a página." },
+              { icon: Music, title: "Música dedicada", description: "Dedique uma música especial. A música será reproduzida automaticamente." },
+              { icon: Globe, title: "Em todo lugar", description: "Crie e compartilhe de qualquer lugar do mundo. Aceitamos pagamentos internacionais." },
+              { icon: QrCode, title: "QR Code exclusivo", description: "Crie um QR Code exclusivo para sua página, gerado automaticamente." },
+              { icon: LinkIcon, title: "URL personalizada", description: "Crie uma URL personalizada para sua página, gerada automaticamente." },
+            ].map((feature, i) => (
+              <Card key={i} className="bg-card border-border hover:border-primary/50 hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-primary/10 fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
+                <CardHeader className="items-center">
+                  <div className="p-4 bg-primary/10 rounded-full mb-4">
+                    <feature.icon className="w-8 h-8 text-primary" />
+                  </div>
+                  <CardTitle>{feature.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">{feature.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
-        <div className="w-full md:w-1/2">
+      </section>
+
+      {/* Themes Section */}
+      <section id="temas" className="section-padding bg-secondary/30">
+        <div className="container text-center">
+          <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Temas <span className="gradient-text">Luv</span></h2>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Escolha o tema ideal para a página personalizada. Você pode escolher entre os temas abaixo.</p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <Card className="bg-card border-border overflow-hidden group">
+              <CardHeader>
+                <CardTitle>Padrão</CardTitle>
+                <CardDescription>Tema padrão com contador de tempo e animações de fundo.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Image src="https://picsum.photos/600/400?random=10" alt="Tema Padrão" width={600} height={400} className="rounded-lg mb-4 group-hover:scale-105 transition-transform duration-500" data-ai-hint="love letter" />
+                <div className="flex justify-between items-center">
+                  <Button variant="ghost">Experimentar agora</Button>
+                  <Button>Criar página</Button>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="bg-card border-border overflow-hidden group">
+              <CardHeader>
+                <CardTitle>Netflix</CardTitle>
+                <CardDescription>Tema inspirado na Netflix com data e episódios (fotos) favoritos.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Image src="https://picsum.photos/600/400?random=11" alt="Tema Netflix" width={600} height={400} className="rounded-lg mb-4 group-hover:scale-105 transition-transform duration-500" data-ai-hint="movie streaming" />
+                <div className="flex justify-between items-center">
+                  <Button variant="ghost">Experimentar agora</Button>
+                  <Button>Criar página</Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section id="avaliacoes" className="section-padding bg-background">
+        <div className="container text-center">
+          <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">O que nossos <span className="gradient-text">clientes</span> dizem</h2>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Avaliações de clientes que já utilizaram nossos serviços e tiveram uma experiência incrível.</p>
+          <Carousel opts={{ loop: true }} className="w-full max-w-4xl mx-auto">
+            <CarouselContent>
+              {testimonials.map((testimonial, index) => (
+                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+                  <div className="p-1 h-full">
+                    <Card className="bg-card border-border h-full flex flex-col justify-between">
+                      <CardContent className="p-6">
+                        <div className="flex items-center gap-4 mb-4">
+                          <Image src={testimonial.image} alt={testimonial.name} width={48} height={48} className="rounded-full" data-ai-hint="person"/>
+                          <div>
+                            <p className="font-semibold text-foreground">{testimonial.name}</p>
+                            <p className="text-sm text-muted-foreground">{testimonial.time}</p>
+                          </div>
+                        </div>
+                        <p className="text-muted-foreground italic">"{testimonial.message}"</p>
+                      </CardContent>
+                      <div className="flex p-6 pt-0">
+                        {[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 text-amber-400 fill-amber-400" />)}
+                      </div>
+                    </Card>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-[-50px]" />
+            <CarouselNext className="right-[-50px]" />
+          </Carousel>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="planos" className="section-padding bg-secondary/30">
+        <div className="container text-center">
+          <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Nossos <span className="gradient-text">Planos</span></h2>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Escolha o plano ideal para sua página personalizada.</p>
+          <div className="grid lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <Card className="bg-card border-border flex flex-col">
+              <CardHeader className="items-center pb-4">
+                <CardTitle className="text-2xl">Anual</CardTitle>
+                <CardDescription>Esse plano possui um período de 1 ano.</CardDescription>
+                <p className="text-4xl font-bold pt-4">R$21,00 <span className="text-lg font-normal text-muted-foreground">/ano</span></p>
+                <p className="line-through text-muted-foreground">R$42,00</p>
+              </CardHeader>
+              <CardContent className="flex-grow">
+                <ul className="space-y-3 text-muted-foreground">
+                  <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Texto dedicado</span></li>
+                  <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Contador em tempo real</span></li>
+                  <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Data de início</span></li>
+                  <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>QR Code exclusivo</span></li>
+                  <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Máximo de 4 imagens</span></li>
+                  <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>URL personalizada</span></li>
+                  <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Suporte 24 horas</span></li>
+                  <li className="flex items-center gap-3"><X className="w-5 h-5 text-red-500" /><span>Sem música</span></li>
+                  <li className="flex items-center gap-3"><X className="w-5 h-5 text-red-500" /><span>Sem fundo dinâmico</span></li>
+                  <li className="flex items-center gap-3"><X className="w-5 h-5 text-red-500" /><span>Sem animações exclusivas</span></li>
+                </ul>
+              </CardContent>
+              <div className="p-6 pt-0">
+                <Button className="w-full">Criar minha página</Button>
+              </div>
+            </Card>
+             <Card className="bg-card border-primary/50 relative flex flex-col shadow-2xl shadow-primary/20">
+              <div className="absolute top-0 right-4 -translate-y-1/2 bg-primary text-primary-foreground px-3 py-1 text-sm font-semibold rounded-full">Recomendado</div>
+              <CardHeader className="items-center pb-4">
+                <CardTitle className="text-2xl">Para sempre</CardTitle>
+                <CardDescription>Esse plano é vitalício, não precisa renovar.</CardDescription>
+                <p className="text-4xl font-bold pt-4">R$27,00 <span className="text-lg font-normal text-muted-foreground">/uma vez</span></p>
+                <p className="line-through text-muted-foreground">R$54,00</p>
+              </CardHeader>
+              <CardContent className="flex-grow">
+                <ul className="space-y-3 text-muted-foreground">
+                    <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Texto dedicado</span></li>
+                    <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Contador em tempo real</span></li>
+                    <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Data de início</span></li>
+                    <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>QR Code exclusivo</span></li>
+                    <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Máximo de 8 imagens</span></li>
+                    <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>URL personalizada</span></li>
+                    <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Suporte 24 horas</span></li>
+                    <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Com música</span></li>
+                    <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Fundo dinâmico</span></li>
+                    <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Com animações exclusivas</span></li>
+                </ul>
+              </CardContent>
+              <div className="p-6 pt-0">
+                <Button className="w-full">Criar minha página</Button>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" className="section-padding bg-background">
+        <div className="container max-w-4xl">
+          <div className="text-center">
+            <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Perguntas <span className="gradient-text">Frequentes</span></h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12">Aqui estão algumas perguntas frequentes para ajudar você a entender melhor a Luv.</p>
+          </div>
           <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="item-1">
-              <AccordionTrigger>O que é a Heartzzu?</AccordionTrigger>
+             <AccordionItem value="item-1">
+              <AccordionTrigger>O que é a Luv?</AccordionTrigger>
               <AccordionContent>
-                Heartzzu é uma plataforma que permite criar páginas personalizadas para pessoas especiais. Você pode adicionar fotos, uma mensagem e também o tempo da união.
+                Luv é uma plataforma que permite criar páginas personalizadas para pessoas especiais. Você pode adicionar fotos, uma mensagem e também o tempo da união.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2">
-              <AccordionTrigger>Como posso criar uma página personalizada na Heartzzu?</AccordionTrigger>
+              <AccordionTrigger>Como posso criar uma página personalizada?</AccordionTrigger>
               <AccordionContent>
                 Para criar sua página personalizada, siga as etapas preenchendo o formulário com as informações solicitadas. Após o preenchimento, você será direcionado para o pagamento.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-3">
-              <AccordionTrigger>O que está incluído na minha página personalizada?</AccordionTrigger>
+              <AccordionTrigger>O que está incluído na minha página?</AccordionTrigger>
               <AccordionContent>
                 Sua página personalizada contará com tudo o que preencher no formulário, dependendo do plano escolhido.
               </AccordionContent>
             </AccordionItem>
              <AccordionItem value="item-4">
-              <AccordionTrigger>Como recebo minha página personalizada após o pagamento?</AccordionTrigger>
+              <AccordionTrigger>Como recebo minha página após o pagamento?</AccordionTrigger>
               <AccordionContent>
                 Após a confirmação do pagamento, você receberá um QR code e um link via email para compartilhar e acessar a página.
               </AccordionContent>
@@ -225,8 +260,29 @@ export default function CreatorPage() {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+           <div className="text-center mt-12">
+            <p className="text-muted-foreground">Ainda tem dúvidas?</p>
+            <Button variant="link" className="text-base text-primary">Entre em contato por aqui</Button>
+          </div>
         </div>
       </section>
+      
+      {/* Final CTA */}
+      <section className="section-padding animated-gradient-bg">
+         <div className="container text-center">
+          <h2 className="text-4xl lg:text-5xl font-bold tracking-tighter mb-4 text-foreground font-display">
+            Declare seu <span className="gradient-text">amor</span> de forma única
+          </h2>
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+            Crie uma página personalizada para quem você ama e surpreenda com uma declaração que ficará para sempre.
+          </p>
+          <Button size="lg" className="h-14 group relative">
+            Comece agora, é grátis
+            <Heart className="w-5 h-5 ml-2 group-hover:fill-red-400 transition-colors" />
+          </Button>
+        </div>
+      </section>
+
     </>
   );
 }

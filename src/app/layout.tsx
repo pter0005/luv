@@ -6,8 +6,8 @@ import { Header } from '@/components/app/Header';
 import { Footer } from '@/components/app/Footer';
 
 export const metadata: Metadata = {
-  title: 'Heartzzu ©',
-  description: 'Crie uma página personalizada para a pessoa especial.',
+  title: 'Luv ©',
+  description: 'Declare seu amor de forma única',
 };
 
 export default function RootLayout({
@@ -25,13 +25,13 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&family=Inter:wght@400;500;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&display=swap"
           rel="stylesheet"
         />
       </head>
       <body
         className={cn(
-          'antialiased overflow-x-hidden bg-black min-h-screen h-full'
+          'antialiased overflow-x-hidden bg-background min-h-screen'
         )}
       >
         <Header />
