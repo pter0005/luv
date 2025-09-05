@@ -7,13 +7,16 @@ import { ptBR } from 'date-fns/locale';
 import * as z from "zod";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination, Navigation } from 'swiper/modules';
+
+import 'swiper/css';
+import 'swiper/css/effect-coverflow';
+import 'swiper/css/effect-cube';
+import 'swiper/css/effect-flip';
+import 'swiper/css/effect-cards';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 
 const formSchema = z.object({
   title: z.string(),
@@ -102,36 +105,90 @@ const Countdown = ({ startDate, displayType }: { startDate: Date; displayType?: 
   )
 }
 
-const PhotoGallery = ({ photos, displayType }: { photos?: string[], displayType?: string }) => {
+const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?: string }) => {
   if (!photos || photos.length === 0) {
     return null;
   }
 
+  const getSwiperEffect = () => {
+    switch (displayType) {
+      case 'Coverflow':
+        return {
+          effect: 'coverflow',
+          coverflowEffect: {
+            rotate: 50,
+            stretch: 0,
+            depth: 100,
+            modifier: 1,
+            slideShadows: true,
+          },
+        };
+      case 'Cube':
+        return {
+          effect: 'cube',
+          cubeEffect: {
+            shadow: true,
+            slideShadows: true,
+            shadowOffset: 20,
+            shadowScale: 0.94,
+          },
+        };
+      case 'Flip':
+        return {
+          effect: 'flip',
+          flipEffect: {
+            slideShadows: true,
+          },
+        };
+      case 'Cards':
+        return {
+          effect: 'cards',
+          cardsEffect: {
+             slideShadows: true,
+          }
+        };
+      default:
+        return {};
+    }
+  };
+
   return (
-    <div className="w-full mb-8">
-      <Carousel
-        opts={{
-          loop: true,
-        }}
-        className="w-full"
+    <div className="w-full mb-8 relative">
+      <style jsx global>{`
+        .swiper-button-next, .swiper-button-prev {
+            color: hsl(var(--primary));
+        }
+        .swiper-pagination-bullet-active {
+            background: hsl(var(--primary));
+        }
+        .swiper-slide-shadow, .swiper-slide-shadow-left, .swiper-slide-shadow-right {
+          background: none !important;
+        }
+      `}</style>
+      <Swiper
+        modules={[EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination, Navigation]}
+        grabCursor={true}
+        centeredSlides={true}
+        slidesPerView={'auto'}
+        navigation={photos.length > 1 && displayType !== 'Cards'}
+        pagination={{ clickable: true }}
+        className="mySwiper"
+        loop
+        {...getSwiperEffect()}
       >
-        <CarouselContent>
-          {photos.map((photo, index) => (
-            <CarouselItem key={index}>
-              <div className="relative aspect-video">
-                <Image
-                  src={photo}
-                  alt={`User photo ${index + 1}`}
-                  fill
-                  className="rounded-lg object-cover"
-                />
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious className="left-4" />
-        <CarouselNext className="right-4" />
-      </Carousel>
+        {photos.map((photo, index) => (
+          <SwiperSlide key={index} style={{ width: displayType === 'Cards' ? '300px' : 'auto', height: displayType === 'Cards' ? '250px' : 'auto' }}>
+            <div className="relative aspect-video">
+              <Image
+                src={photo}
+                alt={`User photo ${index + 1}`}
+                fill
+                className="rounded-lg object-cover"
+              />
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
     </div>
   );
 };
