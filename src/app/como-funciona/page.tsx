@@ -9,7 +9,7 @@ import Link from "next/link";
 
 export default function ComoFuncionaPage() {
   return (
-    <>
+    <div className="relative">
       <AnimatedBackground />
       <div className="relative z-10">
         <header className="absolute top-0 left-0 w-full p-4">
@@ -80,6 +80,6 @@ export default function ComoFuncionaPage() {
           </div>
         </section>
       </div>
-    </>
+    </div>
   );
 }

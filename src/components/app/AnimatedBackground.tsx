@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import { cn } from '@/lib/utils';
 
 const HeartIcon = () => (
   <svg
@@ -13,12 +14,18 @@ const HeartIcon = () => (
   </svg>
 );
 
-export function AnimatedBackground() {
-  // Create an array of 40 elements to map over
+interface AnimatedBackgroundProps {
+  fixed?: boolean;
+}
+
+export function AnimatedBackground({ fixed = false }: AnimatedBackgroundProps) {
   const hearts = Array.from({ length: 40 });
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full -z-10 overflow-hidden pointer-events-none purple-fog">
+    <div className={cn(
+      "top-0 left-0 w-full h-full -z-10 overflow-hidden pointer-events-none purple-fog",
+      fixed ? "fixed" : "absolute"
+    )}>
       <div className="relative w-full h-full">
         {hearts.map((_, i) => {
           const size = Math.random() * 2.5 + 0.5; // size between 0.5rem and 3rem

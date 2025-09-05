@@ -146,7 +146,7 @@ export default function CreatorPage() {
 
   return (
     <>
-      <AnimatedBackground />
+      <AnimatedBackground fixed />
       {/* Hero Section */}
        <section className="relative overflow-hidden section-padding">
         <div className="container relative z-10 grid lg:grid-cols-2 gap-12 items-center">
@@ -312,8 +312,9 @@ export default function CreatorPage() {
       </section>
 
       {/* Pricing Section */}
-      <section id="planos" className="section-padding bg-secondary/30 backdrop-blur-md relative z-10">
-        <div className="container text-center">
+      <section id="planos" className="section-padding bg-secondary/30 backdrop-blur-md relative z-10 overflow-hidden">
+        <AnimatedBackground />
+        <div className="container relative z-10 text-center">
           <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Nossos <span className="gradient-text">Planos</span></h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Escolha o plano ideal para sua jornada de amor. Cada um é um convite para uma experiência memorável.</p>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
@@ -454,7 +455,3 @@ export default function CreatorPage() {
     </>
   );
 }
-
-    
-
-    
