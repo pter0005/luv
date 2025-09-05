@@ -7,6 +7,7 @@ import { ptBR } from 'date-fns/locale';
 import * as z from "zod";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import SwiperCore from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination } from 'swiper/modules';
 
@@ -16,6 +17,9 @@ import 'swiper/css/effect-cube';
 import 'swiper/css/effect-flip';
 import 'swiper/css/effect-cards';
 import 'swiper/css/pagination';
+
+// Instala os módulos do Swiper para que os efeitos funcionem
+SwiperCore.use([EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination]);
 
 const formSchema = z.object({
   title: z.string(),
