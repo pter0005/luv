@@ -161,14 +161,42 @@ export default function CreatorStudioPage() {
       description: "Sua página foi salva com sucesso. (Simulação)",
     });
   }
+
+  const stepsContent = [
+    {
+        title: "Nomes do Casal",
+        description: "Quem são as estrelas desta história de amor?",
+    },
+    {
+        title: "Data Especial",
+        description: "Quando tudo começou? Escolha a data que marca o início.",
+    },
+    {
+        title: "Sua Mensagem",
+        description: "Escreva com o coração ou peça ajuda para a IA.",
+    },
+    {
+        title: "Galeria de Memórias",
+        description: "Adicione até 8 fotos que contam a sua história.",
+    },
+     {
+        title: "Trilha Sonora",
+        description: "Cole uma URL do YouTube para adicionar a música de vocês.",
+    },
+    {
+        title: "Fundo da Página",
+        description: "Use a IA para gerar um fundo único e exclusivo.",
+    },
+    {
+        title: "Tudo Pronto!",
+        description: "Sua página está pronta para ser salva e compartilhada.",
+    }
+  ]
   
   const renderStep = () => {
     switch(currentStep) {
       case 1:
         return (
-          <div>
-            <h2 className="text-3xl font-bold">Nomes do Casal</h2>
-            <p className="text-muted-foreground mt-2">Quem são as estrelas desta história de amor?</p>
             <div className="space-y-4 mt-6">
                <FormField
                   control={form.control}
@@ -197,13 +225,9 @@ export default function CreatorStudioPage() {
                   )}
                 />
             </div>
-          </div>
         )
       case 2:
         return (
-           <div>
-            <h2 className="text-3xl font-bold">Data Especial</h2>
-            <p className="text-muted-foreground mt-2">Quando tudo começou? Escolha a data que marca o início.</p>
              <div className="space-y-4 mt-6">
                  <FormField
                   control={form.control}
@@ -246,21 +270,16 @@ export default function CreatorStudioPage() {
                   )}
                 />
             </div>
-          </div>
         )
         case 3:
             return (
                 <div>
-                    <div className="flex justify-between items-center">
-                        <div>
-                            <h2 className="text-3xl font-bold">Sua Mensagem</h2>
-                            <p className="text-muted-foreground mt-2">Escreva com o coração ou peça ajuda para a IA.</p>
-                        </div>
+                    <div className="flex justify-end">
                          <Button variant="ghost" size="icon" onClick={handleEnhanceMessage} disabled={isAiLoading}>
                             {isAiLoading ? <Loader2 className="animate-spin" /> : <Sparkles />}
                         </Button>
                     </div>
-                    <div className="space-y-4 mt-6">
+                    <div className="space-y-4">
                         <FormField
                             control={form.control}
                             name="message"
@@ -283,108 +302,94 @@ export default function CreatorStudioPage() {
             )
         case 4:
             return (
-                <div>
-                    <h2 className="text-3xl font-bold">Galeria de Memórias</h2>
-                    <p className="text-muted-foreground mt-2">Adicione até 8 fotos que contam a sua história.</p>
-                    <div className="space-y-4 mt-6">
-                        <FormField
-                            control={form.control}
-                            name="images"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormControl>
-                                        <Input 
-                                            type="file" 
-                                            accept="image/*"
-                                            multiple
-                                            onChange={(e) => {
-                                                const files = Array.from(e.target.files ?? []);
-                                                const imageUrls = files.map(file => URL.createObjectURL(file));
-                                                field.onChange(imageUrls);
-                                            }}
-                                            className="hidden"
-                                            id="image-upload"
-                                        />
-                                    </FormControl>
-                                    <label htmlFor="image-upload" className="cursor-pointer">
-                                        <div className="border-2 border-dashed border-muted-foreground/50 rounded-lg p-8 text-center hover:bg-muted/50 transition-colors">
-                                            <ImageIcon className="mx-auto h-12 w-12 text-muted-foreground" />
-                                            <p className="mt-2 text-sm text-muted-foreground">Clique para adicionar imagens</p>
-                                        </div>
-                                    </label>
-                                    {watchedData.images && watchedData.images.length > 0 && (
-                                        <div className="mt-4 grid grid-cols-4 gap-2">
-                                            {watchedData.images.map((img, i) => (
-                                                <img key={i} src={img} className="rounded-md aspect-square object-cover" alt={`Preview ${i}`} />
-                                            ))}
-                                        </div>
-                                    )}
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
+                <div className="space-y-4 mt-6">
+                    <FormField
+                        control={form.control}
+                        name="images"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                    <Input 
+                                        type="file" 
+                                        accept="image/*"
+                                        multiple
+                                        onChange={(e) => {
+                                            const files = Array.from(e.target.files ?? []);
+                                            const imageUrls = files.map(file => URL.createObjectURL(file));
+                                            field.onChange(imageUrls);
+                                        }}
+                                        className="hidden"
+                                        id="image-upload"
+                                    />
+                                </FormControl>
+                                <label htmlFor="image-upload" className="cursor-pointer">
+                                    <div className="border-2 border-dashed border-muted-foreground/50 rounded-lg p-8 text-center hover:bg-muted/50 transition-colors">
+                                        <ImageIcon className="mx-auto h-12 w-12 text-muted-foreground" />
+                                        <p className="mt-2 text-sm text-muted-foreground">Clique para adicionar imagens</p>
+                                    </div>
+                                </label>
+                                {watchedData.images && watchedData.images.length > 0 && (
+                                    <div className="mt-4 grid grid-cols-4 gap-2">
+                                        {watchedData.images.map((img, i) => (
+                                            <img key={i} src={img} className="rounded-md aspect-square object-cover" alt={`Preview ${i}`} />
+                                        ))}
+                                    </div>
+                                )}
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
                 </div>
             )
         case 5:
             return (
-                 <div>
-                    <h2 className="text-3xl font-bold">Trilha Sonora</h2>
-                    <p className="text-muted-foreground mt-2">Cole uma URL do YouTube para adicionar a música de vocês.</p>
-                    <div className="space-y-4 mt-6">
-                        <FormField
-                            control={form.control}
-                            name="musicUrl"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <Music className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                            <Input placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ" {...field} className="pl-10" />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
+                 <div className="space-y-4 mt-6">
+                    <FormField
+                        control={form.control}
+                        name="musicUrl"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                    <div className="relative">
+                                        <Music className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                        <Input placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ" {...field} className="pl-10" />
+                                    </div>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
                 </div>
             )
         case 6:
             return (
-                <div>
-                    <h2 className="text-3xl font-bold">Fundo da Página</h2>
-                    <p className="text-muted-foreground mt-2">Use a IA para gerar um fundo único e exclusivo.</p>
-                    <div className="space-y-4 mt-6">
-                        <FormField
-                            control={form.control}
-                            name="backgroundPrompt"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Descreva o fundo dos seus sonhos</FormLabel>
-                                <FormControl>
-                                    <div className="relative">
-                                        <Paintbrush className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                        <Input placeholder="Ex: Uma galáxia com tons de rosa e roxo" {...field} className="pl-10" />
-                                    </div>
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <Button onClick={handleGenerateBackground} disabled={isBgLoading} className="w-full">
-                            {isBgLoading ? <Loader2 className="animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
-                            Gerar Fundo com IA
-                        </Button>
-                    </div>
+                <div className="space-y-4 mt-6">
+                    <FormField
+                        control={form.control}
+                        name="backgroundPrompt"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Descreva o fundo dos seus sonhos</FormLabel>
+                            <FormControl>
+                                <div className="relative">
+                                    <Paintbrush className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                    <Input placeholder="Ex: Uma galáxia com tons de rosa e roxo" {...field} className="pl-10" />
+                                </div>
+                            </FormControl>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <Button onClick={handleGenerateBackground} disabled={isBgLoading} className="w-full">
+                        {isBgLoading ? <Loader2 className="animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                        Gerar Fundo com IA
+                    </Button>
                 </div>
             )
         case 7:
             return (
-                 <div>
-                    <h2 className="text-3xl font-bold">Tudo Pronto!</h2>
-                    <p className="text-muted-foreground mt-2">Sua página está pronta para ser salva e compartilhada.</p>
-                     <Button type="submit" size="lg" className="w-full mt-6">Salvar e Obter Link</Button>
+                 <div className="mt-6">
+                     <Button type="submit" size="lg" className="w-full">Salvar e Obter Link</Button>
                 </div>
             )
       default:
@@ -415,10 +420,14 @@ export default function CreatorStudioPage() {
                 <p className="text-right text-sm text-muted-foreground mt-2">{currentStep}/{totalSteps}</p>
             </div>
 
+            <div className="mb-8">
+                <h2 className="text-3xl font-bold">{stepsContent[currentStep-1].title}</h2>
+                <p className="text-muted-foreground mt-2">{stepsContent[currentStep-1].description}</p>
+            </div>
+
             <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 {renderStep()}
-
                 
                     <div className="flex items-center gap-4 mt-8">
                         <Button variant="secondary" onClick={handlePrevStep} disabled={currentStep === 1} className="w-full bg-zinc-800 hover:bg-zinc-700">
@@ -449,3 +458,5 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
+
+    
