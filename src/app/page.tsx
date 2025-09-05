@@ -9,22 +9,17 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
-import { Label } from "@/components/ui/label";
+} from "@/components/ui/accordion";
 
 export default function CreatorPage() {
   return (
     <>
-      <div className="h-full overflow-x-hidden" id="start">
-        <div className="h-full bg-black bg-grid-neutral-800/20 relative flex items-center justify-center pb-20">
+      <div className="h-full overflow-x-hidden bg-black" id="start">
+        <div className="relative flex items-center justify-center pb-20 pt-16">
           <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_0%,black)]"></div>
-          <div className="absolute inset-0 opacity-50">
-            <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 via-transparent to-red-500/5 animate-pulse"></div>
-            <div className="absolute inset-0 bg-gradient-to-b from-red-500/3 via-transparent to-red-500/3"></div>
-            <div className="absolute -inset-[100%] animate-[spin_20s_linear_infinite] bg-gradient-conic from-red-500/5 via-transparent to-red-500/5"></div>
-          </div>
+          
           <div className="container">
-            <section className="mt-[14rem] lg:mt-[10rem] xl:mt-[12rem] flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-36 relative z-10">
+            <section className="mt-[10rem] lg:mt-[8rem] xl:mt-[10rem] flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-36 relative z-10">
               <div className="w-full lg:w-1/2">
                 <div className="w-auto z-10 rounded-full bg-red-900/20 text-white text-xs font-semibold inline-flex items-center px-4 py-2 space-x-2 mb-6">
                   <span>Vamos começar?</span>
@@ -135,7 +130,7 @@ export default function CreatorPage() {
           </div>
         </div>
       </div>
-      <section id="how-work" className="py-12 bg-gradient-to-b from-black via-black to-red-950/20 relative">
+      <section id="how-work" className="py-24 relative bg-black">
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center">
             <div className="w-auto z-10 rounded-full bg-red-900/10 text-white text-xs font-semibold inline-flex items-center px-3 py-1.5 space-x-1 mb-5">
@@ -188,7 +183,7 @@ export default function CreatorPage() {
           </div>
         </div>
       </section>
-      <section id="faq" className="py-12 lg:py-32 container md:flex justify-between w-full gap-12">
+      <section id="faq" className="py-12 lg:py-32 container md:flex justify-between w-full gap-12 bg-black">
         <div className="w-full md:w-1/2 mb-12 md:mb-0">
            <div className="w-auto z-10 rounded-full bg-red-900/10 text-white text-xs font-semibold inline-flex items-center px-3 py-1.5 space-x-1 mb-5">
               <span>F.A.Q</span>
@@ -235,5 +230,3 @@ export default function CreatorPage() {
     </>
   );
 }
-
-    
