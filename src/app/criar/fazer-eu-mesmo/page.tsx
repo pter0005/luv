@@ -33,6 +33,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { Editor } from "@/components/ui/editor";
+import { Progress } from "@/components/ui/progress";
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
@@ -91,14 +92,23 @@ export default function CreatorStudioPage() {
     const isValid = await form.trigger(currentFieldName);
 
     if (isValid) {
-      // Save the current field's value to history before clearing it
       setFieldHistory(prev => ({...prev, [currentFieldName]: form.getValues(currentFieldName)}));
       
-      // Clear the field value for the next step's input
-      if (currentStep < steps.length) {
+      if (currentStep < totalSteps) {
           const nextFieldName = steps[currentStep].name;
-          form.setValue(nextFieldName, fieldHistory[nextFieldName] || form.getValues(nextFieldName));
-          form.resetField(currentFieldName, { defaultValue: '' });
+          const currentFieldValue = form.getValues(currentFieldName);
+          
+          form.reset({
+            ...fieldHistory,
+            [currentFieldName]: currentFieldValue, // keep current value in history
+            [nextFieldName]: fieldHistory[nextFieldName] || form.getValues(nextFieldName) || ''
+          });
+
+          // After resetting, we might need to clear the visual input of the *previous* step if it's not handled by reset
+           const prevFieldDom = document.getElementsByName(currentFieldName)[0];
+            if (prevFieldDom) {
+               // This is a bit of a hack, ideally reset would handle this.
+            }
       }
 
       if (currentStep < totalSteps) {
@@ -107,18 +117,12 @@ export default function CreatorStudioPage() {
     }
   };
 
+
   const handlePrevStep = () => {
     if (currentStep > 1) {
-      const prevFieldName = steps[currentStep - 2].name;
-      const currentFieldName = steps[currentStep - 1].name;
-
-      // Restore the previous field's value from history
-      form.setValue(prevFieldName, fieldHistory[prevFieldName] || form.getValues(prevFieldName));
-       
-      // Clear the current field's value
-      form.resetField(currentFieldName);
-      
-      setCurrentStep(currentStep - 1);
+        setCurrentStep(currentStep - 1);
+        const prevFieldName = steps[currentStep - 2].name;
+        form.setValue(prevFieldName, fieldHistory[prevFieldName] || '');
     }
   };
 
