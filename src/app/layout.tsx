@@ -25,7 +25,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&family=Inter:wght@400;500;700&display=swap"
           rel="stylesheet"
         />
       </head>
@@ -35,7 +35,7 @@ export default function RootLayout({
         )}
       >
         <Header />
-        <main className="flex-grow container mx-auto px-4 py-8 md:py-12">
+        <main className="flex-grow">
           {children}
         </main>
         <Footer />
