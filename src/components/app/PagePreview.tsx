@@ -193,7 +193,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
         {...getSwiperEffect()}
       >
         {photos.map((photo, index) => (
-          <SwiperSlide key={index} className={displayType === 'Cards' ? 'swiper-slide-cards' : ''}>
+          <SwiperSlide key={index} className={cn(displayType === 'Cards' ? 'swiper-slide-cards' : '')}>
             <div className="relative w-full h-full">
               <Image
                 src={photo}
