@@ -116,8 +116,8 @@ export default function CreatorStudioPage() {
   const currentFieldName = steps[currentStep - 1].name;
 
   return (
-    <div className="flex w-full min-h-screen bg-[#111111] text-white items-center justify-center">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 max-w-7xl w-full">
+    <div className="flex w-full min-h-screen bg-[#111111] text-white items-center justify-center p-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 max-w-7xl w-full items-center">
         {/* Form Section */}
         <aside className="w-full max-w-lg mx-auto flex flex-col justify-center">
           <div className="mb-8">
@@ -227,7 +227,7 @@ export default function CreatorStudioPage() {
                   </div>
                 )}
                 {currentStep === 3 && (
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                   <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-start">
                     <FormField
                       control={form.control}
                       key="startDate"
