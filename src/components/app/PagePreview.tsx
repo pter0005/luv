@@ -117,15 +117,8 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
     switch (displayType) {
       case 'Coverflow':
         return {
-          effect: 'coverflow' as const,
+          effect: 'slide' as const,
           slidesPerView: 3,
-          coverflowEffect: {
-            rotate: 50,
-            stretch: 0,
-            depth: 100,
-            modifier: 1,
-            slideShadows: false,
-          },
         };
       case 'Cube':
         return {
@@ -275,4 +268,5 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
+
 
