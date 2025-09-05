@@ -54,7 +54,7 @@ export function PagePreview({ data }: PagePreviewProps) {
             className="flex-grow p-8 flex flex-col items-center justify-start text-center relative overflow-auto bg-black"
         >
             <div className="relative z-10 w-full">
-                <h1 className="text-4xl font-handwriting text-red-600 mt-8">{data.title || "Titulo da pagina"}</h1>
+                <h1 className="text-4xl font-handwriting text-red-600">{data.title || "Titulo da pagina"}</h1>
             </div>
         </div>
     </div>
