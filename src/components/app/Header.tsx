@@ -38,7 +38,7 @@ export function Header() {
     )}>
       <div className="container flex items-center justify-between h-20">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="https://i.imgur.com/bohMjUH.png" alt="Luv Logo" width={80} height={80} />
+          <Image src="https://i.imgur.com/EMwsRdt.png" alt="Luv Logo" width={80} height={80} />
         </Link>
         <nav className="hidden md:flex items-center space-x-8">
           {navLinks.map(link => (
