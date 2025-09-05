@@ -148,12 +148,17 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           }
         };
       default:
-        return {};
+        return {
+          effect: 'cards',
+           cardsEffect: {
+             slideShadows: true,
+          }
+        };
     }
   };
 
   return (
-    <div className="w-full mb-8 relative">
+    <div className="w-full mb-8 relative h-[400px] flex items-center justify-center">
       <style jsx global>{`
         .swiper-button-next, .swiper-button-prev {
             color: hsl(var(--primary));
@@ -164,6 +169,17 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
         .swiper-slide-shadow, .swiper-slide-shadow-left, .swiper-slide-shadow-right {
           background: none !important;
         }
+        .swiper-slide {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 300px;
+          height: 300px;
+        }
+         .swiper-slide.swiper-slide-cards {
+          width: 350px !important;
+          height: 350px !important;
+        }
       `}</style>
       <Swiper
         modules={[EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination, Navigation]}
@@ -172,18 +188,18 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
         slidesPerView={'auto'}
         navigation={photos.length > 1 && displayType !== 'Cards'}
         pagination={{ clickable: true }}
-        className="mySwiper"
+        className="mySwiper w-full h-full"
         loop
         {...getSwiperEffect()}
       >
         {photos.map((photo, index) => (
-          <SwiperSlide key={index} style={{ width: displayType === 'Cards' ? '300px' : 'auto', height: displayType === 'Cards' ? '250px' : 'auto' }}>
-            <div className="relative aspect-video">
+          <SwiperSlide key={index} className={displayType === 'Cards' ? 'swiper-slide-cards' : ''}>
+            <div className="relative w-full h-full">
               <Image
                 src={photo}
                 alt={`User photo ${index + 1}`}
                 fill
-                className="rounded-lg object-cover"
+                className="rounded-lg object-contain"
               />
             </div>
           </SwiperSlide>
