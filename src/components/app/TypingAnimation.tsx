@@ -5,9 +5,9 @@ import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
 const phrases = [
-  "para seu amor...",
-  "de forma única...",
-  "para alguém especial...",
+  "de forma única!",
+  "para uma pessoa especial!",
+  "pra quem merece!",
 ];
 
 export function TypingAnimation() {
@@ -56,4 +56,5 @@ export function TypingAnimation() {
   );
 }
 
+    
     

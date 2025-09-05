@@ -114,7 +114,7 @@ export default function CreatorPage() {
           <div className="text-center lg:text-left">
              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground font-display leading-tight">
               Declare seu amor <br />
-              <span className="font-handwriting text-primary text-5xl md:text-6xl lg:text-7xl">de forma única!</span>
+              <TypingAnimation />
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 my-8">
               Transforme seus sentimentos em uma obra de arte digital. Uma experiência exclusiva, criada para celebrar momentos que merecem ser eternos.
@@ -419,4 +419,5 @@ export default function CreatorPage() {
   );
 }
 
+    
     
