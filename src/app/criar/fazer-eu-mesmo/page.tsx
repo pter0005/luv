@@ -116,10 +116,10 @@ export default function CreatorStudioPage() {
   const currentFieldName = steps[currentStep - 1].name;
 
   return (
-    <div className="flex flex-col lg:flex-row w-full min-h-screen bg-[#111111] text-white">
-      {/* Form Section */}
-      <aside className="w-full lg:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
-        <div className="w-full max-w-md mx-auto">
+    <div className="flex w-full min-h-screen bg-[#111111] text-white items-center justify-center">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 max-w-7xl w-full">
+        {/* Form Section */}
+        <aside className="w-full max-w-lg mx-auto flex flex-col justify-center">
           <div className="mb-8">
             <Progress value={(currentStep / totalSteps) * 100} className="bg-zinc-700 h-2 [&>div]:bg-white" />
             <p className="text-right text-sm text-muted-foreground mt-2">{currentStep}/{totalSteps}</p>
@@ -132,7 +132,7 @@ export default function CreatorStudioPage() {
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8">
-              <div className="min-h-[280px]">
+              <div className="min-h-[350px]">
                 {currentStep === 1 && (
                   <div className="space-y-8">
                     <FormField
@@ -311,15 +311,15 @@ export default function CreatorStudioPage() {
               </div>
             </form>
           </Form>
-        </div>
-      </aside>
+        </aside>
 
-      {/* Preview Section */}
-      <main className="w-full lg:w-1/2 p-4 hidden lg:flex flex-col justify-start pt-24 bg-black">
-        <div className="w-full h-[75vh] rounded-2xl overflow-hidden shadow-2xl shadow-black/50 border-4 border-zinc-800">
-          <PagePreview data={{...fieldHistory, ...form.getValues()}} />
-        </div>
-      </main>
+        {/* Preview Section */}
+        <main className="w-full p-4 hidden lg:flex flex-col justify-start pt-16 bg-transparent">
+          <div className="w-full h-[75vh] rounded-2xl overflow-hidden shadow-2xl shadow-black/50 border-4 border-zinc-800">
+            <PagePreview data={{...fieldHistory, ...form.getValues()}} />
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
