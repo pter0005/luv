@@ -1,6 +1,7 @@
+
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
 const HeartIcon = () => (
@@ -18,8 +19,32 @@ interface AnimatedBackgroundProps {
   fixed?: boolean;
 }
 
+interface HeartStyle {
+    left: string;
+    width: string;
+    height: string;
+    animation: string;
+}
+
 export function AnimatedBackground({ fixed = false }: AnimatedBackgroundProps) {
-  const hearts = Array.from({ length: 40 });
+  const [hearts, setHearts] = useState<HeartStyle[]>([]);
+
+  useEffect(() => {
+    const generatedHearts = Array.from({ length: 40 }).map(() => {
+        const size = Math.random() * 2.5 + 0.5; // size between 0.5rem and 3rem
+        const left = Math.random() * 100;
+        const animationDuration = Math.random() * 10 + 10; // duration between 10s and 20s
+        const animationDelay = Math.random() * 15; // delay up to 15s
+        
+        return {
+            left: `${left}vw`,
+            width: `${size}rem`,
+            height: `${size}rem`,
+            animation: `rise ${animationDuration}s linear ${animationDelay}s infinite`,
+        };
+    });
+    setHearts(generatedHearts);
+  }, []);
 
   return (
     <div className={cn(
@@ -27,27 +52,15 @@ export function AnimatedBackground({ fixed = false }: AnimatedBackgroundProps) {
       fixed ? "fixed" : "absolute"
     )}>
       <div className="relative w-full h-full">
-        {hearts.map((_, i) => {
-          const size = Math.random() * 2.5 + 0.5; // size between 0.5rem and 3rem
-          const left = Math.random() * 100;
-          const animationDuration = Math.random() * 10 + 10; // duration between 10s and 20s
-          const animationDelay = Math.random() * 15; // delay up to 15s
-
-          return (
+        {hearts.map((style, i) => (
             <div
               key={i}
               className="absolute bottom-[-10rem] text-primary/50"
-              style={{
-                left: `${left}vw`,
-                width: `${size}rem`,
-                height: `${size}rem`,
-                animation: `rise ${animationDuration}s linear ${animationDelay}s infinite`,
-              }}
+              style={style}
             >
               <HeartIcon />
             </div>
-          );
-        })}
+        ))}
       </div>
     </div>
   );
