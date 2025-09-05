@@ -23,6 +23,7 @@ import { PagePreview } from "@/components/app/PagePreview";
 import {
   ArrowLeft,
   ChevronRight,
+  Palette,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Editor } from "@/components/ui/editor";
@@ -40,7 +41,8 @@ type FormData = z.infer<typeof formSchema>;
 
 const colorOptions = [
   { value: "#FFFFFF", label: "Branco" },
-  { value: "#FF6B6B", label: "Vermelho Coral" },
+  { value: "#E63946", label: "Vermelho Intenso" },
+  { value: "#9D4EDD", label: "Roxo Vibrante" },
   { value: "#4ECDC4", label: "Turquesa" },
   { value: "#45B7D1", label: "Azul Céu" },
   { value: "#F7D96F", label: "Amarelo Baunilha" },
@@ -51,6 +53,7 @@ export default function CreatorStudioPage() {
   const [currentStep, setCurrentStep] = React.useState(1);
   const [fieldHistory, setFieldHistory] = React.useState<Partial<FormData>>({});
   const totalSteps = 3;
+  const colorPickerRef = React.useRef<HTMLInputElement>(null);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -96,6 +99,16 @@ export default function CreatorStudioPage() {
 
     if (isValid) {
       setFieldHistory((prev) => ({ ...prev, ...form.getValues() }));
+      
+      const nextStepIndex = currentStep;
+      if (nextStepIndex < steps.length) {
+        const nextFieldName = steps[nextStepIndex].name;
+        form.reset({
+          ...form.getValues(),
+          [nextFieldName]: fieldHistory[nextFieldName] || form.formState.defaultValues?.[nextFieldName],
+        });
+      }
+
       if (currentStep < totalSteps) {
         setCurrentStep(currentStep + 1);
       }
@@ -104,9 +117,16 @@ export default function CreatorStudioPage() {
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
+      const prevStepIndex = currentStep - 2;
+      const prevFieldName = steps[prevStepIndex].name;
+      form.reset({
+        ...form.getValues(),
+        [prevFieldName]: fieldHistory[prevFieldName] || form.formState.defaultValues?.[prevFieldName],
+      });
       setCurrentStep(currentStep - 1);
     }
   };
+
 
   const currentFieldName = steps[currentStep - 1].name;
 
@@ -167,6 +187,20 @@ export default function CreatorStudioPage() {
                                   aria-label={color.label}
                                 />
                               ))}
+                               <div className="relative w-8 h-8 rounded-full border-2 border-transparent flex items-center justify-center cursor-pointer" 
+                                    style={{
+                                      backgroundImage: 'conic-gradient(from 180deg at 50% 50%, #FF0000 0deg, #FFFF00 60deg, #00FF00 120deg, #00FFFF 180deg, #0000FF 240deg, #FF00FF 300deg, #FF0000 360deg)',
+                                    }}
+                                    onClick={() => colorPickerRef.current?.click()}
+                               >
+                                <input
+                                    ref={colorPickerRef}
+                                    type="color"
+                                    value={field.value}
+                                    onChange={(e) => field.onChange(e.target.value)}
+                                    className="absolute w-full h-full opacity-0 cursor-pointer"
+                                />
+                               </div>
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -291,5 +325,3 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
-
-    
