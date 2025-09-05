@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, Globe, QrCode, Gamepad2, PlayCircle, Eye, Check, X } from "lucide-react";
+import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, Globe, QrCode, Gamepad2, PlayCircle, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -22,6 +22,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { AnimatedBackground } from "@/components/app/AnimatedBackground";
 import Link from "next/link";
+import { TypingAnimation } from "@/components/app/TypingAnimation";
 
 export default function CreatorPage() {
   const testimonials = [
@@ -109,9 +110,9 @@ export default function CreatorPage() {
        <section className="relative overflow-hidden section-padding pt-24 md:pt-32">
         <div className="container relative z-10 grid lg:grid-cols-2 gap-12 items-center">
           <div className="text-center lg:text-left">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-4 text-foreground font-display leading-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4 text-foreground font-display leading-tight">
               Declare seu amor
-              <span className="block font-handwriting text-primary text-6xl md:text-7xl lg:text-8xl mt-1">de forma única!</span>
+              <TypingAnimation />
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 my-8">
               Transforme seus sentimentos em uma obra de arte digital. Uma experiência exclusiva, criada para celebrar momentos que merecem ser eternos.
@@ -412,3 +413,8 @@ export default function CreatorPage() {
     </>
   );
 }
+
+// Adicionei a importação dos ícones Check e X que estava faltando
+import { Check, X } from "lucide-react";
+
+    
