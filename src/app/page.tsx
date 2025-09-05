@@ -197,8 +197,8 @@ export default function CreatorPage() {
               <CardHeader className="items-center pb-4">
                 <CardTitle className="text-2xl">Para sempre</CardTitle>
                 <CardDescription>Esse plano é vitalício, não precisa renovar.</CardDescription>
-                <p className="text-4xl font-bold pt-4">R$33,00 <span className="text-lg font-normal text-muted-foreground">/uma vez</span></p>
-                <p className="line-through text-muted-foreground">R$70,00</p>
+                <p className="text-4xl font-bold pt-4">R$34,99 <span className="text-lg font-normal text-muted-foreground">/uma vez</span></p>
+                <p className="line-through text-muted-foreground">R$79,90</p>
               </CardHeader>
               <CardContent className="flex-grow">
                 <ul className="space-y-3 text-muted-foreground">
