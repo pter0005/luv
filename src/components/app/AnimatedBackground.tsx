@@ -14,8 +14,8 @@ const HeartIcon = () => (
 );
 
 export function AnimatedBackground() {
-  // Create an array of 20 elements to map over
-  const hearts = Array.from({ length: 20 });
+  // Create an array of 40 elements to map over
+  const hearts = Array.from({ length: 40 });
 
   return (
     <div className="fixed top-0 left-0 w-full h-full -z-10 overflow-hidden pointer-events-none purple-fog">
@@ -45,5 +45,3 @@ export function AnimatedBackground() {
     </div>
   );
 }
-
-    
