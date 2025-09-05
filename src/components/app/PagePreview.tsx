@@ -181,7 +181,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
         }
       `}</style>
       <Swiper
-        modules={[EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination]}
+        modules={[EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination, Navigation]}
         grabCursor={true}
         centeredSlides={true}
         slidesPerView={'auto'}
