@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/carousel";
 import { AnimatedBackground } from "@/components/app/AnimatedBackground";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 function TypingAnimation() {
   const [index, setIndex] = React.useState(0);
@@ -183,34 +184,36 @@ export default function CreatorPage() {
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-16">Cada detalhe foi pensado para proporcionar uma declaração de amor que transcende o comum. Oferecemos mais que uma página, uma memória viva.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, i) => (
-               <Dialog key={i}>
-                <Card className="bg-card/80 border-border hover:border-primary/50 hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-primary/10 flex flex-col">
-                  <CardHeader className="items-center">
-                    <div className="p-4 bg-primary/10 rounded-full mb-4">
-                      <feature.icon className="w-8 h-8 text-primary" />
-                    </div>
-                    <CardTitle>{feature.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex-grow">
-                    <p className="text-muted-foreground">{feature.description}</p>
-                  </CardContent>
-                  <div className="p-6 pt-0 mt-auto">
+              <Dialog key={i}>
+                <div className="group relative rounded-lg overflow-hidden cursor-pointer shadow-lg hover:shadow-primary/20 transition-shadow duration-300">
+                  <Image 
+                      src={feature.example.image}
+                      alt={feature.title}
+                      width={600}
+                      height={400}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      data-ai-hint={feature.example.imageHint}
+                    />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent" />
+                  <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
+                    <feature.icon className="w-10 h-10 mb-4 text-primary drop-shadow-lg" />
+                    <h3 className="text-2xl font-bold font-display">{feature.title}</h3>
+                    <p className="text-white/80 mb-4">{feature.description}</p>
                     <DialogTrigger asChild>
-                      <Button variant="ghost" className="w-full">
-                        <Eye className="mr-2 h-4 w-4" />
+                      <Button variant="outline" className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/20 text-white w-full mt-auto">
                         Ver exemplo
                       </Button>
                     </DialogTrigger>
                   </div>
-                </Card>
-                <DialogContent className="bg-card/95 backdrop-blur-lg text-foreground max-w-2xl">
-                  <DialogHeader>
-                    <DialogTitle className="text-2xl font-display text-primary flex items-center gap-3"><feature.icon className="w-6 h-6" /> {feature.example.title}</DialogTitle>
+                </div>
+                <DialogContent className="bg-card/95 backdrop-blur-lg text-foreground max-w-4xl p-0 border-0">
+                  <DialogHeader className="p-6">
+                    <DialogTitle className="text-3xl font-display text-primary flex items-center gap-3"><feature.icon className="w-8 h-8" /> {feature.example.title}</DialogTitle>
                     <DialogDescription className="text-base pt-2 text-muted-foreground">
                       {feature.example.description}
                     </DialogDescription>
                   </DialogHeader>
-                  <div className="mt-4">
+                  <div className="px-6 pb-6">
                      <Image 
                         src={feature.example.image}
                         alt={feature.example.title}
