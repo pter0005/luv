@@ -57,7 +57,7 @@ function TypingAnimation() {
   }, [subIndex, index, reverse, phrases]);
 
   return (
-    <h2 className="font-display text-4xl lg:text-5xl text-primary mb-8 h-20">
+    <h2 className="font-handwriting text-4xl lg:text-6xl text-primary mb-8 h-20">
       {`${phrases[index].substring(0, subIndex)}`}
       <span className="animate-blink">|</span>
     </h2>

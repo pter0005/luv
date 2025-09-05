@@ -19,6 +19,7 @@ export default {
       fontFamily: {
         sans: ['Poppins', 'sans-serif'],
         display: ['Playfair Display', 'serif'],
+        handwriting: ['Dancing Script', 'cursive'],
       },
       colors: {
         background: 'hsl(var(--background))',
