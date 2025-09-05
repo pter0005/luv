@@ -39,15 +39,6 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-const colorOptions = [
-  { value: "#FFFFFF", label: "Branco" },
-  { value: "#E63946", label: "Vermelho Intenso" },
-  { value: "#9D4EDD", label: "Roxo Vibrante" },
-  { value: "#4ECDC4", label: "Turquesa" },
-  { value: "#45B7D1", label: "Azul Céu" },
-  { value: "#F7D96F", label: "Amarelo Baunilha" },
-];
-
 export default function CreatorStudioPage() {
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = React.useState(1);
@@ -103,8 +94,10 @@ export default function CreatorStudioPage() {
       const nextStepIndex = currentStep;
       if (nextStepIndex < steps.length) {
         const nextFieldName = steps[nextStepIndex].name;
+        // This keeps the preview updated, but clears the form field for the next step
         form.reset({
           ...form.getValues(),
+          [currentFieldName]: fieldHistory[currentFieldName] || '',
           [nextFieldName]: fieldHistory[nextFieldName] || form.formState.defaultValues?.[nextFieldName],
         });
       }
@@ -171,37 +164,24 @@ export default function CreatorStudioPage() {
                         <FormItem>
                           <FormLabel>Cor do Título</FormLabel>
                           <FormControl>
-                            <div className="flex items-center gap-3 pt-2">
-                              {colorOptions.map((color) => (
-                                <button
-                                  type="button"
-                                  key={color.value}
-                                  className={cn(
-                                    "w-8 h-8 rounded-full border-2 transition-transform",
-                                    field.value === color.value
-                                      ? "border-white scale-110"
-                                      : "border-transparent"
-                                  )}
-                                  style={{ backgroundColor: color.value }}
-                                  onClick={() => field.onChange(color.value)}
-                                  aria-label={color.label}
-                                />
-                              ))}
-                               <div className="relative w-8 h-8 rounded-full border-2 border-transparent flex items-center justify-center cursor-pointer" 
-                                    style={{
-                                      backgroundImage: 'conic-gradient(from 180deg at 50% 50%, #FF0000 0deg, #FFFF00 60deg, #00FF00 120deg, #00FFFF 180deg, #0000FF 240deg, #FF00FF 300deg, #FF0000 360deg)',
-                                    }}
+                             <div className="flex items-center gap-4 pt-2">
+                                <div 
+                                    className="w-14 h-14 rounded-lg border-2 border-zinc-700 cursor-pointer"
+                                    style={{ backgroundColor: field.value }}
                                     onClick={() => colorPickerRef.current?.click()}
-                               >
+                                />
+                                <div className="flex flex-col">
+                                    <span className="text-sm text-muted-foreground">Clique no quadrado para escolher uma cor</span>
+                                    <span className="font-mono text-lg">{field.value}</span>
+                                </div>
                                 <input
                                     ref={colorPickerRef}
                                     type="color"
                                     value={field.value}
                                     onChange={(e) => field.onChange(e.target.value)}
-                                    className="absolute w-full h-full opacity-0 cursor-pointer"
+                                    className="sr-only"
                                 />
-                               </div>
-                            </div>
+                             </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
