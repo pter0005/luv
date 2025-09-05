@@ -289,8 +289,8 @@ export default function CreatorPage() {
               {testimonials.map((testimonial, index) => (
                   <Card 
                     key={index} 
-                    className="bg-card/80 border-border p-6 text-left flex flex-col justify-between animate-fade-in-up"
-                    style={{ animationDelay: `${index * 150}ms` }}
+                    className="bg-card/80 border-border p-6 text-left flex flex-col justify-between"
+                    style={{ animation: `fade-in-up 0.8s ease-out forwards`, animationDelay: `${index * 150}ms` }}
                   >
                     <div>
                       <div className="flex items-center gap-4 mb-4">
@@ -374,7 +374,7 @@ export default function CreatorPage() {
               <CardContent className="flex-grow">
                 <ul className="space-y-3 text-muted-foreground text-left">
                   <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Tudo do plano Para Sempre</span></li>
-                  <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Conteúdo e jogo personalizados</span></li>
+                  <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Jogo 2D personalizado</span></li>
                   <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Designs de página exclusivos</span></li>
                   <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Vídeos e animações sob demanda</span></li>
                   <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Suporte premium dedicado</span></li>
@@ -454,5 +454,7 @@ export default function CreatorPage() {
     </>
   );
 }
+
+    
 
     
