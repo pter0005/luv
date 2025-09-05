@@ -7,19 +7,23 @@ import { ptBR } from 'date-fns/locale';
 import * as z from "zod";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+
+// Import Swiper React components
 import SwiperCore from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination } from 'swiper/modules';
+import { EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination, Navigation } from 'swiper/modules';
 
+// Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/effect-cube';
 import 'swiper/css/effect-flip';
 import 'swiper/css/effect-cards';
 import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 
-// Instala os módulos do Swiper para que os efeitos funcionem
-SwiperCore.use([EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination]);
+// Install Swiper modules
+SwiperCore.use([EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination, Navigation]);
 
 const formSchema = z.object({
   title: z.string(),
@@ -113,111 +117,119 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
     return null;
   }
 
-  const getSwiperEffectProps = () => {
+  const getSwiperProps = () => {
     switch (displayType) {
       case 'Coverflow':
         return {
-          effect: 'slide' as const,
-          slidesPerView: 3,
+          effect: 'coverflow' as const,
+          grabCursor: true,
+          centeredSlides: true,
+          slidesPerView: 'auto' as const,
+          loop: true,
+          coverflowEffect: {
+            rotate: 50,
+            stretch: 0,
+            depth: 100,
+            modifier: 1,
+            slideShadows: true,
+          },
+          pagination: { clickable: true },
+          navigation: true,
         };
       case 'Cube':
         return {
           effect: 'cube' as const,
-          slidesPerView: 1,
+          grabCursor: true,
+          loop: true,
           cubeEffect: {
             shadow: true,
-            slideShadows: false,
+            slideShadows: true,
             shadowOffset: 20,
             shadowScale: 0.94,
           },
+          pagination: { clickable: true },
         };
       case 'Flip':
         return {
           effect: 'flip' as const,
-          slidesPerView: 1,
-          flipEffect: {
-            slideShadows: false,
-          },
+          grabCursor: true,
+          loop: true,
+          pagination: { clickable: true },
+          navigation: true,
         };
       case 'Cards':
       default:
         return {
           effect: 'cards' as const,
-          slidesPerView: 1,
+          grabCursor: true,
+          loop: true,
           cardsEffect: {
             slideShadows: false,
           },
         };
     }
   };
-  
-  const isCube = displayType === 'Cube';
-  const isCards = displayType === 'Cards';
-  const isCoverflow = displayType === 'Coverflow';
-  const isFlip = displayType === 'Flip';
 
+  const isCoverflow = displayType === 'Coverflow';
+  const isCube = displayType === 'Cube';
+  
   return (
     <div className="w-full mb-6 relative h-[300px] flex items-center justify-center">
       <style jsx global>{`
+        .swiper {
+          width: 100%;
+          padding-top: 50px;
+          padding-bottom: 50px;
+        }
+        .swiper-slide {
+          background-position: center;
+          background-size: cover;
+        }
+        .swiper-slide-coverflow {
+          width: 300px;
+          height: 300px;
+        }
+        .swiper-cube-container .swiper {
+          width: 250px;
+          height: 250px;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+        }
+        .swiper-cube-container .swiper-slide {
+          background-position: center;
+          background-size: cover;
+        }
         .swiper-pagination-bullet-active {
           background: hsl(var(--primary)) !important;
         }
-        .swiper-slide-shadow-left,
-        .swiper-slide-shadow-right,
-        .swiper-slide-shadow-top,
-        .swiper-slide-shadow-bottom,
-        .swiper-slide-shadow,
-        .swiper-cube-shadow {
-          display: none !important;
-        }
-        .swiper-slide-coverflow {
-          width: 200px !important;
-          height: 200px !important;
-        }
-        .swiper-slide-cards {
-          width: 250px !important;
-          height: 250px !important;
-        }
-        .swiper-cube-container {
-          width: 200px !important;
-          height: 200px !important;
-        }
-        .swiper-slide-flip {
-           width: 250px !important;
-           height: 250px !important;
+        .swiper-button-next, .swiper-button-prev {
+          color: hsl(var(--primary)) !important;
         }
       `}</style>
-      <Swiper
-        grabCursor={true}
-        centeredSlides={true}
-        pagination={{ clickable: true }}
-        className={cn(
-          "mySwiper w-full h-full",
-          isCube && "swiper-cube-container"
-        )}
-        loop
-        {...getSwiperEffectProps()}
-      >
-        {photos.map((photo, index) => (
-          <SwiperSlide
-            key={index}
-            className={cn({
-              'swiper-slide-cards': isCards,
-              'swiper-slide-coverflow': isCoverflow,
-              'swiper-slide-flip': isFlip,
-            })}
-          >
-            <div className="relative w-full h-full flex items-center justify-center">
-              <Image
-                src={photo}
-                alt={`User photo ${index + 1}`}
-                fill
-                className="rounded-lg object-contain"
-              />
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      <div className={cn(isCube && 'swiper-cube-container', 'w-full h-full')}>
+          <Swiper {...getSwiperProps()} className="mySwiper">
+            {photos.map((photo, index) => (
+              <SwiperSlide
+                key={index}
+                className={cn({
+                  'swiper-slide-coverflow': isCoverflow,
+                })}
+              >
+                <div className="relative w-full h-full">
+                  <Image
+                    src={photo}
+                    alt={`User photo ${index + 1}`}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="rounded-lg object-contain"
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+      </div>
     </div>
   );
 };
@@ -273,5 +285,7 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
+
+    
 
     
