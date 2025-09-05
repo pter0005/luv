@@ -94,19 +94,8 @@
   animation: float 6s ease-in-out infinite;
 }
 
-@keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .section-padding {
-  @apply py-16 md:py-20 lg:py-32;
+  @apply py-12 md:py-20 lg:py-24;
 }
 
 @keyframes purple-fog {
@@ -148,17 +137,4 @@
     transform: translateY(-100vh) rotate(360deg);
     opacity: 0;
   }
-}
-
-@keyframes blink {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
-}
-
-.animate-blink {
-  animation: blink 1s step-end infinite;
 }

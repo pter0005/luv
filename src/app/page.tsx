@@ -23,40 +23,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { AnimatedBackground } from "@/components/app/AnimatedBackground";
 import Link from "next/link";
 
-function TypingAnimation() {
-  const [index, setIndex] = React.useState(0);
-  const [subIndex, setSubIndex] = React.useState(0);
-  const [reverse, setReverse] = React.useState(false);
-  const phrases = ["Para alguém especial.", "De forma única.", "Para seu amor."];
-
-  React.useEffect(() => {
-    if (subIndex === phrases[index].length + 1 && !reverse) {
-      setReverse(true);
-      return;
-    }
-
-    if (subIndex === 0 && reverse) {
-      setReverse(false);
-      setIndex((prev) => (prev + 1) % phrases.length);
-      return;
-    }
-
-    const timeout = setTimeout(() => {
-      setSubIndex((prev) => prev + (reverse ? -1 : 1));
-    }, Math.max(reverse ? 75 : subIndex === phrases[index].length ? 2000 : 150, 75));
-
-    return () => clearTimeout(timeout);
-  }, [subIndex, index, reverse, phrases]);
-
-  return (
-    <h2 className="font-handwriting text-4xl lg:text-6xl text-primary mb-8 h-20">
-      {`${phrases[index].substring(0, subIndex)}`}
-      <span className="animate-blink">|</span>
-    </h2>
-  );
-}
-
-
 export default function CreatorPage() {
   const testimonials = [
     { name: "Mariana & João", date: "15 de Maio, 2024", message: "Adorei a experiência! Pude criar uma página especial para o João com nossas fotos favoritas, uma playlist personalizada e um texto que representa nossa história. Ele ficou super emocionado quando viu!", image: "https://picsum.photos/100/100?random=1" },
@@ -70,7 +36,7 @@ export default function CreatorPage() {
   const features = [
     { 
       icon: Gamepad2, 
-      title: "Jogo Enigmático 2D", 
+      title: "Jogo Enigmático 2D",
       description: "Uma revelação inesquecível através de um enigma personalizado.",
       example: {
         title: "Exemplo: Jogo Enigmático 2D",
@@ -140,29 +106,29 @@ export default function CreatorPage() {
     <>
       <AnimatedBackground fixed />
       {/* Hero Section */}
-       <section className="relative overflow-hidden section-padding">
+       <section className="relative overflow-hidden section-padding pt-24 md:pt-32">
         <div className="container relative z-10 grid lg:grid-cols-2 gap-12 items-center">
           <div className="text-center lg:text-left">
-            <h1 className="text-5xl lg:text-7xl font-bold tracking-tighter mb-4 text-foreground font-display">
-              Declare seu <span className="gradient-text">amor</span>.
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-4 text-foreground font-display leading-tight">
+              Declare seu amor
+              <span className="block font-handwriting text-primary text-6xl md:text-7xl lg:text-8xl mt-1">de forma única!</span>
             </h1>
-            <TypingAnimation />
-            <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 mb-8">
+            <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 my-8">
               Transforme seus sentimentos em uma obra de arte digital. Uma experiência exclusiva, criada para celebrar momentos que merecem ser eternos.
             </p>
-            <Button size="lg" className="h-12 md:h-14 group relative">
+            <Button size="lg" className="h-12 text-base md:h-14 group relative w-full sm:w-auto">
               Criar minha página
               <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
           </div>
-          <div className="relative w-full max-w-sm md:max-w-md mx-auto lg:max-w-none lg:mx-0">
+          <div className="relative w-full max-w-md mx-auto lg:max-w-none lg:mx-0">
              <div className="absolute inset-0 bg-primary/10 rounded-full blur-3xl animate-float"></div>
              <Image
-              src="https://picsum.photos/600/600"
+              src="https://picsum.photos/800/800"
               alt="Casal feliz"
-              width={600}
-              height={600}
-              className="rounded-full shadow-2xl shadow-primary/20 relative animate-float aspect-square object-cover"
+              width={800}
+              height={800}
+              className="rounded-3xl shadow-2xl shadow-primary/20 relative aspect-square object-cover"
               data-ai-hint="happy couple"
             />
           </div>
@@ -282,7 +248,6 @@ export default function CreatorPage() {
                   <Card 
                     key={index} 
                     className="bg-card/80 border-border p-6 text-left flex flex-col justify-between"
-                    style={{ animation: `fade-in-up 0.8s ease-out forwards`, animationDelay: `${index * 150}ms`, opacity: 0 }}
                   >
                     <div>
                       <div className="flex items-center gap-4 mb-4">
