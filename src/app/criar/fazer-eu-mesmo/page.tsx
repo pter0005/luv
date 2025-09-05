@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -24,36 +23,23 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 import { Calendar } from "@/components/ui/calendar";
 import { PagePreview } from "@/components/app/PagePreview";
 import {
   ArrowLeft,
   CalendarIcon,
-  Check,
-  ChevronsUpDown,
-  Image as ImageIcon,
+  ChevronRight,
+  ImageIcon,
   Loader2,
+  Music,
   Paintbrush,
   Sparkles,
-  Youtube,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { suggestSentimentEnhancements } from "@/ai/flows/suggest-sentiment-enhancements";
 import { generateUniqueBackground } from "@/ai/flows/generate-unique-background";
+import { Progress } from "@/components/ui/progress";
 
 const formSchema = z.object({
   name1: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
@@ -86,6 +72,8 @@ export default function CreatorStudioPage() {
   const { toast } = useToast();
   const [isAiLoading, setIsAiLoading] = React.useState(false);
   const [isBgLoading, setIsBgLoading] = React.useState(false);
+  const [currentStep, setCurrentStep] = React.useState(1);
+  const totalSteps = 7;
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -173,35 +161,16 @@ export default function CreatorStudioPage() {
       description: "Sua página foi salva com sucesso. (Simulação)",
     });
   }
-
-  return (
-    <div className="flex flex-col lg:flex-row w-full min-h-screen bg-secondary/30">
-      {/* Form Section */}
-      <aside className="w-full lg:w-1/3 p-4 md:p-6 lg:p-8 space-y-6 overflow-y-auto h-screen">
-        <div className="flex items-center gap-4">
-             <Button variant="ghost" size="icon">
-                <ArrowLeft />
-             </Button>
-            <div>
-                <h1 className="text-2xl font-bold">Estúdio de Criação</h1>
-                <p className="text-muted-foreground">Preencha os campos e veja a mágica acontecer.</p>
-            </div>
-        </div>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            {/* Names */}
-            <Card>
-              <CardHeader>
-                <FormItem>
-                  <FormLabel className="text-lg font-semibold">Nomes</FormLabel>
-                  <FormDescription>
-                    Quem são as estrelas desta história?
-                  </FormDescription>
-                </FormItem>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <FormField
+  
+  const renderStep = () => {
+    switch(currentStep) {
+      case 1:
+        return (
+          <div>
+            <h2 className="text-3xl font-bold">Nomes do Casal</h2>
+            <p className="text-muted-foreground mt-2">Quem são as estrelas desta história de amor?</p>
+            <div className="space-y-4 mt-6">
+               <FormField
                   control={form.control}
                   name="name1"
                   render={({ field }) => (
@@ -227,21 +196,16 @@ export default function CreatorStudioPage() {
                     </FormItem>
                   )}
                 />
-              </CardContent>
-            </Card>
-
-            {/* Start Date */}
-            <Card>
-              <CardHeader>
-                <FormItem>
-                  <FormLabel className="text-lg font-semibold">Data Especial</FormLabel>
-                  <FormDescription>
-                    Quando tudo começou?
-                  </FormDescription>
-                </FormItem>
-              </CardHeader>
-              <CardContent>
-                <FormField
+            </div>
+          </div>
+        )
+      case 2:
+        return (
+           <div>
+            <h2 className="text-3xl font-bold">Data Especial</h2>
+            <p className="text-muted-foreground mt-2">Quando tudo começou? Escolha a data que marca o início.</p>
+             <div className="space-y-4 mt-6">
+                 <FormField
                   control={form.control}
                   name="startDate"
                   render={({ field }) => (
@@ -281,169 +245,205 @@ export default function CreatorStudioPage() {
                     </FormItem>
                   )}
                 />
-              </CardContent>
-            </Card>
-            
-            {/* Message */}
-            <Card>
-                <CardHeader>
+            </div>
+          </div>
+        )
+        case 3:
+            return (
+                <div>
                     <div className="flex justify-between items-center">
                         <div>
-                             <FormLabel className="text-lg font-semibold">Sua Mensagem</FormLabel>
-                            <FormDescription>
-                                Escreva com o coração (ou peça ajuda para a IA).
-                            </FormDescription>
+                            <h2 className="text-3xl font-bold">Sua Mensagem</h2>
+                            <p className="text-muted-foreground mt-2">Escreva com o coração ou peça ajuda para a IA.</p>
                         </div>
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button variant="ghost" size="icon" onClick={handleEnhanceMessage} disabled={isAiLoading}>
-                                        {isAiLoading ? <Loader2 className="animate-spin" /> : <Sparkles />}
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>Melhorar com IA</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
+                         <Button variant="ghost" size="icon" onClick={handleEnhanceMessage} disabled={isAiLoading}>
+                            {isAiLoading ? <Loader2 className="animate-spin" /> : <Sparkles />}
+                        </Button>
                     </div>
-                </CardHeader>
-                <CardContent>
-                     <FormField
-                      control={form.control}
-                      name="message"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Textarea
-                              placeholder="Escreva sua mensagem aqui..."
-                              className="resize-none"
-                              rows={5}
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                </CardContent>
-            </Card>
-
-            {/* Images */}
-            <Card>
-                <CardHeader>
-                    <FormLabel className="text-lg font-semibold">Memórias</FormLabel>
-                    <FormDescription>
-                        Adicione até 8 fotos que contam a sua história.
-                    </FormDescription>
-                </CardHeader>
-                <CardContent>
-                     <FormField
-                        control={form.control}
-                        name="images"
-                        render={({ field }) => (
-                            <FormItem>
-                                 <FormControl>
-                                    <Input 
-                                        type="file" 
-                                        accept="image/*"
-                                        multiple
-                                        onChange={(e) => {
-                                            const files = Array.from(e.target.files);
-                                            const imageUrls = files.map(file => URL.createObjectURL(file));
-                                            field.onChange(imageUrls);
-                                        }}
-                                        className="hidden"
-                                        id="image-upload"
+                    <div className="space-y-4 mt-6">
+                        <FormField
+                            control={form.control}
+                            name="message"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormControl>
+                                    <Textarea
+                                    placeholder="Escreva sua mensagem aqui..."
+                                    className="resize-none"
+                                    rows={5}
+                                    {...field}
                                     />
                                 </FormControl>
-                                <label htmlFor="image-upload" className="cursor-pointer">
-                                    <div className="border-2 border-dashed border-muted-foreground/50 rounded-lg p-8 text-center hover:bg-muted/50 transition-colors">
-                                        <ImageIcon className="mx-auto h-12 w-12 text-muted-foreground" />
-                                        <p className="mt-2 text-sm text-muted-foreground">Clique para adicionar imagens</p>
-                                    </div>
-                                </label>
-                                {watchedData.images && watchedData.images.length > 0 && (
-                                    <div className="mt-4 grid grid-cols-4 gap-2">
-                                        {watchedData.images.map((img, i) => (
-                                            <img key={i} src={img} className="rounded-md aspect-square object-cover" />
-                                        ))}
-                                    </div>
-                                )}
                                 <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </CardContent>
-            </Card>
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                </div>
+            )
+        case 4:
+            return (
+                <div>
+                    <h2 className="text-3xl font-bold">Galeria de Memórias</h2>
+                    <p className="text-muted-foreground mt-2">Adicione até 8 fotos que contam a sua história.</p>
+                    <div className="space-y-4 mt-6">
+                        <FormField
+                            control={form.control}
+                            name="images"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormControl>
+                                        <Input 
+                                            type="file" 
+                                            accept="image/*"
+                                            multiple
+                                            onChange={(e) => {
+                                                const files = Array.from(e.target.files);
+                                                const imageUrls = files.map(file => URL.createObjectURL(file));
+                                                field.onChange(imageUrls);
+                                            }}
+                                            className="hidden"
+                                            id="image-upload"
+                                        />
+                                    </FormControl>
+                                    <label htmlFor="image-upload" className="cursor-pointer">
+                                        <div className="border-2 border-dashed border-muted-foreground/50 rounded-lg p-8 text-center hover:bg-muted/50 transition-colors">
+                                            <ImageIcon className="mx-auto h-12 w-12 text-muted-foreground" />
+                                            <p className="mt-2 text-sm text-muted-foreground">Clique para adicionar imagens</p>
+                                        </div>
+                                    </label>
+                                    {watchedData.images && watchedData.images.length > 0 && (
+                                        <div className="mt-4 grid grid-cols-4 gap-2">
+                                            {watchedData.images.map((img, i) => (
+                                                <img key={i} src={img} className="rounded-md aspect-square object-cover" />
+                                            ))}
+                                        </div>
+                                    )}
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                </div>
+            )
+        case 5:
+            return (
+                 <div>
+                    <h2 className="text-3xl font-bold">Trilha Sonora</h2>
+                    <p className="text-muted-foreground mt-2">Cole uma URL do YouTube para adicionar a música de vocês.</p>
+                    <div className="space-y-4 mt-6">
+                        <FormField
+                            control={form.control}
+                            name="musicUrl"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormControl>
+                                        <div className="relative">
+                                            <Music className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                            <Input placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ" {...field} className="pl-10" />
+                                        </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                </div>
+            )
+        case 6:
+            return (
+                <div>
+                    <h2 className="text-3xl font-bold">Fundo da Página</h2>
+                    <p className="text-muted-foreground mt-2">Use a IA para gerar um fundo único e exclusivo.</p>
+                    <div className="space-y-4 mt-6">
+                        <FormField
+                            control={form.control}
+                            name="backgroundPrompt"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Descreva o fundo dos seus sonhos</FormLabel>
+                                <FormControl>
+                                    <div className="relative">
+                                        <Paintbrush className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                        <Input placeholder="Ex: Uma galáxia com tons de rosa e roxo" {...field} className="pl-10" />
+                                    </div>
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <Button onClick={handleGenerateBackground} disabled={isBgLoading} className="w-full">
+                            {isBgLoading ? <Loader2 className="animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                            Gerar Fundo com IA
+                        </Button>
+                    </div>
+                </div>
+            )
+        case 7:
+            return (
+                 <div>
+                    <h2 className="text-3xl font-bold">Tudo Pronto!</h2>
+                    <p className="text-muted-foreground mt-2">Sua página está pronta para ser salva e compartilhada.</p>
+                     <Button type="submit" size="lg" className="w-full mt-6">Salvar e Obter Link</Button>
+                </div>
+            )
+      default:
+        return null;
+    }
+  }
 
-            {/* Music */}
-             <Card>
-                <CardHeader>
-                    <FormLabel className="text-lg font-semibold">Trilha Sonora</FormLabel>
-                    <FormDescription>Cole uma URL do YouTube para adicionar música.</FormDescription>
-                </CardHeader>
-                <CardContent>
-                    <FormField
-                      control={form.control}
-                      name="musicUrl"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                             <div className="relative">
-                                <Youtube className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                <Input placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ" {...field} className="pl-10" />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                </CardContent>
-            </Card>
+  const handleNextStep = () => {
+    if (currentStep < totalSteps) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
 
-             {/* Background */}
-            <Card>
-                 <CardHeader>
-                    <FormLabel className="text-lg font-semibold">Fundo da Página</FormLabel>
-                    <FormDescription>Use a IA para gerar um fundo único.</FormDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                     <FormField
-                      control={form.control}
-                      name="backgroundPrompt"
-                      render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Descreva o fundo dos seus sonhos</FormLabel>
-                          <FormControl>
-                             <div className="relative">
-                                <Paintbrush className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                <Input placeholder="Ex: Uma galáxia com tons de rosa e roxo" {...field} className="pl-10" />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button onClick={handleGenerateBackground} disabled={isBgLoading} className="w-full">
-                        {isBgLoading ? <Loader2 className="animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
-                        Gerar Fundo com IA
-                    </Button>
-                </CardContent>
-            </Card>
+  const handlePrevStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
 
 
-            <Button type="submit" className="w-full" size="lg">Salvar Página</Button>
-          </form>
-        </Form>
+  return (
+    <div className="flex flex-col lg:flex-row w-full min-h-screen bg-[#111111] text-white">
+      {/* Form Section */}
+      <aside className="w-full lg:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
+        <div className="w-full max-w-md mx-auto">
+            <div className="mb-8">
+                <Progress value={(currentStep / totalSteps) * 100} className="bg-zinc-700" />
+                <p className="text-right text-sm text-muted-foreground mt-2">{currentStep}/{totalSteps}</p>
+            </div>
+
+            <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+                {renderStep()}
+
+                {currentStep < 7 && (
+                    <div className="flex items-center gap-4 mt-8">
+                        <Button variant="secondary" onClick={handlePrevStep} disabled={currentStep === 1} className="w-full bg-zinc-800 hover:bg-zinc-700">
+                            <ArrowLeft className="mr-2 h-4 w-4" />
+                            Voltar etapa
+                        </Button>
+                        <Button onClick={handleNextStep} className="w-full bg-red-600 hover:bg-red-700">
+                            Próxima etapa
+                             <ChevronRight className="ml-2 h-4 w-4" />
+                        </Button>
+                    </div>
+                )}
+            </form>
+            </Form>
+        </div>
       </aside>
 
       {/* Preview Section */}
-      <main className="w-full lg:w-2/3 p-4 sticky top-0 h-screen hidden lg:block">
-        <div className="w-full h-full rounded-2xl overflow-hidden shadow-2xl shadow-black/50 border-4 border-foreground/10">
+      <main className="w-full lg:w-1/2 p-4 hidden lg:flex items-center justify-center bg-black">
+        <div className="w-full h-[90vh] rounded-2xl overflow-hidden shadow-2xl shadow-black/50 border-4 border-zinc-800">
             <PagePreview data={watchedData} />
         </div>
       </main>
     </div>
   );
 }
+
+    
