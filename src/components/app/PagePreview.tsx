@@ -118,14 +118,20 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
   }
 
   const getSwiperProps = () => {
+    const commonProps = {
+      loop: true,
+      pagination: { clickable: true },
+      navigation: true,
+      grabCursor: true,
+    };
+
     switch (displayType) {
       case 'Coverflow':
         return {
+          ...commonProps,
           effect: 'coverflow' as const,
-          grabCursor: true,
-          centeredSlides: true,
           slidesPerView: 'auto' as const,
-          loop: true,
+          centeredSlides: true,
           coverflowEffect: {
             rotate: 50,
             stretch: 0,
@@ -133,103 +139,91 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
             modifier: 1,
             slideShadows: true,
           },
-          pagination: { clickable: true },
-          navigation: true,
         };
       case 'Cube':
         return {
+          ...commonProps,
           effect: 'cube' as const,
-          grabCursor: true,
-          loop: true,
           cubeEffect: {
             shadow: true,
             slideShadows: true,
             shadowOffset: 20,
             shadowScale: 0.94,
           },
-          pagination: { clickable: true },
         };
       case 'Flip':
         return {
+          ...commonProps,
           effect: 'flip' as const,
-          grabCursor: true,
-          loop: true,
-          pagination: { clickable: true },
-          navigation: true,
         };
       case 'Cards':
       default:
         return {
+          ...commonProps,
+          navigation: false,
           effect: 'cards' as const,
-          grabCursor: true,
-          loop: true,
           cardsEffect: {
             slideShadows: false,
           },
         };
     }
   };
-
+  
   const isCoverflow = displayType === 'Coverflow';
   const isCube = displayType === 'Cube';
-  
+  const isCards = displayType === 'Cards' || !displayType;
+
   return (
     <div className="w-full mb-6 relative h-[300px] flex items-center justify-center">
       <style jsx global>{`
-        .swiper {
+        .swiper-container {
           width: 100%;
-          padding-top: 50px;
-          padding-bottom: 50px;
+          height: 100%;
+          padding-top: 20px;
+          padding-bottom: 20px;
         }
         .swiper-slide {
           background-position: center;
           background-size: cover;
+          width: ${isCoverflow || isCube ? '250px' : '100%'};
+          height: ${isCoverflow || isCube ? '250px' : '100%'};
         }
-        .swiper-slide-coverflow {
-          width: 300px;
-          height: 300px;
-        }
-        .swiper-cube-container .swiper {
-          width: 250px;
-          height: 250px;
-          position: absolute;
-          left: 50%;
-          top: 50%;
-          transform: translate(-50%, -50%);
-        }
-        .swiper-cube-container .swiper-slide {
-          background-position: center;
-          background-size: cover;
+        .swiper-slide.swiper-slide-cards {
+           border-radius: 18px;
         }
         .swiper-pagination-bullet-active {
           background: hsl(var(--primary)) !important;
         }
         .swiper-button-next, .swiper-button-prev {
           color: hsl(var(--primary)) !important;
+          width: 24px;
+          height: 24px;
+        }
+        .swiper-button-next:after, .swiper-button-prev:after {
+          font-size: 1.25rem !important;
+          font-weight: bold;
         }
       `}</style>
-      <div className={cn(isCube && 'swiper-cube-container', 'w-full h-full')}>
-          <Swiper {...getSwiperProps()} className="mySwiper">
-            {photos.map((photo, index) => (
-              <SwiperSlide
-                key={index}
-                className={cn({
-                  'swiper-slide-coverflow': isCoverflow,
-                })}
-              >
-                <div className="relative w-full h-full">
-                  <Image
-                    src={photo}
-                    alt={`User photo ${index + 1}`}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="rounded-lg object-contain"
-                  />
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-      </div>
+      <Swiper {...getSwiperProps()} className="swiper-container mySwiper">
+        {photos.map((photo, index) => (
+          <SwiperSlide
+            key={index}
+            className={cn({
+              'swiper-slide-cards': isCards,
+            })}
+          >
+            <div className="relative w-full h-full">
+              <Image
+                src={photo}
+                alt={`User photo ${index + 1}`}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="rounded-lg object-contain"
+              />
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
     </div>
   );
 };
@@ -285,7 +279,3 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
-
-    
-
-    
