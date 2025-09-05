@@ -24,23 +24,26 @@ interface HeartStyle {
     width: string;
     height: string;
     animation: string;
+    opacity: number;
 }
 
 export function AnimatedBackground({ fixed = false }: AnimatedBackgroundProps) {
   const [hearts, setHearts] = useState<HeartStyle[]>([]);
 
   useEffect(() => {
-    const generatedHearts = Array.from({ length: 40 }).map(() => {
-        const size = Math.random() * 2.5 + 0.5; // size between 0.5rem and 3rem
+    const generatedHearts = Array.from({ length: 60 }).map(() => {
+        const size = Math.random() * 3.5 + 1.5; // size between 1.5rem and 5rem
         const left = Math.random() * 100;
         const animationDuration = Math.random() * 10 + 10; // duration between 10s and 20s
         const animationDelay = Math.random() * 15; // delay up to 15s
+        const opacity = Math.random() * 0.5 + 0.3; // opacity between 0.3 and 0.8
         
         return {
             left: `${left}vw`,
             width: `${size}rem`,
             height: `${size}rem`,
             animation: `rise ${animationDuration}s linear ${animationDelay}s infinite`,
+            opacity: opacity,
         };
     });
     setHearts(generatedHearts);
@@ -55,7 +58,7 @@ export function AnimatedBackground({ fixed = false }: AnimatedBackgroundProps) {
         {hearts.map((style, i) => (
             <div
               key={i}
-              className="absolute bottom-[-10rem] text-primary/50"
+              className="absolute bottom-[-10rem] text-primary"
               style={style}
             >
               <HeartIcon />
