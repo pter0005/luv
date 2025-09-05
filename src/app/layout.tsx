@@ -6,8 +6,8 @@ import { Header } from '@/components/app/Header';
 import { Footer } from '@/components/app/Footer';
 
 export const metadata: Metadata = {
-  title: 'Forever Yours',
-  description: 'Create a personalized page for your special someone.',
+  title: 'Heartzzu ©',
+  description: 'Crie uma página personalizada para a pessoa especial.',
 };
 
 export default function RootLayout({
@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="pt" className="dark scroll-smooth">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -31,13 +31,11 @@ export default function RootLayout({
       </head>
       <body
         className={cn(
-          'font-body antialiased min-h-screen bg-background flex flex-col'
+          'antialiased overflow-x-hidden bg-black min-h-screen h-full'
         )}
       >
         <Header />
-        <main className="flex-grow">
-          {children}
-        </main>
+        <main>{children}</main>
         <Footer />
         <Toaster />
       </body>
