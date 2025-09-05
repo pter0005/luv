@@ -109,11 +109,12 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
     return null;
   }
 
-  const getSwiperEffect = () => {
+  const getSwiperEffectProps = () => {
     switch (displayType) {
       case 'Coverflow':
         return {
-          effect: 'coverflow',
+          effect: 'coverflow' as const,
+          slidesPerView: 3,
           coverflowEffect: {
             rotate: 50,
             stretch: 0,
@@ -124,7 +125,8 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
         };
       case 'Cube':
         return {
-          effect: 'cube',
+          effect: 'cube' as const,
+          slidesPerView: 1,
           cubeEffect: {
             shadow: true,
             slideShadows: true,
@@ -134,7 +136,8 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
         };
       case 'Flip':
         return {
-          effect: 'flip',
+          effect: 'flip' as const,
+          slidesPerView: 1,
           flipEffect: {
             slideShadows: true,
           },
@@ -142,38 +145,39 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
       case 'Cards':
       default:
         return {
-          effect: 'cards',
-           cardsEffect: {
-             slideShadows: true,
-          }
+          effect: 'cards' as const,
+          slidesPerView: 1,
+          cardsEffect: {
+            slideShadows: true,
+          },
         };
     }
   };
-  
+
   const isCube = displayType === 'Cube';
   const isCards = displayType === 'Cards';
-  
+  const isCoverflow = displayType === 'Coverflow';
+
   return (
     <div className="w-full mb-8 relative h-[400px] flex items-center justify-center">
       <style jsx global>{`
         .swiper-pagination-bullet-active {
-            background: hsl(var(--primary));
+          background: hsl(var(--primary));
         }
-        .swiper-slide-shadow, .swiper-slide-shadow-left, .swiper-slide-shadow-right {
-          background: rgba(0,0,0,0.5) !important;
+        .swiper-slide-shadow,
+        .swiper-slide-shadow-left,
+        .swiper-slide-shadow-right {
+          background: rgba(0, 0, 0, 0.5) !important;
         }
-        .swiper-slide {
-          background-position: center;
-          background-size: cover;
+        .swiper-slide-coverflow {
           width: 300px;
           height: 300px;
         }
-
-         .swiper-slide.swiper-slide-cards {
+        .swiper-slide-cards {
           width: 350px !important;
           height: 350px !important;
         }
-        .swiper.swiper-cube {
+        .swiper-cube-container {
           width: 300px !important;
         }
       `}</style>
@@ -181,16 +185,24 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
         modules={[EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination]}
         grabCursor={true}
         centeredSlides={true}
-        slidesPerView={'auto'}
         pagination={{ clickable: true }}
-        className={cn("mySwiper w-full h-full", isCube ? 'swiper-cube' : '')}
+        className={cn(
+          "mySwiper w-full h-full",
+          isCube && "swiper-cube-container"
+        )}
         loop
-        {...getSwiperEffect()}
+        {...getSwiperEffectProps()}
       >
         {photos.map((photo, index) => (
-          <SwiperSlide key={index} className={cn(isCards ? 'swiper-slide-cards' : '')}>
+          <SwiperSlide
+            key={index}
+            className={cn({
+              'swiper-slide-cards': isCards,
+              'swiper-slide-coverflow': isCoverflow,
+            })}
+          >
             <div className="relative w-full h-full flex items-center justify-center">
-               <Image
+              <Image
                 src={photo}
                 alt={`User photo ${index + 1}`}
                 fill
