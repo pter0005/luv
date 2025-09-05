@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, Globe, QrCode, Link as LinkIcon, Users, Check, X } from "lucide-react";
+import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, Globe, QrCode, Link as LinkIcon, Users, Check, X, Gamepad2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -170,10 +170,9 @@ export default function CreatorPage() {
           <div className="grid lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
             <Card className="bg-card/80 border-border flex flex-col">
               <CardHeader className="items-center pb-4">
-                <CardTitle className="text-2xl">Anual</CardTitle>
-                <CardDescription>Esse plano possui um período de 1 ano.</CardDescription>
-                <p className="text-4xl font-bold pt-4">R$21,00 <span className="text-lg font-normal text-muted-foreground">/ano</span></p>
-                <p className="line-through text-muted-foreground">R$42,00</p>
+                <CardTitle className="text-2xl">Mensal</CardTitle>
+                <CardDescription>Esse plano possui um período de 1 mês.</CardDescription>
+                <p className="text-4xl font-bold pt-4">R$20,00 <span className="text-lg font-normal text-muted-foreground">/mês</span></p>
               </CardHeader>
               <CardContent className="flex-grow">
                 <ul className="space-y-3 text-muted-foreground">
@@ -198,8 +197,8 @@ export default function CreatorPage() {
               <CardHeader className="items-center pb-4">
                 <CardTitle className="text-2xl">Para sempre</CardTitle>
                 <CardDescription>Esse plano é vitalício, não precisa renovar.</CardDescription>
-                <p className="text-4xl font-bold pt-4">R$27,00 <span className="text-lg font-normal text-muted-foreground">/uma vez</span></p>
-                <p className="line-through text-muted-foreground">R$54,00</p>
+                <p className="text-4xl font-bold pt-4">R$33,00 <span className="text-lg font-normal text-muted-foreground">/uma vez</span></p>
+                <p className="line-through text-muted-foreground">R$70,00</p>
               </CardHeader>
               <CardContent className="flex-grow">
                 <ul className="space-y-3 text-muted-foreground">
@@ -207,12 +206,13 @@ export default function CreatorPage() {
                     <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Contador em tempo real</span></li>
                     <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Data de início</span></li>
                     <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>QR Code exclusivo</span></li>
-                    <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Máximo de 8 imagens</span></li>
+                    <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Imagens ilimitadas</span></li>
                     <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>URL personalizada</span></li>
                     <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Suporte 24 horas</span></li>
                     <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Com música</span></li>
                     <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Fundo dinâmico</span></li>
                     <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Com animações exclusivas</span></li>
+                    <li className="flex items-center gap-3 text-foreground font-semibold"><Gamepad2 className="w-5 h-5 text-primary" /><span>Jogo 2D com enigma para uma revelação inesquecível</span></li>
                 </ul>
               </CardContent>
               <div className="p-6 pt-0">
@@ -288,5 +288,3 @@ export default function CreatorPage() {
     </>
   );
 }
-
-    
