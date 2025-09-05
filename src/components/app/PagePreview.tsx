@@ -5,11 +5,13 @@ import * as React from "react";
 import { format, intervalToDuration } from "date-fns";
 import { ptBR } from 'date-fns/locale';
 import * as z from "zod";
+import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
   title: z.string(),
   titleColor: z.string().optional(),
   message: z.string().optional(),
+  messageFontSize: z.string().optional(),
   startDate: z.date().optional(),
   dateDisplayType: z.string().optional(),
 });
@@ -119,7 +121,10 @@ export function PagePreview({ data }: PagePreviewProps) {
                 
                 {data.message && (
                     <div 
-                        className="mt-8 text-zinc-300 whitespace-pre-wrap break-words prose dark:prose-invert max-w-full" 
+                        className={cn(
+                          "mt-8 text-zinc-300 whitespace-pre-wrap break-words prose dark:prose-invert max-w-full",
+                          data.messageFontSize || "text-base"
+                        )}
                         dangerouslySetInnerHTML={{ __html: data.message }} 
                     />
                 )}

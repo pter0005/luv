@@ -28,11 +28,19 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Editor } from "@/components/ui/editor";
 import { Progress } from "@/components/ui/progress";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
   titleColor: z.string().optional(),
   message: z.string().optional(),
+  messageFontSize: z.string().optional(),
   startDate: z.date().optional(),
   dateDisplayType: z.string().optional(),
 });
@@ -52,6 +60,7 @@ export default function CreatorStudioPage() {
       title: "",
       titleColor: "#FFFFFF",
       message: "",
+      messageFontSize: "text-base",
       dateDisplayType: "padrão",
     },
   });
@@ -173,23 +182,49 @@ export default function CreatorStudioPage() {
                   </div>
                 )}
                 {currentStep === 2 && (
-                  <FormField
-                    control={form.control}
-                    key="message"
-                    name="message"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                           <Editor
-                              value={field.value || ''}
-                              onChange={field.onChange}
-                              placeholder="Escreva sua mensagem aqui..."
-                            />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="messageFontSize"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Tamanho do Texto</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione um tamanho" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="text-sm">Pequeno</SelectItem>
+                              <SelectItem value="text-base">Padrão</SelectItem>
+                              <SelectItem value="text-lg">Médio</SelectItem>
+                              <SelectItem value="text-xl">Grande</SelectItem>
+                              <SelectItem value="text-2xl">Extra Grande</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      key="message"
+                      name="message"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Editor
+                                value={field.value || ''}
+                                onChange={field.onChange}
+                                placeholder="Escreva sua mensagem aqui..."
+                              />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 )}
                 {currentStep === 3 && (
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
