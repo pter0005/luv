@@ -142,7 +142,7 @@ export default function CreatorStudioPage() {
                                 !field.value && "text-zinc-500"
                               )}
                             >
-                              {field.value ? (
+                              {field.value instanceof Date && !isNaN(field.value.getTime()) ? (
                                 format(field.value, "PPP")
                               ) : (
                                 <span>Selecione uma data</span>
@@ -178,6 +178,7 @@ export default function CreatorStudioPage() {
     if (currentStep < totalSteps) {
       if (currentStep === 2) {
          form.setValue("message", watchedData.message); 
+         form.setValue('message', '');
       }
       setCurrentStep(currentStep + 1);
     }
