@@ -23,7 +23,6 @@ import { PagePreview } from "@/components/app/PagePreview";
 import {
   ArrowLeft,
   ChevronRight,
-  Palette,
   Upload,
   X as XIcon,
 } from "lucide-react";
@@ -40,13 +39,14 @@ import {
 import Image from "next/image";
 
 const formSchema = z.object({
+  photos: z.array(z.string()).optional(),
+  photoDisplayType: z.string().optional(),
   title: z.string().min(1, "O título é obrigatório."),
   titleColor: z.string().optional(),
   message: z.string().optional(),
   messageFontSize: z.string().optional(),
   startDate: z.date().optional(),
   dateDisplayType: z.string().optional(),
-  photos: z.array(z.string()).optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -62,12 +62,13 @@ export default function CreatorStudioPage() {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      photos: [],
+      photoDisplayType: "Cards",
       title: "",
       titleColor: "#FFFFFF",
       message: "",
       messageFontSize: "text-base",
       dateDisplayType: "padrão",
-      photos: [],
     },
   });
 
@@ -83,6 +84,11 @@ export default function CreatorStudioPage() {
 
   const steps = [
     {
+      name: "photos" as const,
+      title: "Fotos",
+      description: "Anexe fotos e escolha o modo de exibição para personalizar a página. Você pode adicionar até 8 fotos.",
+    },
+    {
       name: "title" as const,
       title: "Título da página",
       description: "Escreva o título dedicatório para a página.",
@@ -96,11 +102,6 @@ export default function CreatorStudioPage() {
       name: "startDate" as const,
       title: "Data de início",
       description: "Informe a data que simboliza o início de uma união.",
-    },
-    {
-      name: "photos" as const,
-      title: "Adicione suas fotos",
-      description: "Selecione as imagens que contam a sua história.",
     },
   ];
 
@@ -171,6 +172,98 @@ export default function CreatorStudioPage() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8">
               <div className="min-h-[350px]">
                 {currentStep === 1 && (
+                   <div className="space-y-8">
+                    <FormField
+                      control={form.control}
+                      name="photos"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <div className="border-2 border-dashed border-zinc-700 rounded-lg p-8 text-center cursor-pointer hover:border-zinc-500 transition-colors"
+                              onClick={() => fileInputRef.current?.click()}>
+                              <Upload className="mx-auto h-10 w-10 text-zinc-500 mb-2" />
+                              <p className="font-semibold">Clique para adicionar fotos</p>
+                              <p className="text-xs text-zinc-500">PNG, JPG, JPEG, GIF (máx. 8 fotos)</p>
+                               <input
+                                type="file"
+                                ref={fileInputRef}
+                                multiple
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                className="hidden"
+                              />
+                            </div>
+                          </FormControl>
+
+                          {field.value && field.value.length > 0 && (
+                            <div className="grid grid-cols-4 gap-4 mt-4">
+                              {(field.value || []).map((photo, index) => (
+                                <div key={index} className="relative group">
+                                  <Image
+                                    src={photo}
+                                    alt={`Preview ${index}`}
+                                    width={100}
+                                    height={100}
+                                    className="rounded-md object-cover w-full h-24"
+                                  />
+                                  <Button
+                                    type="button"
+                                    variant="destructive"
+                                    size="icon"
+                                    className="absolute -top-2 -right-2 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                    onClick={() => removePhoto(index)}
+                                  >
+                                    <XIcon className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                     <FormField
+                      control={form.control}
+                      name="photoDisplayType"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel className="font-semibold">Modo de mostrar</FormLabel>
+                           <FormControl>
+                            <RadioGroup
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                              className="grid grid-cols-2 gap-4"
+                            >
+                              <FormItem>
+                                <FormControl>
+                                  <RadioGroupItem value="Coverflow" id="coverflow">Coverflow</RadioGroupItem>
+                                </FormControl>
+                              </FormItem>
+                              <FormItem>
+                                <FormControl>
+                                  <RadioGroupItem value="Cube" id="cube">Cube</RadioGroupItem>
+                                </FormControl>
+                              </FormItem>
+                              <FormItem>
+                                <FormControl>
+                                  <RadioGroupItem value="Cards" id="cards">Cards</RadioGroupItem>
+                                </FormControl>
+                              </FormItem>
+                              <FormItem>
+                                <FormControl>
+                                  <RadioGroupItem value="Flip" id="flip">Flip</RadioGroupItem>
+                                </FormControl>
+                              </FormItem>
+                            </RadioGroup>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                )}
+                {currentStep === 2 && (
                   <div className="space-y-8">
                     <FormField
                       control={form.control}
@@ -195,7 +288,7 @@ export default function CreatorStudioPage() {
                           <FormControl>
                              <div className="flex items-center gap-4 pt-2">
                                 <div 
-                                    className="w-14 h-14 rounded-lg border-2 border-zinc-700 cursor-pointer"
+                                    className="w-24 h-24 rounded-lg border-2 border-zinc-700 cursor-pointer"
                                     style={{ backgroundColor: field.value }}
                                     onClick={() => colorPickerRef.current?.click()}
                                 />
@@ -218,7 +311,7 @@ export default function CreatorStudioPage() {
                     />
                   </div>
                 )}
-                {currentStep === 2 && (
+                {currentStep === 3 && (
                   <div className="space-y-4">
                     <FormField
                       control={form.control}
@@ -263,14 +356,14 @@ export default function CreatorStudioPage() {
                     />
                   </div>
                 )}
-                {currentStep === 3 && (
+                {currentStep === 4 && (
                    <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-start">
                     <FormField
                       control={form.control}
                       key="startDate"
                       name="startDate"
                       render={({ field }) => (
-                        <FormItem className="flex flex-col">
+                        <FormItem className="flex flex-col items-center">
                            <FormControl>
                               <Calendar
                                 mode="single"
@@ -325,57 +418,6 @@ export default function CreatorStudioPage() {
                               </FormItem>
                             </RadioGroup>
                           </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                )}
-                {currentStep === 4 && (
-                  <div className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="photos"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <>
-                              <input
-                                type="file"
-                                ref={fileInputRef}
-                                multiple
-                                accept="image/*"
-                                onChange={handleFileChange}
-                                className="hidden"
-                              />
-                              <Button type="button" variant="outline" onClick={() => fileInputRef.current?.click()}>
-                                <Upload className="mr-2 h-4 w-4" />
-                                Adicionar Fotos
-                              </Button>
-                            </>
-                          </FormControl>
-                          <div className="grid grid-cols-3 gap-4 mt-4">
-                            {(field.value || []).map((photo, index) => (
-                              <div key={index} className="relative group">
-                                <Image
-                                  src={photo}
-                                  alt={`Preview ${index}`}
-                                  width={150}
-                                  height={150}
-                                  className="rounded-md object-cover w-full h-32"
-                                />
-                                <Button
-                                  type="button"
-                                  variant="destructive"
-                                  size="icon"
-                                  className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                                  onClick={() => removePhoto(index)}
-                                >
-                                  <XIcon className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            ))}
-                          </div>
                           <FormMessage />
                         </FormItem>
                       )}

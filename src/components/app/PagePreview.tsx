@@ -7,6 +7,13 @@ import { ptBR } from 'date-fns/locale';
 import * as z from "zod";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const formSchema = z.object({
   title: z.string(),
@@ -16,6 +23,7 @@ const formSchema = z.object({
   startDate: z.date().optional(),
   dateDisplayType: z.string().optional(),
   photos: z.array(z.string()).optional(),
+  photoDisplayType: z.string().optional(),
 });
 
 type PageData = z.infer<typeof formSchema>;
@@ -94,6 +102,41 @@ const Countdown = ({ startDate, displayType }: { startDate: Date; displayType?: 
   )
 }
 
+const PhotoGallery = ({ photos, displayType }: { photos?: string[], displayType?: string }) => {
+  if (!photos || photos.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="w-full mb-8">
+      <Carousel
+        opts={{
+          loop: true,
+        }}
+        className="w-full"
+      >
+        <CarouselContent>
+          {photos.map((photo, index) => (
+            <CarouselItem key={index}>
+              <div className="relative aspect-video">
+                <Image
+                  src={photo}
+                  alt={`User photo ${index + 1}`}
+                  fill
+                  className="rounded-lg object-cover"
+                />
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className="left-4" />
+        <CarouselNext className="right-4" />
+      </Carousel>
+    </div>
+  );
+};
+
+
 export function PagePreview({ data }: PagePreviewProps) {
   return (
     <div className="w-full h-full bg-zinc-900 flex flex-col">
@@ -114,6 +157,9 @@ export function PagePreview({ data }: PagePreviewProps) {
             className="flex-grow p-8 flex flex-col items-center justify-start text-center relative overflow-y-auto bg-black"
         >
             <div className="relative z-10 w-full">
+                
+                <PhotoGallery photos={data.photos} displayType={data.photoDisplayType} />
+
                 <h1 
                     className="text-6xl font-handwriting"
                     style={{ color: data.titleColor || '#FFFFFF' }}
@@ -135,23 +181,6 @@ export function PagePreview({ data }: PagePreviewProps) {
                      <div className="mt-8">
                         <Countdown startDate={data.startDate} displayType={data.dateDisplayType} />
                      </div>
-                )}
-
-                {data.photos && data.photos.length > 0 && (
-                    <div className="mt-12">
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                            {data.photos.map((photo, index) => (
-                                <div key={index} className="relative aspect-square">
-                                    <Image
-                                        src={photo}
-                                        alt={`User photo ${index + 1}`}
-                                        fill
-                                        className="rounded-lg object-cover"
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    </div>
                 )}
             </div>
         </div>
