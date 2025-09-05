@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Heart, ChevronRight, Star } from "lucide-react";
+import { Heart, ChevronRight, Star, ListNumbers, QrCode, Share2, DollarSign, ListOrdered } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -10,6 +10,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { Label } from "@/components/ui/label";
 
 export default function CreatorPage() {
   return (
@@ -142,6 +143,48 @@ export default function CreatorPage() {
             </div>
             <h2 className="bg-clip-text text-center text-transparent bg-gradient-to-b from-neutral-200 to-white text-3xl lg:text-5xl font-sans py-2 relative z-20 font-bold tracking-tight mb-2">Crie sua página em poucos passos</h2>
             <p className="text-white/80 text-lg max-w-2xl mx-auto mb-16">Personalize uma página especial para surpreender alguém querido. O processo é simples e rápido.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            <div className="relative">
+              <div className="bg-neutral-900/50 rounded-xl p-6 border border-neutral-800/40 h-full">
+                <div className="mb-4 h-12 flex items-center justify-center text-red-400">
+                  <ListOrdered className="w-10 h-10" />
+                </div>
+                <h3 className="text-xl font-bold mb-3 text-white text-center">Personalize</h3>
+                <p className="text-white/70 leading-relaxed text-center">Personalize sua página com fotos, mensagens, efeitos especiais e muito mais.</p>
+              </div>
+              <div className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center text-xl font-bold text-white">1</div>
+            </div>
+            <div className="relative">
+              <div className="bg-neutral-900/50 rounded-xl p-6 border border-neutral-800/40 h-full">
+                <div className="mb-4 h-12 flex items-center justify-center text-red-400">
+                  <DollarSign className="w-10 h-10" />
+                </div>
+                <h3 className="text-xl font-bold mb-3 text-white text-center">Faça o pagamento</h3>
+                <p className="text-white/70 leading-relaxed text-center">Escolha seu plano preferido e faça o pagamento de forma rápida e segura.</p>
+              </div>
+              <div className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center text-xl font-bold text-white">2</div>
+            </div>
+            <div className="relative">
+              <div className="bg-neutral-900/50 rounded-xl p-6 border border-neutral-800/40 h-full">
+                <div className="mb-4 h-12 flex items-center justify-center text-red-400">
+                  <QrCode className="w-10 h-10" />
+                </div>
+                <h3 className="text-xl font-bold mb-3 text-white text-center">Receba seu acesso</h3>
+                <p className="text-white/70 leading-relaxed text-center">Você receberá por email um QR code e link para acessar sua página.</p>
+              </div>
+              <div className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center text-xl font-bold text-white">3</div>
+            </div>
+            <div className="relative">
+              <div className="bg-neutral-900/50 rounded-xl p-6 border border-neutral-800/40 h-full">
+                <div className="mb-4 h-12 flex items-center justify-center text-red-400">
+                  <Heart className="w-10 h-10" />
+                </div>
+                <h3 className="text-xl font-bold mb-3 text-white text-center">Compartilhe o amor</h3>
+                <p className="text-white/70 leading-relaxed text-center">Compartilhe a página com a pessoa amada e surpreenda-a de forma especial.</p>
+              </div>
+              <div className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center text-xl font-bold text-white">4</div>
+            </div>
           </div>
         </div>
       </section>
