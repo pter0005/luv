@@ -111,7 +111,7 @@ export function PagePreview({ data }: PagePreviewProps) {
         >
             <div className="relative z-10 w-full">
                 <h1 
-                    className="text-4xl font-handwriting"
+                    className="text-6xl font-handwriting"
                     style={{ color: data.titleColor || '#FFFFFF' }}
                 >
                     {data.title || ""}
@@ -134,5 +134,3 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
-
-    
