@@ -78,9 +78,17 @@ const Countdown = ({ startDate, displayType }: { startDate: Date; displayType?: 
 
   if (displayType === "classico") {
     return (
-       <div className="text-center text-zinc-300 text-sm">
-        <p>Compartilhando momentos há {duration.years || 0} anos {String(duration.months || 0).padStart(2, '0')} meses {String(duration.days || 0).padStart(2, '0')} dias {String(duration.hours || 0).padStart(2, '0')} horas</p>
-        <p>{String(duration.minutes || 0).padStart(2, '0')} minutos {String(duration.seconds || 0).padStart(2, '0')} segundos ❤️‍🔥</p>
+       <div className="text-center text-zinc-300 bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+        <p className="font-sans text-lg tracking-tight">Estamos compartilhando momentos há</p>
+        <div className="flex items-center justify-center gap-2 font-bold text-xl font-mono text-primary my-2">
+            <span>{duration.years || 0}a</span>
+            <span>{String(duration.months || 0)}m</span>
+            <span>{String(duration.days || 0)}d</span>
+            <span>{String(duration.hours || 0)}h</span>
+            <span>{String(duration.minutes || 0)}min</span>
+            <span>{String(duration.seconds || 0)}s</span>
+        </div>
+        <p className="text-sm text-zinc-400">Juntos desde {format(startDate, "dd/MM/yyyy")}</p>
       </div>
     )
   }
@@ -98,7 +106,7 @@ const Countdown = ({ startDate, displayType }: { startDate: Date; displayType?: 
     <div className="text-center">
         <h2 className="font-display text-lg mb-4">Compartilhando momentos há</h2>
         <div className="grid grid-cols-3 gap-2">
-            {timeUnits.slice(0, 3).map(unit => ( // Show only years, months, days
+            {timeUnits.map(unit => (
                 <div key={unit.label} className="bg-zinc-800/50 p-2 rounded-lg">
                     <div className="text-2xl font-bold">{String(unit.value || 0).padStart(2, '0')}</div>
                     <div className="text-xs text-muted-foreground">{unit.label}</div>
@@ -127,18 +135,12 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
 
     switch (displayType) {
       case 'Coverflow':
-        return {
+         return {
           ...commonProps,
-          effect: 'coverflow' as const,
-          slidesPerView: 'auto' as const,
+          navigation: false,
+          effect: 'slide' as const,
+          slidesPerView: 3,
           centeredSlides: true,
-          coverflowEffect: {
-            rotate: 50,
-            stretch: 0,
-            depth: 100,
-            modifier: 1,
-            slideShadows: true,
-          },
         };
       case 'Cube':
         return {
@@ -185,8 +187,8 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
         .swiper-slide {
           background-position: center;
           background-size: cover;
-          width: ${isCoverflow || isCube ? '250px' : '100%'};
-          height: ${isCoverflow || isCube ? '250px' : '100%'};
+          width: ${isCoverflow ? '150px' : isCube ? '250px' : '100%'};
+          height: ${isCoverflow ? '150px' : isCube ? '250px' : '100%'};
         }
         .swiper-slide.swiper-slide-cards {
            border-radius: 18px;
@@ -212,7 +214,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
               'swiper-slide-cards': isCards,
             })}
           >
-            <div className="relative w-full h-full">
+             <div className="relative w-full h-full">
               <Image
                 src={photo}
                 alt={`User photo ${index + 1}`}
