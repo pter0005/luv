@@ -67,15 +67,6 @@ const Countdown = ({ startDate, displayType }: { startDate: Date; displayType?: 
 
     return () => clearInterval(interval);
   }, [startDate]);
-
-  const timeUnits = [
-    { label: 'anos', value: duration.years },
-    { label: 'meses', value: duration.months },
-    { label: 'dias', value: duration.days },
-    { label: 'horas', value: duration.hours },
-    { label: 'min', value: duration.minutes },
-    { label: 'seg', value: duration.seconds },
-  ];
   
   if (displayType === "classico") {
     return (
@@ -108,12 +99,30 @@ const Countdown = ({ startDate, displayType }: { startDate: Date; displayType?: 
     <div className="text-center">
         <h2 className="font-display text-lg mb-4">Compartilhando momentos há</h2>
         <div className="grid grid-cols-3 gap-2">
-            {timeUnits.map(unit => (
-                <div key={unit.label} className="bg-zinc-800/50 p-2 rounded-lg">
-                    <div className="text-2xl font-bold">{String(unit.value || 0).padStart(2, '0')}</div>
-                    <div className="text-xs text-muted-foreground">{unit.label}</div>
-                </div>
-            ))}
+           <div className="bg-zinc-800/50 p-2 rounded-lg">
+              <div className="text-2xl font-bold">{String(duration.years || 0).padStart(2, '0')}</div>
+              <div className="text-xs text-muted-foreground">anos</div>
+          </div>
+           <div className="bg-zinc-800/50 p-2 rounded-lg">
+              <div className="text-2xl font-bold">{String(duration.months || 0).padStart(2, '0')}</div>
+              <div className="text-xs text-muted-foreground">meses</div>
+          </div>
+           <div className="bg-zinc-800/50 p-2 rounded-lg">
+              <div className="text-2xl font-bold">{String(duration.days || 0).padStart(2, '0')}</div>
+              <div className="text-xs text-muted-foreground">dias</div>
+          </div>
+           <div className="bg-zinc-800/50 p-2 rounded-lg">
+              <div className="text-2xl font-bold">{String(duration.hours || 0).padStart(2, '0')}</div>
+              <div className="text-xs text-muted-foreground">horas</div>
+          </div>
+           <div className="bg-zinc-800/50 p-2 rounded-lg">
+              <div className="text-2xl font-bold">{String(duration.minutes || 0).padStart(2, '0')}</div>
+              <div className="text-xs text-muted-foreground">minutos</div>
+          </div>
+           <div className="bg-zinc-800/50 p-2 rounded-lg">
+              <div className="text-2xl font-bold">{String(duration.seconds || 0).padStart(2, '0')}</div>
+              <div className="text-xs text-muted-foreground">segundos</div>
+          </div>
         </div>
          <p className="mt-4 text-zinc-400 text-xs">
             Desde {format(startDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
@@ -130,7 +139,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
   const commonProps = {
     loop: true,
     pagination: { clickable: true },
-    navigation: photos.length > 1,
+    navigation: false, // Setas de navegação desabilitadas
     grabCursor: true,
     autoplay: {
       delay: 3000,
@@ -143,27 +152,9 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
       case 'Coverflow':
         return {
           ...commonProps,
-          effect: 'coverflow' as const,
-          slidesPerView: 'auto' as const,
+          effect: 'slide' as const, // Efeito de carrossel simples
+          slidesPerView: 1,
           centeredSlides: true,
-          coverflowEffect: {
-            rotate: 50,
-            stretch: 0,
-            depth: 100,
-            modifier: 1,
-            slideShadows: true,
-          },
-        };
-      case 'Cube':
-        return {
-          ...commonProps,
-          effect: 'cube' as const,
-          cubeEffect: {
-            shadow: true,
-            slideShadows: true,
-            shadowOffset: 20,
-            shadowScale: 0.94,
-          },
         };
       case 'Flip':
         return {
@@ -175,7 +166,6 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
       default:
         return {
           ...commonProps,
-          navigation: false,
           effect: 'cards' as const,
           slidesPerView: 1,
           cardsEffect: {
@@ -191,7 +181,6 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
       "w-full mb-6 relative flex items-center justify-center",
       {
         'swiper-container-coverflow': displayType === 'Coverflow',
-        'swiper-container-cube': displayType === 'Cube',
         'swiper-container-cards': displayType === 'Cards' || !displayType,
         'swiper-container-flip': displayType === 'Flip',
       }
@@ -200,26 +189,15 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
         .swiper-container-coverflow, .swiper-container-flip {
             height: 300px;
         }
-
-        .swiper-container-cube {
-            height: 250px;
-            width: 250px;
-            margin-left: auto;
-            margin-right: auto;
-        }
         
         .swiper-container-cards {
             height: 320px;
+            width: 280px;
         }
 
         .mySwiper {
           width: 100%;
           height: 100%;
-        }
-
-        .swiper-container-coverflow .mySwiper {
-          padding-top: 50px;
-          padding-bottom: 50px;
         }
 
         .swiper-slide {
@@ -231,36 +209,17 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           background-color: transparent;
         }
 
-        .swiper-slide-coverflow {
-           width: 250px;
-           height: 250px;
-        }
-        
-        .swiper-slide-cube {
-          background-size: cover;
-          background-position: center;
-        }
-
-        .mySwiper .swiper-slide-cards, .mySwiper .swiper-slide-flip {
+        .mySwiper .swiper-slide-cards, .mySwiper .swiper-slide-flip, .mySwiper .swiper-slide-coverflow {
            border-radius: 18px;
            height: 100%;
            width: 100%;
+           overflow: hidden;
         }
 
         .swiper-pagination-bullet-active {
           background: hsl(var(--primary)) !important;
         }
-        .swiper-button-next, .swiper-button-prev {
-          color: hsl(var(--primary)) !important;
-          width: 24px;
-          height: 24px;
-          top: 50%;
-          transform: translateY(-50%);
-        }
-        .swiper-button-next:after, .swiper-button-prev:after {
-          font-size: 1.5rem !important;
-          font-weight: bold;
-        }
+       
         .swiper-wrapper {
           align-items: center; 
         }
@@ -276,7 +235,6 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
             key={index}
             className={cn({
               'swiper-slide-coverflow': displayType === 'Coverflow',
-              'swiper-slide-cube': displayType === 'Cube',
               'swiper-slide-cards': displayType === 'Cards' || !displayType,
               'swiper-slide-flip': displayType === 'Flip',
             })}
@@ -287,7 +245,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
                 alt={`User photo ${index + 1}`}
                 fill
                 sizes="(max-width: 400px) 100vw, 250px"
-                className={cn("object-contain", {'rounded-lg': displayType !== 'Cards' && displayType !== 'Flip'})}
+                className="object-cover"
               />
             </div>
           </SwiperSlide>
@@ -348,3 +306,4 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
+
