@@ -23,6 +23,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { AnimatedBackground } from "@/components/app/AnimatedBackground";
 import Link from "next/link";
 import { TypingAnimation } from "@/components/app/TypingAnimation";
+import { HeartsBackground } from "@/components/app/HeartsBackground";
 
 export default function CreatorPage() {
   const testimonials = [
@@ -105,6 +106,7 @@ export default function CreatorPage() {
 
   return (
     <>
+      <HeartsBackground />
       <div className="hidden lg:block">
         <AnimatedBackground fixed />
       </div>
@@ -418,6 +420,3 @@ export default function CreatorPage() {
     </>
   );
 }
-
-    
-    
