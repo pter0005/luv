@@ -23,7 +23,7 @@ export function HeartsBackground() {
       },
     }));
     setHearts(generatedHearts);
-  }, []); // The empty dependency array ensures this effect runs only once.
+  }, []); // The empty dependency array ensures this effect runs only once on mount.
 
   return (
     <div className="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none overflow-hidden">
