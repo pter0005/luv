@@ -87,7 +87,7 @@ export default function CreatorStudioPage() {
     {
       name: "title" as const,
       title: "Título da página",
-      description: "Escreva o título dedicatório para a página.",
+      description: "Escreva o título dedicatório para a página. Ex: João & Maria ou Feliz Aniversário ou etc!",
     },
     {
       name: "message" as const,
@@ -157,10 +157,10 @@ export default function CreatorStudioPage() {
   return (
     <div className="relative flex w-full min-h-screen items-center justify-center p-4">
       <AnimatedBackground fixed />
-      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-x-12 max-w-full w-full h-full items-center">
+      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-x-24 w-full h-full max-w-7xl mx-auto items-center">
         {/* Form Section */}
-        <aside className="w-full flex flex-col px-16">
-         <div className="w-full max-w-lg mx-auto">
+        <aside className="w-full flex flex-col">
+         <div className="w-full max-w-md mx-auto">
           <div className="mb-8">
             <Progress value={(currentStep / totalSteps) * 100} className="bg-zinc-700 h-2 [&>div]:bg-white" />
             <p className="text-right text-sm text-muted-foreground mt-2">{currentStep}/{totalSteps}</p>
@@ -173,7 +173,7 @@ export default function CreatorStudioPage() {
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8">
-              <div className="min-h-[350px]">
+              <div className="min-h-[250px]">
                 {currentStep === 1 && (
                   <div className="space-y-8">
                     <FormField
@@ -183,38 +183,7 @@ export default function CreatorStudioPage() {
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
-                            <Input placeholder="Escreva o título aqui..." {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      key="titleColor"
-                      name="titleColor"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Cor do Título</FormLabel>
-                          <FormControl>
-                             <div className="flex items-center gap-4 pt-2">
-                                <div 
-                                    className="w-24 h-24 rounded-lg border-2 border-zinc-700 cursor-pointer"
-                                    style={{ backgroundColor: field.value }}
-                                    onClick={() => colorPickerRef.current?.click()}
-                                />
-                                <div className="flex flex-col">
-                                    <span className="text-sm text-muted-foreground">Clique no quadrado para escolher uma cor</span>
-                                    <span className="font-mono text-lg">{field.value}</span>
-                                </div>
-                                <input
-                                    ref={colorPickerRef}
-                                    type="color"
-                                    value={field.value}
-                                    onChange={(e) => field.onChange(e.target.value)}
-                                    className="sr-only"
-                                />
-                             </div>
+                            <Input placeholder="Ex: João & Maria ou Feliz Aniversário ou etc" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -399,17 +368,12 @@ export default function CreatorStudioPage() {
                               defaultValue={field.value}
                               className="grid grid-cols-2 gap-4"
                             >
-                              <FormItem>
-                                <FormControl>
-                                  <RadioGroupItem value="Coverflow" id="coverflow">Coverflow</RadioGroupItem>
-                                </FormControl>
-                              </FormItem>
-                               <FormItem>
-                                <FormControl>
-                                  <RadioGroupItem value="Cube" id="cube">Cube</RadioGroupItem>
-                                </FormControl>
-                              </FormItem>
-                              <FormItem>
+                                <FormItem>
+                                    <FormControl>
+                                    <RadioGroupItem value="Coverflow" id="coverflow">Coverflow</RadioGroupItem>
+                                    </FormControl>
+                                </FormItem>
+                                <FormItem>
                                 <FormControl>
                                   <RadioGroupItem value="Cards" id="cards">Cards</RadioGroupItem>
                                 </FormControl>
@@ -429,17 +393,17 @@ export default function CreatorStudioPage() {
                 )}
               </div>
               <div className="flex items-center gap-4 mt-8">
-                <Button type="button" variant="secondary" onClick={handlePrevStep} disabled={currentStep === 1} className="w-full">
+                 <Button type="button" variant="secondary" onClick={handlePrevStep} disabled={currentStep === 1} className="w-full bg-zinc-800 hover:bg-zinc-700">
                   <ArrowLeft className="mr-2 h-4 w-4" />
-                  Voltar
+                  Voltar etapa
                 </Button>
                 {currentStep < totalSteps ? (
-                  <Button type="button" onClick={handleNextStep} className="w-full">
-                    Próxima Etapa
+                  <Button type="button" onClick={handleNextStep} className="w-full bg-red-600 hover:bg-red-700">
+                    Próxima etapa
                     <ChevronRight className="ml-2 h-4 w-4" />
                   </Button>
                 ) : (
-                  <Button type="submit" size="lg" className="w-full">Salvar e Obter Link</Button>
+                  <Button type="submit" size="lg" className="w-full bg-red-600 hover:bg-red-700">Salvar e Obter Link</Button>
                 )}
               </div>
             </form>
@@ -448,8 +412,8 @@ export default function CreatorStudioPage() {
         </aside>
 
         {/* Preview Section */}
-        <main className="w-full h-full p-4 hidden lg:flex flex-col items-center justify-center bg-transparent">
-          <div className="w-[420px] h-[840px] bg-zinc-800 p-2 shadow-2xl shadow-primary/20">
+        <main className="w-full h-full hidden lg:flex flex-col items-center justify-center bg-transparent">
+          <div className="w-[480px] h-[720px] bg-black">
             <PagePreview data={{ ...fieldHistory, ...form.getValues() }} />
           </div>
         </main>

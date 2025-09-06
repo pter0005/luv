@@ -140,31 +140,30 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
 
   const commonProps = {
     loop: true,
-    pagination: { clickable: true },
     grabCursor: true,
     autoplay: {
       delay: 3000,
       disableOnInteraction: false,
     },
-    navigation: false,
   };
-
+  
   const getSwiperEffectProps = () => {
     switch (displayType) {
-       case 'Coverflow':
-        return {
+      case 'Coverflow':
+          return {
           ...commonProps,
           effect: 'coverflow' as const,
           slidesPerView: 'auto' as const,
           centeredSlides: true,
           coverflowEffect: {
-            rotate: 0,
-            stretch: 0,
-            depth: 100,
-            modifier: 2.5,
-            slideShadows: false,
+              rotate: 50,
+              stretch: 0,
+              depth: 100,
+              modifier: 1,
+              slideShadows: true,
           },
-        };
+          pagination: { clickable: true },
+          };
       case 'Flip':
         return {
           ...commonProps,
@@ -172,6 +171,8 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           flipEffect: {
             slideShadows: true,
           },
+          pagination: { clickable: true },
+          navigation: false,
         };
       case 'Cards':
       default:
@@ -181,6 +182,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           cardsEffect: {
             slideShadows: true,
           },
+          pagination: { clickable: true },
         };
     }
   };
@@ -193,6 +195,10 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
         .swiper-container-coverflow .swiper-slide {
           width: 80%;
           max-width: 250px;
+        }
+        .swiper-container-cube {
+            width: 250px;
+            height: 250px;
         }
         .swiper-container-cards {
           height: 320px;
@@ -238,7 +244,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           <SwiperSlide
             key={index}
           >
-            <div className="slide-image-wrapper">
+             <div className="slide-image-wrapper">
                <Image
                 src={photo}
                 alt={`User photo ${index + 1}`}
@@ -256,15 +262,15 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
 
 export function PagePreview({ data }: PagePreviewProps) {
   return (
-    <div className="w-full h-full bg-black flex flex-col rounded-lg">
+    <div className="w-full h-full bg-black flex flex-col">
         {/* Browser Header */}
-        <div className="flex-shrink-0 bg-zinc-200 dark:bg-zinc-700 p-2 flex items-center gap-1.5 border-b border-zinc-300 dark:border-zinc-600 rounded-t-lg">
+        <div className="flex-shrink-0 bg-white dark:bg-white p-2 flex items-center gap-1.5 border-b border-zinc-300 dark:border-zinc-200">
             <div className="flex items-center gap-1.5">
                 <div className="w-3 h-3 rounded-full bg-red-500"></div>
                 <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                 <div className="w-3 h-3 rounded-full bg-green-500"></div>
             </div>
-            <div className="flex-grow bg-zinc-100 dark:bg-zinc-800/80 rounded-md px-2 py-1 text-xs text-zinc-600 dark:text-zinc-400 text-center truncate">
+            <div className="flex-grow bg-zinc-100 dark:bg-zinc-200 rounded-sm px-2 py-1 text-xs text-zinc-600 dark:text-zinc-600 text-center truncate">
                 https://luv.com/p/{data.title?.toLowerCase().replace(/\\s/g, '-') || 'pagina'}
             </div>
         </div>
@@ -304,3 +310,5 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
+
+    
