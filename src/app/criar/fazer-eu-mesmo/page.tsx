@@ -28,6 +28,7 @@ import {
   Search,
   Check,
   Loader,
+  Sparkles,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Editor } from "@/components/ui/editor";
@@ -85,7 +86,7 @@ export default function CreatorStudioPage() {
       messageFontSize: "text-base",
       dateDisplayType: "padrão",
       musicUrl: "",
-      backgroundAnimation: "none",
+      backgroundAnimation: "meteors",
       contactName: "",
       contactEmail: "",
       contactPhone: "",
@@ -257,6 +258,16 @@ export default function CreatorStudioPage() {
     const updatedPhotos = currentPhotos.filter((_, i) => i !== index);
     form.setValue("photos", updatedPhotos);
   };
+  
+  const animationOptions = [
+    { value: 'none', label: 'Nenhuma', video: null, pro: false },
+    { value: 'hearts', label: 'Chuva de corações', video: 'https://i.imgur.com/3Yw1h2Z.mp4', pro: false },
+    { value: 'stars', label: 'Céu Estrelado com Cometas', video: 'https://i.imgur.com/s27598y.mp4', pro: true },
+    { value: 'meteors', label: 'Céu Estrelado com Meteoros', video: 'https://i.imgur.com/c1I4j4G.mp4', pro: true },
+    { value: 'aurora', label: 'Aurora', video: 'https://i.imgur.com/e47F8Gz.mp4', pro: true },
+    { value: 'vortex', label: 'Vórtice de cores', video: 'https://i.imgur.com/e5k05k4.mp4', pro: true },
+    { value: 'clouds', label: 'Nuvens', video: 'https://i.imgur.com/8u3215f.png', pro: false },
+  ];
 
 
   return (
@@ -533,17 +544,43 @@ export default function CreatorStudioPage() {
                     name="backgroundAnimation"
                     render={({ field }) => (
                       <FormItem className="space-y-3">
-                        <FormLabel className="font-semibold">Animação de Fundo</FormLabel>
                         <FormControl>
                           <RadioGroup
                             onValueChange={field.onChange}
                             defaultValue={field.value}
-                            className="grid grid-cols-2 gap-4"
+                            className="grid grid-cols-2 lg:grid-cols-3 gap-4 overflow-hidden"
                           >
-                            <RadioGroupItem value="none" id="bg-none">Nenhuma</RadioGroupItem>
-                            <RadioGroupItem value="hearts" id="bg-hearts">Chuva de Corações</RadioGroupItem>
-                            <RadioGroupItem value="stars" id="bg-stars">Céu Estrelado</RadioGroupItem>
-                            <RadioGroupItem value="clouds" id="bg-clouds">Nuvens</RadioGroupItem>
+                            {animationOptions.map(opt => (
+                              <RadioGroupItem key={opt.value} value={opt.value} id={`bg-${opt.value}`} className="h-20 p-0 rounded-xl">
+                                  <div className="relative w-full h-full">
+                                    {opt.video ? (
+                                       opt.video.endsWith('.mp4') ? (
+                                        <video
+                                          src={opt.video}
+                                          autoPlay
+                                          loop
+                                          muted
+                                          playsInline
+                                          className="absolute inset-0 w-full h-full object-cover brightness-125"
+                                        />
+                                       ) : (
+                                        <Image src={opt.video} alt={opt.label} fill className="object-cover" />
+                                       )
+                                    ) : null}
+                                    <div className="z-10 absolute top-4 left-4">
+                                      <h2 className="font-semibold text-white">{opt.label}</h2>
+                                    </div>
+                                    {opt.pro && (
+                                      <div className="z-10 absolute bottom-2 right-2 bg-black text-yellow-500 text-xs font-semibold flex items-center rounded-full px-2 py-0.5">
+                                        <Sparkles className="w-3 h-3"/>
+                                      </div>
+                                    )}
+                                  </div>
+                              </RadioGroupItem>
+                            ))}
+                            <div className="relative bg-neutral-800 rounded-xl h-20 overflow-hidden duration-300 opacity-80 flex items-center justify-center">
+                                <h2 className="font-semibold text-white">ou escolha 3 emojis</h2>
+                            </div>
                           </RadioGroup>
                         </FormControl>
                         <FormMessage />

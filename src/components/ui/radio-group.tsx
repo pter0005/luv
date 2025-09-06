@@ -27,16 +27,17 @@ const RadioGroupItem = React.forwardRef<
 >(({ className, children, ...props }, ref) => {
   return (
     <label htmlFor={props.id} className={cn(
-      "flex items-center space-x-3 rounded-md border p-4 cursor-pointer transition-colors",
+      "flex items-center space-x-3 rounded-md border p-4 cursor-pointer transition-colors relative overflow-hidden",
       "border-border bg-card hover:bg-secondary",
-      "has-[:checked]:border-primary has-[:checked]:bg-primary/10 has-[:checked]:text-primary",
+      "has-[:checked]:border-primary has-[:checked]:bg-primary/10 has-[:checked]:text-primary has-[:checked]:opacity-100",
+       "opacity-80 hover:opacity-100",
       className
     )}>
        <RadioGroupPrimitive.Item
         ref={ref}
         id={props.id}
         className={cn(
-          "aspect-square h-4 w-4 rounded-full border border-primary text-primary ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          "aspect-square h-4 w-4 rounded-full border border-primary text-primary ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 hidden"
         )}
         {...props}
       >
@@ -44,12 +45,12 @@ const RadioGroupItem = React.forwardRef<
           <Circle className="h-2.5 w-2.5 fill-current text-current" />
         </RadioGroupPrimitive.Indicator>
       </RadioGroupPrimitive.Item>
-      <span className="font-medium">
-        {children}
-      </span>
+      {children}
     </label>
   )
 })
 RadioGroupItem.displayName = RadioGroupPrimitive.Item.displayName
 
 export { RadioGroup, RadioGroupItem }
+
+    
