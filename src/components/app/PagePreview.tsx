@@ -35,7 +35,14 @@ const formSchema = z.object({
   dateDisplayType: z.string().optional(),
   photos: z.array(z.string()).optional(),
   photoDisplayType: z.string().optional(),
+  musicUrl: z.string().optional(),
+  backgroundAnimation: z.string().optional(),
+  contactName: z.string().optional(),
+  contactEmail: z.string().email("Email inválido.").optional(),
+  contactPhone: z.string().optional(),
+  plan: z.string().optional(),
 });
+
 
 type PageData = z.infer<typeof formSchema>;
 
@@ -145,6 +152,8 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
       delay: 3000,
       disableOnInteraction: false,
     },
+    navigation: false, // Ensure arrows are disabled
+    pagination: { clickable: true }
   };
   
   const getSwiperEffectProps = () => {
@@ -156,14 +165,24 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           slidesPerView: 'auto' as const,
           centeredSlides: true,
           coverflowEffect: {
-              rotate: 50,
-              stretch: 0,
-              depth: 100,
-              modifier: 1,
-              slideShadows: true,
+            rotate: 0, // Simplified to no rotation
+            stretch: 0,
+            depth: 100,
+            modifier: 1,
+            slideShadows: false,
           },
-          pagination: { clickable: true },
-          };
+        };
+      case 'Cube':
+        return {
+          ...commonProps,
+          effect: 'cube' as const,
+          cubeEffect: {
+            shadow: true,
+            slideShadows: true,
+            shadowOffset: 20,
+            shadowScale: 0.94,
+          },
+        };
       case 'Flip':
         return {
           ...commonProps,
@@ -171,8 +190,6 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           flipEffect: {
             slideShadows: true,
           },
-          pagination: { clickable: true },
-          navigation: false,
         };
       case 'Cards':
       default:
@@ -182,7 +199,6 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           cardsEffect: {
             slideShadows: true,
           },
-          pagination: { clickable: true },
         };
     }
   };
@@ -197,8 +213,8 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           max-width: 250px;
         }
         .swiper-container-cube {
-            width: 250px;
-            height: 250px;
+          width: 200px;
+          height: 200px;
         }
         .swiper-container-cards {
           height: 320px;
@@ -241,9 +257,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
       `}</style>
       <Swiper {...getSwiperEffectProps()} className={cn("mySwiper", `swiper-container-${displayType?.toLowerCase()}`)}>
         {photos.map((photo, index) => (
-          <SwiperSlide
-            key={index}
-          >
+          <SwiperSlide key={index}>
              <div className="slide-image-wrapper">
                <Image
                 src={photo}
@@ -262,22 +276,10 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
 
 export function PagePreview({ data }: PagePreviewProps) {
   return (
-    <div className="w-full h-full bg-black flex flex-col">
-        {/* Browser Header */}
-        <div className="flex-shrink-0 bg-white dark:bg-white p-2 flex items-center gap-1.5 border-b border-zinc-300 dark:border-zinc-200">
-            <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                <div className="w-3 h-3 rounded-full bg-green-500"></div>
-            </div>
-            <div className="flex-grow bg-zinc-100 dark:bg-zinc-200 rounded-sm px-2 py-1 text-xs text-zinc-600 dark:text-zinc-600 text-center truncate">
-                https://luv.com/p/{data.title?.toLowerCase().replace(/\\s/g, '-') || 'pagina'}
-            </div>
-        </div>
-
+    <div className="w-full h-full flex flex-col">
         {/* Page Content */}
         <div
-            className="flex-grow p-4 flex flex-col items-center justify-start text-center relative overflow-y-auto bg-black"
+            className="flex-grow p-4 flex flex-col items-center justify-start text-center relative overflow-y-auto"
         >
             <div className="relative z-10 w-full">
                 
@@ -310,5 +312,3 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
-
-    

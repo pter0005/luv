@@ -26,6 +26,10 @@ import {
   Upload,
   X as XIcon,
   Paintbrush,
+  Heart,
+  Star,
+  Cloud,
+  Clapperboard
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Editor } from "@/components/ui/editor";
@@ -49,6 +53,12 @@ const formSchema = z.object({
   messageFontSize: z.string().optional(),
   startDate: z.date().optional(),
   dateDisplayType: z.string().optional(),
+  musicUrl: z.string().optional(),
+  backgroundAnimation: z.string().optional(),
+  contactName: z.string().optional(),
+  contactEmail: z.string().email("Email inválido.").optional(),
+  contactPhone: z.string().optional(),
+  plan: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -57,7 +67,7 @@ export default function CreatorStudioPage() {
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = React.useState(1);
   const [fieldHistory, setFieldHistory] = React.useState<Partial<FormData>>({});
-  const totalSteps = 4;
+  const totalSteps = 8;
   const colorPickerRef = React.useRef<HTMLInputElement>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -71,6 +81,12 @@ export default function CreatorStudioPage() {
       message: "",
       messageFontSize: "text-base",
       dateDisplayType: "padrão",
+      musicUrl: "",
+      backgroundAnimation: "none",
+      contactName: "",
+      contactEmail: "",
+      contactPhone: "",
+      plan: "forever"
     },
   });
 
@@ -105,6 +121,26 @@ export default function CreatorStudioPage() {
       title: "Fotos",
       description: "Anexe fotos e escolha o modo de exibição para personalizar a página. Você pode adicionar até 8 fotos.",
     },
+    {
+      name: "musicUrl" as const,
+      title: "Música dedicada",
+      description: "Dedique uma música especial. Cole o link do YouTube aqui.",
+    },
+    {
+        name: "backgroundAnimation" as const,
+        title: "Animação de fundo",
+        description: "Escolha uma animação para o fundo da página.",
+    },
+    {
+        name: "contactName" as const,
+        title: "Informações de Contato",
+        description: "Preencha para receber o link e QR code da sua página.",
+    },
+    {
+        name: "plan" as const,
+        title: "Escolha seu Plano",
+        description: "Selecione o plano ideal para sua página personalizada.",
+    }
   ];
 
   const handleNextStep = async () => {
@@ -152,15 +188,14 @@ export default function CreatorStudioPage() {
     form.setValue("photos", updatedPhotos);
   };
 
-
   const currentFieldName = steps[currentStep - 1].name;
 
   return (
     <div className="relative flex w-full min-h-screen items-center justify-center p-4">
       <AnimatedBackground fixed />
-      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-x-24 w-full h-full max-w-7xl mx-auto items-center">
+       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-x-12 w-full h-full max-w-7xl mx-auto items-center">
         {/* Form Section */}
-        <aside className="w-full flex flex-col items-center">
+        <aside className="w-full flex flex-col">
          <div className="w-full max-w-md mx-auto">
           <div className="mb-8">
             <Progress value={(currentStep / totalSteps) * 100} className="bg-zinc-700 h-2 [&>div]:bg-white" />
@@ -174,7 +209,7 @@ export default function CreatorStudioPage() {
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8">
-              <div className="min-h-[250px]">
+              <div className="min-h-[350px]">
                 {currentStep === 1 && (
                   <div className="space-y-8">
                     <FormField
@@ -183,8 +218,9 @@ export default function CreatorStudioPage() {
                       name="title"
                       render={({ field }) => (
                         <FormItem>
+                           <FormLabel>Título</FormLabel>
                           <FormControl>
-                            <Input placeholder="Ex: João & Maria ou Feliz Aniversário ou etc" {...field} />
+                            <Input placeholder="Ex: João & Maria ou Feliz Aniversário" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -201,7 +237,7 @@ export default function CreatorStudioPage() {
                             <Button
                               type="button"
                               onClick={() => colorPickerRef.current?.click()}
-                              className="w-full justify-start text-left font-normal"
+                              className="w-full justify-start text-left font-normal border border-input"
                               style={{ backgroundColor: field.value }}
                             >
                               <Paintbrush className="mr-2 h-4 w-4" />
@@ -429,6 +465,126 @@ export default function CreatorStudioPage() {
                     />
                   </div>
                 )}
+                {currentStep === 5 && (
+                    <FormField
+                      control={form.control}
+                      key="musicUrl"
+                      name="musicUrl"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>URL da Música (YouTube)</FormLabel>
+                          <FormControl>
+                            <Input placeholder="https://www.youtube.com/watch?v=..." {...field} />
+                          </FormControl>
+                           <FormDescription>
+                            A música será reproduzida automaticamente na página.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                )}
+                 {currentStep === 6 && (
+                    <FormField
+                      control={form.control}
+                      name="backgroundAnimation"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel className="font-semibold">Animação de Fundo</FormLabel>
+                          <FormControl>
+                            <RadioGroup
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                              className="grid grid-cols-2 gap-4"
+                            >
+                              <RadioGroupItem value="none">Nenhuma</RadioGroupItem>
+                              <RadioGroupItem value="hearts">Chuva de Corações</RadioGroupItem>
+                              <RadioGroupItem value="stars">Céu Estrelado</RadioGroupItem>
+                              <RadioGroupItem value="clouds">Nuvens</RadioGroupItem>
+                            </RadioGroup>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                )}
+                 {currentStep === 7 && (
+                    <div className="space-y-4">
+                        <FormField
+                            control={form.control}
+                            key="contactName"
+                            name="contactName"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Seu Nome</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="João da Silva" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            key="contactEmail"
+                            name="contactEmail"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Seu E-mail</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="joao.silva@email.com" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            key="contactPhone"
+                            name="contactPhone"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Seu Telefone</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="(99) 99999-9999" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                 )}
+                 {currentStep === 8 && (
+                      <FormField
+                      control={form.control}
+                      name="plan"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormControl>
+                            <RadioGroup
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                              className="space-y-4"
+                            >
+                                <RadioGroupItem value="monthly">
+                                    <div className="font-bold">Mensal - R$20,00/mês</div>
+                                    <div className="text-sm text-muted-foreground">Ideal para uma surpresa pontual.</div>
+                                </RadioGroupItem>
+                                <RadioGroupItem value="forever">
+                                    <div className="font-bold">Para Sempre - R$34,99</div>
+                                    <div className="text-sm text-muted-foreground">Acesso vitalício à sua obra de arte digital.</div>
+                                </RadioGroupItem>
+                                <RadioGroupItem value="custom">
+                                    <div className="font-bold">Sob Medida - Consulte</div>
+                                    <div className="text-sm text-muted-foreground">Para ideias que transcendem. Crie algo único.</div>
+                                </RadioGroupItem>
+                            </RadioGroup>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                 )}
               </div>
               <div className="flex items-center gap-4 mt-8">
                  <Button type="button" variant="secondary" onClick={handlePrevStep} disabled={currentStep === 1} className="w-full bg-zinc-800 hover:bg-zinc-700">
@@ -451,8 +607,20 @@ export default function CreatorStudioPage() {
 
         {/* Preview Section */}
         <main className="w-full h-full hidden lg:flex flex-col items-center justify-center bg-transparent">
-          <div className="w-[580px] min-h-[920px] bg-zinc-900 rounded-xl shadow-2xl shadow-primary/20 flex flex-col p-6">
-            <PagePreview data={{ ...fieldHistory, ...form.getValues() }} />
+          <div className="w-[580px] min-h-[920px] bg-zinc-900 rounded-xl shadow-2xl shadow-primary/20 p-8 flex flex-col">
+             <div className="bg-zinc-800 rounded-t-lg p-2 flex items-center gap-1.5 border-b border-zinc-700">
+                <div className="flex items-center gap-1.5">
+                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                </div>
+                <div className="flex-grow bg-zinc-700 rounded-sm px-2 py-1 text-xs text-zinc-400 text-center truncate">
+                    https://luv.com/p/{watchedData.title?.toLowerCase().replace(/\\s/g, '-') || 'pagina'}
+                </div>
+            </div>
+            <div className="flex-grow bg-black rounded-b-lg">
+                <PagePreview data={{ ...fieldHistory, ...form.getValues() }} />
+            </div>
           </div>
         </main>
       </div>
