@@ -75,7 +75,7 @@ const Countdown = ({ startDate, displayType }: { startDate: Date; displayType?: 
     { label: 'minutos', value: duration.minutes },
     { label: 'segundos', value: duration.seconds },
   ];
-
+  
   if (displayType === "classico") {
     return (
        <div className="text-center text-zinc-300 bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
@@ -92,6 +92,7 @@ const Countdown = ({ startDate, displayType }: { startDate: Date; displayType?: 
       </div>
     )
   }
+
 
   if (displayType === 'simples') {
     return (
@@ -192,18 +193,20 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
         .mySwiper {
           width: 100%;
           height: 100%;
+          padding-top: ${isCube ? '50px' : '0'};
+          padding-bottom: ${isCube ? '50px' : '0'};
         }
         .swiper-slide {
           background-position: center;
           background-size: cover;
         }
         .mySwiper .swiper-slide-coverflow {
-          width: 220px;
-          height: 220px;
+          width: 220px !important;
+          height: 220px !important;
         }
         .mySwiper .swiper-slide-cube {
-          width: 250px;
-          height: 250px;
+          width: 250px !important;
+          height: 250px !important;
         }
         .mySwiper .swiper-slide-cards {
            border-radius: 18px;
@@ -227,11 +230,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           align-items: center; 
         }
       `}</style>
-      <Swiper {...getSwiperEffectProps()} className={cn("mySwiper", {
-        'swiper-coverflow': isCoverflow,
-        'swiper-cube': isCube,
-        'swiper-cards': isCards
-      })}>
+      <Swiper {...getSwiperEffectProps()} className="mySwiper">
         {photos.map((photo, index) => (
           <SwiperSlide
             key={index}
@@ -242,12 +241,12 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
             })}
           >
             <div className="relative w-full h-full">
-              <Image
+               <Image
                 src={photo}
                 alt={`User photo ${index + 1}`}
                 fill
                 sizes="(max-width: 400px) 100vw, 250px"
-                className={cn("object-cover", {'rounded-lg': !isCards})}
+                className={cn("object-contain", {'rounded-lg': !isCards})}
               />
             </div>
           </SwiperSlide>
