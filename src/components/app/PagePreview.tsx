@@ -72,11 +72,13 @@ const Countdown = ({ startDate, displayType }: { startDate: Date; displayType?: 
     return (
        <div className="text-center text-zinc-300 bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
         <p className="font-sans text-lg tracking-tight">Estamos compartilhando momentos há</p>
-        <div className="grid grid-cols-6 gap-1 font-bold text-lg font-mono text-primary my-2">
+        <div className="grid grid-cols-4 gap-2 font-bold text-lg font-mono text-primary my-2">
             <div className="flex flex-col items-center"><span className="text-2xl">{String(duration.years || 0).padStart(2, '0')}</span><span className="text-xs text-zinc-400">Anos</span></div>
             <div className="flex flex-col items-center"><span className="text-2xl">{String(duration.months || 0).padStart(2, '0')}</span><span className="text-xs text-zinc-400">Meses</span></div>
             <div className="flex flex-col items-center"><span className="text-2xl">{String(duration.days || 0).padStart(2, '0')}</span><span className="text-xs text-zinc-400">Dias</span></div>
             <div className="flex flex-col items-center"><span className="text-2xl">{String(duration.hours || 0).padStart(2, '0')}</span><span className="text-xs text-zinc-400">Horas</span></div>
+        </div>
+         <div className="grid grid-cols-2 gap-2 font-bold text-lg font-mono text-primary my-2">
             <div className="flex flex-col items-center"><span className="text-2xl">{String(duration.minutes || 0).padStart(2, '0')}</span><span className="text-xs text-zinc-400">Min</span></div>
             <div className="flex flex-col items-center"><span className="text-2xl">{String(duration.seconds || 0).padStart(2, '0')}</span><span className="text-xs text-zinc-400">Seg</span></div>
         </div>
@@ -139,27 +141,27 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
   const commonProps = {
     loop: true,
     pagination: { clickable: true },
-    navigation: false,
     grabCursor: true,
     autoplay: {
       delay: 3000,
       disableOnInteraction: false,
     },
+    navigation: false,
   };
 
   const getSwiperEffectProps = () => {
     switch (displayType) {
-      case 'Coverflow':
+       case 'Coverflow':
         return {
           ...commonProps,
           effect: 'coverflow' as const,
-          slidesPerView: 'auto',
+          slidesPerView: 'auto' as const,
           centeredSlides: true,
           coverflowEffect: {
-            rotate: 50,
+            rotate: 0,
             stretch: 0,
             depth: 100,
-            modifier: 1,
+            modifier: 2,
             slideShadows: true,
           },
         };
@@ -196,37 +198,32 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
 
   return (
     <div className={cn(
-      "w-full mb-6 relative flex items-center justify-center",
-      {
-        'swiper-container-coverflow': displayType === 'Coverflow',
-        'swiper-container-cube': displayType === 'Cube',
-        'swiper-container-cards': displayType === 'Cards' || !displayType,
-        'swiper-container-flip': displayType === 'Flip',
-      }
+      "w-full mb-6 relative flex items-center justify-center h-[300px]",
     )}>
       <style jsx global>{`
-        .swiper-container-coverflow .swiper-slide {
-            width: 75%;
-        }
         .swiper-container-coverflow, .swiper-container-flip {
-            height: 250px;
+          height: 250px;
         }
-        
+        .swiper-container-coverflow .swiper-slide {
+          width: 80%;
+          max-width: 250px;
+        }
         .swiper-container-cards {
-            height: 320px;
-            width: 240px;
+          height: 320px;
+          width: 240px;
         }
-        
         .swiper-container-cube {
-            width: 200px;
-            height: 200px;
+          width: 200px;
+          height: 200px;
         }
-
         .mySwiper {
           width: 100%;
           height: 100%;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
         }
-
         .swiper-slide {
           background-position: center;
           background-size: cover;
@@ -235,16 +232,13 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           justify-content: center;
           background-color: transparent;
         }
-
         .mySwiper .swiper-slide {
            border-radius: 18px;
            overflow: hidden;
         }
-        
         .swiper-pagination-bullet-active {
           background: hsl(var(--primary)) !important;
         }
-       
         .swiper-wrapper {
           align-items: center; 
         }
@@ -257,7 +251,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
             object-fit: cover;
         }
       `}</style>
-      <Swiper {...getSwiperEffectProps()} className="mySwiper">
+      <Swiper {...getSwiperEffectProps()} className={cn("mySwiper", `swiper-container-${displayType?.toLowerCase()}`)}>
         {photos.map((photo, index) => (
           <SwiperSlide
             key={index}
