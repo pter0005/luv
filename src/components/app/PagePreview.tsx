@@ -11,20 +11,19 @@ import Image from "next/image";
 // Import Swiper React components
 import SwiperCore from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination, Navigation } from 'swiper/modules';
+import { Autoplay, EffectCoverflow, EffectFlip, EffectCards, Pagination, Navigation } from 'swiper/modules';
 
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/autoplay';
 import 'swiper/css/effect-coverflow';
-import 'swiper/css/effect-cube';
 import 'swiper/css/effect-flip';
 import 'swiper/css/effect-cards';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
 // Install Swiper modules
-SwiperCore.use([Autoplay, EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination, Navigation]);
+SwiperCore.use([Autoplay, EffectCoverflow, EffectFlip, EffectCards, Pagination, Navigation]);
 
 const formSchema = z.object({
   title: z.string(),
@@ -143,7 +142,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
       case 'Coverflow':
         return {
           ...commonProps,
-          slidesPerView: 1.5,
+          slidesPerView: 3,
           centeredSlides: true,
         };
       case 'Flip':
