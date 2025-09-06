@@ -72,8 +72,8 @@ const Countdown = ({ startDate, displayType }: { startDate: Date; displayType?: 
     { label: 'meses', value: duration.months },
     { label: 'dias', value: duration.days },
     { label: 'horas', value: duration.hours },
-    { label: 'minutos', value: duration.minutes },
-    { label: 'segundos', value: duration.seconds },
+    { label: 'min', value: duration.minutes },
+    { label: 'seg', value: duration.seconds },
   ];
   
   if (displayType === "classico") {
@@ -142,7 +142,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
       case 'Coverflow':
         return {
           ...commonProps,
-          slidesPerView: 3,
+          slidesPerView: 2,
           centeredSlides: true,
         };
       case 'Flip':
@@ -165,7 +165,6 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
     }
   };
 
-  const isCards = displayType === 'Cards' || !displayType;
 
   return (
     <div className="w-full mb-6 relative flex items-center justify-center swiper-container-wrapper">
@@ -180,10 +179,14 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
         .swiper-slide {
           background-position: center;
           background-size: cover;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
-        .mySwiper .swiper-slide-cards {
+        .mySwiper .swiper-slide-cards, .mySwiper .swiper-slide-flip {
            border-radius: 18px;
            height: 100%;
+           width: 100%;
         }
         .swiper-pagination-bullet-active {
           background: hsl(var(--primary)) !important;
@@ -208,7 +211,8 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           <SwiperSlide
             key={index}
             className={cn({
-              'swiper-slide-cards': isCards,
+              'swiper-slide-cards': displayType === 'Cards' || !displayType,
+              'swiper-slide-flip': displayType === 'Flip',
             })}
           >
             <div className="relative w-full h-full">
@@ -217,7 +221,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
                 alt={`User photo ${index + 1}`}
                 fill
                 sizes="(max-width: 400px) 100vw, 250px"
-                className={cn("object-contain", {'rounded-lg': !isCards})}
+                className={cn("object-contain", {'rounded-lg': displayType !== 'Cards' && displayType !== 'Flip'})}
               />
             </div>
           </SwiperSlide>
@@ -278,3 +282,5 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
+
+    
