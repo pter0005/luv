@@ -548,39 +548,40 @@ export default function CreatorStudioPage() {
                           <RadioGroup
                             onValueChange={field.onChange}
                             defaultValue={field.value}
-                            className="grid grid-cols-2 lg:grid-cols-3 gap-4 overflow-hidden"
+                            className="grid grid-cols-2 lg:grid-cols-3 gap-4"
                           >
                             {animationOptions.map(opt => (
-                              <RadioGroupItem key={opt.value} value={opt.value} id={`bg-${opt.value}`} className="h-20 p-0 rounded-xl">
-                                  <div className="relative w-full h-full">
+                              <RadioGroupItem key={opt.value} value={opt.value} id={`bg-${opt.value}`} className="h-24 p-0 rounded-xl relative overflow-hidden group/item">
+                                <div className="absolute inset-0 w-full h-full">
                                     {opt.video ? (
-                                       opt.video.endsWith('.mp4') ? (
+                                        opt.video.endsWith('.mp4') ? (
                                         <video
-                                          src={opt.video}
-                                          autoPlay
-                                          loop
-                                          muted
-                                          playsInline
-                                          className="absolute inset-0 w-full h-full object-cover brightness-125"
+                                            src={opt.video}
+                                            autoPlay
+                                            loop
+                                            muted
+                                            playsInline
+                                            className="w-full h-full object-cover"
                                         />
-                                       ) : (
+                                        ) : (
                                         <Image src={opt.video} alt={opt.label} fill className="object-cover" />
-                                       )
-                                    ) : null}
-                                    <div className="z-10 absolute top-4 left-4">
-                                      <h2 className="font-semibold text-white">{opt.label}</h2>
-                                    </div>
-                                    {opt.pro && (
-                                      <div className="z-10 absolute bottom-2 right-2 bg-black text-yellow-500 text-xs font-semibold flex items-center rounded-full px-2 py-0.5">
-                                        <Sparkles className="w-3 h-3"/>
-                                      </div>
+                                        )
+                                    ) : (
+                                        <div className="w-full h-full bg-card"></div>
                                     )}
-                                  </div>
+                                </div>
+                                <div className="absolute inset-0 bg-black/40 group-hover/item:bg-black/20 transition-colors"></div>
+                                <div className="relative z-10 p-2 text-left w-full">
+                                    <h2 className="font-semibold text-white drop-shadow-md">{opt.label}</h2>
+                                    {opt.pro && (
+                                        <div className="absolute top-1 right-1 bg-primary/80 text-primary-foreground text-xs font-semibold flex items-center rounded-full px-1.5 py-0.5">
+                                            <Sparkles className="w-3 h-3 mr-1"/>
+                                            PRO
+                                        </div>
+                                    )}
+                                </div>
                               </RadioGroupItem>
                             ))}
-                            <div className="relative bg-neutral-800 rounded-xl h-20 overflow-hidden duration-300 opacity-80 flex items-center justify-center">
-                                <h2 className="font-semibold text-white">ou escolha 3 emojis</h2>
-                            </div>
                           </RadioGroup>
                         </FormControl>
                         <FormMessage />
