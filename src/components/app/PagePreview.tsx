@@ -333,7 +333,7 @@ export function PagePreview({ data }: PagePreviewProps) {
   return (
     <div className="w-full h-full flex flex-col relative overflow-hidden">
         <MusicPlayer musicUrl={data.musicUrl} />
-        <DynamicBackground animation={data.backgroundAnimation} />
+        <DynamicBackground key={data.backgroundAnimation} animation={data.backgroundAnimation} />
         
         {/* Page Content */}
         <div
@@ -370,3 +370,5 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
+
+    
