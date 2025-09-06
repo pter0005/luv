@@ -14,7 +14,7 @@ export function HeartsBackground() {
 
   useEffect(() => {
     const generatedHearts = Array.from({ length: 40 }).map((_, i) => {
-        const size = Math.random() * 2.5 + 0.5; // 0.5rem to 3rem
+        const size = Math.random() * 4 + 1; // Aumentado de 0.5rem-3rem para 1rem-5rem
         return {
           id: i,
           style: {
@@ -28,6 +28,10 @@ export function HeartsBackground() {
     });
     setHearts(generatedHearts);
   }, []);
+
+  if (hearts.length === 0) {
+    return null;
+  }
 
   return (
     <div className="fixed top-0 left-0 w-full h-full -z-20 pointer-events-none overflow-hidden">
