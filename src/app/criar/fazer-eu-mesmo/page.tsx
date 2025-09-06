@@ -157,9 +157,9 @@ export default function CreatorStudioPage() {
   return (
     <div className="relative flex w-full min-h-screen items-center justify-center p-4">
       <AnimatedBackground fixed />
-      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-x-8 max-w-7xl w-full items-center">
+      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-x-12 max-w-full w-full h-full items-center">
         {/* Form Section */}
-        <aside className="w-full flex flex-col justify-center">
+        <aside className="w-full flex flex-col px-16">
          <div className="w-full max-w-lg mx-auto">
           <div className="mb-8">
             <Progress value={(currentStep / totalSteps) * 100} className="bg-zinc-700 h-2 [&>div]:bg-white" />
@@ -404,6 +404,11 @@ export default function CreatorStudioPage() {
                                   <RadioGroupItem value="Coverflow" id="coverflow">Coverflow</RadioGroupItem>
                                 </FormControl>
                               </FormItem>
+                               <FormItem>
+                                <FormControl>
+                                  <RadioGroupItem value="Cube" id="cube">Cube</RadioGroupItem>
+                                </FormControl>
+                              </FormItem>
                               <FormItem>
                                 <FormControl>
                                   <RadioGroupItem value="Cards" id="cards">Cards</RadioGroupItem>
@@ -444,11 +449,13 @@ export default function CreatorStudioPage() {
 
         {/* Preview Section */}
         <main className="w-full h-full p-4 hidden lg:flex flex-col items-center justify-center bg-transparent">
-            <div className="w-full h-full aspect-[9/19.5] mx-auto bg-zinc-800 rounded-lg shadow-2xl shadow-primary/20 overflow-hidden">
-                <PagePreview data={{...fieldHistory, ...form.getValues()}} />
-            </div>
+          <div className="w-[420px] h-[840px] bg-zinc-800 p-2 shadow-2xl shadow-primary/20">
+            <PagePreview data={{ ...fieldHistory, ...form.getValues() }} />
+          </div>
         </main>
       </div>
     </div>
   );
 }
+
+    
