@@ -160,7 +160,7 @@ export default function CreatorStudioPage() {
       <AnimatedBackground fixed />
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-x-24 w-full h-full max-w-7xl mx-auto items-center">
         {/* Form Section */}
-        <aside className="w-full flex flex-col items-center justify-start">
+        <aside className="w-full flex flex-col items-center">
          <div className="w-full max-w-md mx-auto">
           <div className="mb-8">
             <Progress value={(currentStep / totalSteps) * 100} className="bg-zinc-700 h-2 [&>div]:bg-white" />
@@ -451,7 +451,7 @@ export default function CreatorStudioPage() {
 
         {/* Preview Section */}
         <main className="w-full h-full hidden lg:flex flex-col items-center justify-center bg-transparent">
-          <div className="w-[520px] h-[820px] bg-black shadow-2xl shadow-primary/20">
+          <div className="w-[580px] min-h-[920px] bg-zinc-900 rounded-xl shadow-2xl shadow-primary/20 flex flex-col p-6">
             <PagePreview data={{ ...fieldHistory, ...form.getValues() }} />
           </div>
         </main>
@@ -459,5 +459,3 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
-
-    
