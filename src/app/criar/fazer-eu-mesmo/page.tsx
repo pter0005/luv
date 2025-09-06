@@ -249,7 +249,7 @@ export default function CreatorStudioPage() {
 
 
   return (
-    <div className="flex min-h-screen w-full items-start justify-center bg-background p-4">
+    <div className="flex min-h-screen w-full items-start p-4">
       <div className="grid w-full max-w-7xl grid-cols-1 gap-16 lg:grid-cols-2">
         {/* Form Section */}
         <div className="w-full flex flex-col">
@@ -289,21 +289,14 @@ export default function CreatorStudioPage() {
                           <FormItem>
                             <FormLabel>Cor do título</FormLabel>
                              <FormControl>
-                                <div className="relative">
-                                     <Input
-                                        type="text"
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                        className="w-full"
-                                        readOnly
-                                    />
-                                    <input
+                                <div className="relative flex items-center gap-4">
+                                     <input
                                         type="color"
                                         value={field.value}
                                         onChange={e => field.onChange(e.target.value)}
-                                        className="absolute right-2 top-1/2 h-8 w-8 -translate-y-1/2 cursor-pointer opacity-0"
+                                        className="h-10 w-14 cursor-pointer appearance-none border-0 bg-transparent p-0 [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded-md [&::-webkit-color-swatch]:border-0"
                                     />
-                                     <div className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border" style={{ backgroundColor: field.value }}></div>
+                                    <span>Clique no quadrado para escolher uma cor</span>
                                 </div>
                             </FormControl>
                             <FormMessage />
@@ -674,3 +667,5 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
+
+    
