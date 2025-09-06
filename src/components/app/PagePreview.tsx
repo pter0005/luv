@@ -80,15 +80,15 @@ const Countdown = ({ startDate, displayType }: { startDate: Date; displayType?: 
     return (
        <div className="text-center text-zinc-300 bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
         <p className="font-sans text-lg tracking-tight">Estamos compartilhando momentos há</p>
-        <div className="flex items-center justify-center gap-2 font-bold text-xl font-mono text-primary my-2">
-            <span>{duration.years || 0}a</span>
-            <span>{String(duration.months || 0)}m</span>
-            <span>{String(duration.days || 0)}d</span>
-            <span>{String(duration.hours || 0)}h</span>
-            <span>{String(duration.minutes || 0)}min</span>
-            <span>{String(duration.seconds || 0)}s</span>
+        <div className="grid grid-cols-6 gap-1 font-bold text-lg font-mono text-primary my-2">
+            <div className="flex flex-col items-center"><span className="text-2xl">{String(duration.years || 0).padStart(2, '0')}</span><span className="text-xs text-zinc-400">Anos</span></div>
+            <div className="flex flex-col items-center"><span className="text-2xl">{String(duration.months || 0).padStart(2, '0')}</span><span className="text-xs text-zinc-400">Meses</span></div>
+            <div className="flex flex-col items-center"><span className="text-2xl">{String(duration.days || 0).padStart(2, '0')}</span><span className="text-xs text-zinc-400">Dias</span></div>
+            <div className="flex flex-col items-center"><span className="text-2xl">{String(duration.hours || 0).padStart(2, '0')}</span><span className="text-xs text-zinc-400">Horas</span></div>
+            <div className="flex flex-col items-center"><span className="text-2xl">{String(duration.minutes || 0).padStart(2, '0')}</span><span className="text-xs text-zinc-400">Min</span></div>
+            <div className="flex flex-col items-center"><span className="text-2xl">{String(duration.seconds || 0).padStart(2, '0')}</span><span className="text-xs text-zinc-400">Seg</span></div>
         </div>
-        <p className="text-sm text-zinc-400">Juntos desde {format(startDate, "dd/MM/yyyy")}</p>
+        <p className="text-sm text-zinc-400 mt-2">Juntos desde {format(startDate, "dd/MM/yyyy")}</p>
       </div>
     )
   }
@@ -125,22 +125,28 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
     return null;
   }
 
-  const getSwiperProps = () => {
+  const getSwiperEffectProps = () => {
     const commonProps = {
       loop: true,
       pagination: { clickable: true },
-      navigation: true,
+      navigation: photos.length > 1,
       grabCursor: true,
     };
 
     switch (displayType) {
       case 'Coverflow':
-         return {
+        return {
           ...commonProps,
-          navigation: false,
-          effect: 'slide' as const,
-          slidesPerView: 3,
+          effect: 'coverflow' as const,
+          slidesPerView: 'auto' as const,
           centeredSlides: true,
+          coverflowEffect: {
+            rotate: 50,
+            stretch: 0,
+            depth: 100,
+            modifier: 1,
+            slideShadows: true,
+          },
         };
       case 'Cube':
         return {
@@ -157,6 +163,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
         return {
           ...commonProps,
           effect: 'flip' as const,
+          slidesPerView: 1,
         };
       case 'Cards':
       default:
@@ -164,34 +171,43 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           ...commonProps,
           navigation: false,
           effect: 'cards' as const,
+          slidesPerView: 1,
           cardsEffect: {
             slideShadows: false,
           },
         };
     }
   };
-  
+
   const isCoverflow = displayType === 'Coverflow';
   const isCube = displayType === 'Cube';
   const isCards = displayType === 'Cards' || !displayType;
 
   return (
-    <div className="w-full mb-6 relative h-[300px] flex items-center justify-center">
+    <div className="w-full mb-6 relative flex items-center justify-center swiper-container-wrapper">
       <style jsx global>{`
-        .swiper-container {
+        .swiper-container-wrapper {
+            height: 300px;
+        }
+        .mySwiper {
           width: 100%;
           height: 100%;
-          padding-top: 20px;
-          padding-bottom: 20px;
         }
         .swiper-slide {
           background-position: center;
           background-size: cover;
-          width: ${isCoverflow ? '150px' : isCube ? '250px' : '100%'};
-          height: ${isCoverflow ? '150px' : isCube ? '250px' : '100%'};
         }
-        .swiper-slide.swiper-slide-cards {
+        .mySwiper .swiper-slide-coverflow {
+          width: 220px;
+          height: 220px;
+        }
+        .mySwiper .swiper-slide-cube {
+          width: 250px;
+          height: 250px;
+        }
+        .mySwiper .swiper-slide-cards {
            border-radius: 18px;
+           height: 100%;
         }
         .swiper-pagination-bullet-active {
           background: hsl(var(--primary)) !important;
@@ -200,27 +216,38 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           color: hsl(var(--primary)) !important;
           width: 24px;
           height: 24px;
+          top: 50%;
+          transform: translateY(-50%);
         }
         .swiper-button-next:after, .swiper-button-prev:after {
-          font-size: 1.25rem !important;
+          font-size: 1.5rem !important;
           font-weight: bold;
         }
+        .swiper-wrapper {
+          align-items: center; 
+        }
       `}</style>
-      <Swiper {...getSwiperProps()} className="swiper-container mySwiper">
+      <Swiper {...getSwiperEffectProps()} className={cn("mySwiper", {
+        'swiper-coverflow': isCoverflow,
+        'swiper-cube': isCube,
+        'swiper-cards': isCards
+      })}>
         {photos.map((photo, index) => (
           <SwiperSlide
             key={index}
             className={cn({
+              'swiper-slide-coverflow': isCoverflow,
+              'swiper-slide-cube': isCube,
               'swiper-slide-cards': isCards,
             })}
           >
-             <div className="relative w-full h-full">
+            <div className="relative w-full h-full">
               <Image
                 src={photo}
                 alt={`User photo ${index + 1}`}
                 fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="rounded-lg object-contain"
+                sizes="(max-width: 400px) 100vw, 250px"
+                className={cn("object-cover", {'rounded-lg': !isCards})}
               />
             </div>
           </SwiperSlide>
