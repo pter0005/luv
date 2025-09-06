@@ -191,9 +191,9 @@ export default function CreatorStudioPage() {
   const currentFieldName = steps[currentStep - 1].name;
 
   return (
-    <div className="relative flex w-full min-h-screen items-center justify-center p-4">
+    <div className="relative flex w-full min-h-screen items-center p-4">
       <AnimatedBackground fixed />
-       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-x-12 w-full h-full max-w-7xl mx-auto items-center">
+       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-x-12 w-full h-full max-w-7xl mx-auto items-start">
         {/* Form Section */}
         <aside className="w-full flex flex-col">
          <div className="w-full max-w-md mx-auto">
@@ -607,7 +607,7 @@ export default function CreatorStudioPage() {
 
         {/* Preview Section */}
         <main className="w-full h-full hidden lg:flex flex-col items-center justify-center bg-transparent">
-          <div className="w-[580px] min-h-[920px] bg-zinc-900 rounded-xl shadow-2xl shadow-primary/20 p-8 flex flex-col">
+          <div className="w-[580px] min-h-[920px] h-[920px] bg-zinc-900 rounded-xl p-6 flex flex-col">
              <div className="bg-zinc-800 rounded-t-lg p-2 flex items-center gap-1.5 border-b border-zinc-700">
                 <div className="flex items-center gap-1.5">
                     <div className="w-3 h-3 rounded-full bg-red-500"></div>
@@ -615,7 +615,7 @@ export default function CreatorStudioPage() {
                     <div className="w-3 h-3 rounded-full bg-green-500"></div>
                 </div>
                 <div className="flex-grow bg-zinc-700 rounded-sm px-2 py-1 text-xs text-zinc-400 text-center truncate">
-                    https://luv.com/p/{watchedData.title?.toLowerCase().replace(/\\s/g, '-') || 'pagina'}
+                    https://luv.com/p/{watchedData.title?.toLowerCase().replace(/\s/g, '-') || 'pagina'}
                 </div>
             </div>
             <div className="flex-grow bg-black rounded-b-lg">
