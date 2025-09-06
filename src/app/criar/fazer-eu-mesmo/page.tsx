@@ -398,15 +398,9 @@ export default function CreatorStudioPage() {
                                         defaultValue={field.value}
                                         className="grid grid-cols-2 gap-4"
                                     >
-                                        <FormItem>
-                                            <RadioGroupItem value="padrão" id="padrão">Padrão</RadioGroupItem>
-                                        </FormItem>
-                                        <FormItem>
-                                            <RadioGroupItem value="classico" id="classico">Clássico</RadioGroupItem>
-                                        </FormItem>
-                                        <FormItem>
-                                            <RadioGroupItem value="simples" id="simples">Simples</RadioGroupItem>
-                                        </FormItem>
+                                        <RadioGroupItem value="padrão" id="date-padrão">Padrão</RadioGroupItem>
+                                        <RadioGroupItem value="classico" id="date-classico">Clássico</RadioGroupItem>
+                                        <RadioGroupItem value="simples" id="date-simples">Simples</RadioGroupItem>
                                     </RadioGroup>
                                 </FormControl>
                                 <FormMessage />
@@ -424,11 +418,11 @@ export default function CreatorStudioPage() {
                                 <FormItem>
                                     <FormLabel>Suas Fotos</FormLabel>
                                     <FormControl>
-                                        <div className="border-2 border-dashed border-zinc-700 rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors"
+                                        <div className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors"
                                         onClick={() => fileInputRef.current?.click()}>
-                                        <Upload className="mx-auto h-10 w-10 text-zinc-500 mb-2" />
+                                        <Upload className="mx-auto h-10 w-10 text-muted-foreground mb-2" />
                                         <p className="font-semibold">Clique para adicionar fotos</p>
-                                        <p className="text-xs text-zinc-500">PNG, JPG, GIF (máx. 8 fotos)</p>
+                                        <p className="text-xs text-muted-foreground">PNG, JPG, GIF (máx. 8 fotos)</p>
                                         <input
                                             type="file"
                                             ref={fileInputRef}
@@ -480,10 +474,10 @@ export default function CreatorStudioPage() {
                                     defaultValue={field.value}
                                     className="grid grid-cols-2 gap-4"
                                     >
-                                        <RadioGroupItem value="Coverflow">Coverflow</RadioGroupItem>
-                                        <RadioGroupItem value="Cards">Cards</RadioGroupItem>
-                                        <RadioGroupItem value="Flip">Flip</RadioGroupItem>
-                                        <RadioGroupItem value="Cube">Cube</RadioGroupItem>
+                                        <RadioGroupItem value="Coverflow" id="gallery-coverflow">Coverflow</RadioGroupItem>
+                                        <RadioGroupItem value="Cards" id="gallery-cards">Cards</RadioGroupItem>
+                                        <RadioGroupItem value="Flip" id="gallery-flip">Flip</RadioGroupItem>
+                                        <RadioGroupItem value="Cube" id="gallery-cube">Cube</RadioGroupItem>
                                     </RadioGroup>
                                 </FormControl>
                                 <FormMessage />
@@ -547,10 +541,10 @@ export default function CreatorStudioPage() {
                               defaultValue={field.value}
                               className="grid grid-cols-2 gap-4"
                             >
-                              <RadioGroupItem value="none">Nenhuma</RadioGroupItem>
-                              <RadioGroupItem value="hearts">Chuva de Corações</RadioGroupItem>
-                              <RadioGroupItem value="stars">Céu Estrelado</RadioGroupItem>
-                              <RadioGroupItem value="clouds">Nuvens</RadioGroupItem>
+                              <RadioGroupItem value="none" id="bg-none">Nenhuma</RadioGroupItem>
+                              <RadioGroupItem value="hearts" id="bg-hearts">Chuva de Corações</RadioGroupItem>
+                              <RadioGroupItem value="stars" id="bg-stars">Céu Estrelado</RadioGroupItem>
+                              <RadioGroupItem value="clouds" id="bg-clouds">Nuvens</RadioGroupItem>
                             </RadioGroup>
                           </FormControl>
                           <FormMessage />
@@ -614,15 +608,15 @@ export default function CreatorStudioPage() {
                               defaultValue={field.value}
                               className="space-y-4"
                             >
-                                <RadioGroupItem value="monthly">
+                                <RadioGroupItem value="monthly" id="plan-monthly">
                                     <div className="font-bold">Mensal - R$20,00/mês</div>
                                     <div className="text-sm text-muted-foreground">Ideal para uma surpresa pontual.</div>
                                 </RadioGroupItem>
-                                <RadioGroupItem value="forever">
+                                <RadioGroupItem value="forever" id="plan-forever">
                                     <div className="font-bold">Para Sempre - R$34,99</div>
                                     <div className="text-sm text-muted-foreground">Acesso vitalício à sua obra de arte digital.</div>
                                 </RadioGroupItem>
-                                <RadioGroupItem value="custom">
+                                <RadioGroupItem value="custom" id="plan-custom">
                                     <div className="font-bold">Sob Medida - Consulte</div>
                                     <div className="text-sm text-muted-foreground">Para ideias que transcendem. Crie algo único.</div>
                                 </RadioGroupItem>
@@ -676,6 +670,3 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
-
-
-    

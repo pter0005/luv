@@ -26,25 +26,28 @@ const RadioGroupItem = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item> & {children?: React.ReactNode}
 >(({ className, children, ...props }, ref) => {
   return (
-    <div className={cn(
-      "flex items-center space-x-2 rounded-md border border-zinc-800 bg-[#18181B] p-4 has-[:checked]:border-red-600",
+    <label htmlFor={props.id} className={cn(
+      "flex items-center space-x-3 rounded-md border p-4 cursor-pointer transition-colors",
+      "border-border bg-card hover:bg-secondary",
+      "has-[:checked]:border-primary has-[:checked]:bg-primary/10 has-[:checked]:text-primary",
       className
     )}>
        <RadioGroupPrimitive.Item
         ref={ref}
+        id={props.id}
         className={cn(
-          "aspect-square h-4 w-4 rounded-full border border-zinc-600 text-primary ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          "aspect-square h-4 w-4 rounded-full border border-primary text-primary ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         )}
         {...props}
       >
         <RadioGroupPrimitive.Indicator className="flex items-center justify-center">
-          <Circle className="h-2.5 w-2.5 fill-red-600 text-red-600" />
+          <Circle className="h-2.5 w-2.5 fill-current text-current" />
         </RadioGroupPrimitive.Indicator>
       </RadioGroupPrimitive.Item>
-      <label htmlFor={props.id} className="font-medium">
+      <span className="font-medium">
         {children}
-      </label>
-    </div>
+      </span>
+    </label>
   )
 })
 RadioGroupItem.displayName = RadioGroupPrimitive.Item.displayName

@@ -25,7 +25,7 @@ function Calendar({
     <DayPicker
       locale={ptBR}
       showOutsideDays={showOutsideDays}
-      className={cn("p-3 bg-[#18181B] rounded-lg border border-zinc-800", className)}
+      className={cn("p-3 bg-card/80 rounded-lg border border-border", className)}
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4",
@@ -37,8 +37,8 @@ function Calendar({
           buttonVariants({ variant: "outline" }),
           "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
         ),
-        nav_button_previous: "hidden",
-        nav_button_next: "hidden",
+        nav_button_previous: "absolute left-1",
+        nav_button_next: "absolute right-1",
         table: "w-full border-collapse space-y-1",
         head_row: "flex",
         head_cell:
@@ -94,10 +94,10 @@ function Calendar({
               onValueChange={handleValueChange}
               value={dropdownProps.value?.toString()}
             >
-              <SelectTrigger className="bg-zinc-800 border-zinc-700 w-[48%] capitalize">
+              <SelectTrigger className="bg-card border-border w-[48%] capitalize">
                 <SelectValue placeholder={dropdownProps.caption} />
               </SelectTrigger>
-              <SelectContent className="max-h-60 bg-zinc-900 border-zinc-800 text-white">
+              <SelectContent className="max-h-60 bg-popover border-border text-popover-foreground">
                 <ScrollArea>
                    {options.map((option) => (
                     <SelectItem
