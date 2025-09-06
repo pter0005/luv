@@ -404,11 +404,6 @@ export default function CreatorStudioPage() {
                                   <RadioGroupItem value="Coverflow" id="coverflow">Coverflow</RadioGroupItem>
                                 </FormControl>
                               </FormItem>
-                               <FormItem>
-                                <FormControl>
-                                  <RadioGroupItem value="Cube" id="cube">Cubo 3D</RadioGroupItem>
-                                </FormControl>
-                              </FormItem>
                               <FormItem>
                                 <FormControl>
                                   <RadioGroupItem value="Cards" id="cards">Cards</RadioGroupItem>
@@ -448,8 +443,8 @@ export default function CreatorStudioPage() {
         </aside>
 
         {/* Preview Section */}
-        <main className="w-full p-4 hidden lg:flex flex-col items-center justify-center bg-transparent">
-            <div className="w-full max-w-[400px] aspect-[9/19.5] mx-auto bg-zinc-900 rounded-[60px] shadow-2xl shadow-primary/20 p-4 border-8 border-zinc-800 overflow-hidden">
+        <main className="w-full h-full p-4 hidden lg:flex flex-col items-center justify-center bg-transparent">
+            <div className="w-full h-full aspect-[9/19.5] mx-auto bg-zinc-800 rounded-lg shadow-2xl shadow-primary/20 overflow-hidden">
                 <PagePreview data={{...fieldHistory, ...form.getValues()}} />
             </div>
         </main>
@@ -457,5 +452,3 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
-
-    

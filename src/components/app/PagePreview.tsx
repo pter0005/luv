@@ -161,19 +161,8 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
             rotate: 0,
             stretch: 0,
             depth: 100,
-            modifier: 2,
-            slideShadows: true,
-          },
-        };
-      case 'Cube':
-        return {
-          ...commonProps,
-          effect: 'cube' as const,
-          cubeEffect: {
-            shadow: true,
-            slideShadows: true,
-            shadowOffset: 20,
-            shadowScale: 0.94,
+            modifier: 2.5,
+            slideShadows: false,
           },
         };
       case 'Flip':
@@ -201,9 +190,6 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
       "w-full mb-6 relative flex items-center justify-center h-[300px]",
     )}>
       <style jsx global>{`
-        .swiper-container-coverflow, .swiper-container-flip {
-          height: 250px;
-        }
         .swiper-container-coverflow .swiper-slide {
           width: 80%;
           max-width: 250px;
@@ -211,10 +197,6 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
         .swiper-container-cards {
           height: 320px;
           width: 240px;
-        }
-        .swiper-container-cube {
-          width: 200px;
-          height: 200px;
         }
         .mySwiper {
           width: 100%;
@@ -274,15 +256,15 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
 
 export function PagePreview({ data }: PagePreviewProps) {
   return (
-    <div className="w-full h-full bg-zinc-900 flex flex-col">
+    <div className="w-full h-full bg-black flex flex-col rounded-lg">
         {/* Browser Header */}
-        <div className="flex-shrink-0 bg-zinc-800 p-2 flex items-center gap-1.5 border-b border-zinc-700/50">
-            <div className="flex items-center gap-1">
-                <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
-                <div className="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
-                <div className="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+        <div className="flex-shrink-0 bg-zinc-200 dark:bg-zinc-700 p-2 flex items-center gap-1.5 border-b border-zinc-300 dark:border-zinc-600 rounded-t-lg">
+            <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                <div className="w-3 h-3 rounded-full bg-green-500"></div>
             </div>
-            <div className="flex-grow bg-zinc-900/80 rounded-md px-2 py-0.5 text-xs text-zinc-400 text-center truncate">
+            <div className="flex-grow bg-zinc-100 dark:bg-zinc-800/80 rounded-md px-2 py-1 text-xs text-zinc-600 dark:text-zinc-400 text-center truncate">
                 https://luv.com/p/{data.title?.toLowerCase().replace(/\\s/g, '-') || 'pagina'}
             </div>
         </div>
@@ -322,5 +304,3 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
-
-
