@@ -4,6 +4,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import { Header } from '@/components/app/Header';
 import { Footer } from '@/components/app/Footer';
+import { HeartsBackground } from '@/components/app/HeartsBackground';
+import { AnimatedBackground } from '@/components/app/AnimatedBackground';
 
 export const metadata: Metadata = {
   title: 'Luv ©',
@@ -34,9 +36,13 @@ export default function RootLayout({
           'antialiased overflow-x-hidden bg-background min-h-screen'
         )}
       >
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <HeartsBackground />
+        <AnimatedBackground fixed />
+        <div className="relative z-10">
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </div>
         <Toaster />
       </body>
     </html>

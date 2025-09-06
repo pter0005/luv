@@ -20,10 +20,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { AnimatedBackground } from "@/components/app/AnimatedBackground";
 import Link from "next/link";
 import { TypingAnimation } from "@/components/app/TypingAnimation";
-import { HeartsBackground } from "@/components/app/HeartsBackground";
 
 export default function CreatorPage() {
   const testimonials = [
@@ -106,8 +104,6 @@ export default function CreatorPage() {
 
   return (
     <>
-      <HeartsBackground />
-      <AnimatedBackground fixed />
       {/* Hero Section */}
        <section className="relative overflow-hidden section-padding pt-24 md:pt-32">
         <div className="container relative z-10 grid lg:grid-cols-2 gap-12 items-center">
@@ -275,7 +271,6 @@ export default function CreatorPage() {
 
       {/* Pricing Section */}
       <section id="planos" className="section-padding bg-secondary/30 backdrop-blur-md relative z-10 overflow-hidden">
-        <AnimatedBackground />
         <div className="container relative z-10 text-center">
           <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Nossos <span className="gradient-text">Planos</span></h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16">Escolha o plano ideal para sua jornada de amor. Cada um é um convite para uma experiência memorável.</p>
