@@ -25,6 +25,8 @@ import {
   ChevronRight,
   Upload,
   X as XIcon,
+  Search,
+  Check,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Editor } from "@/components/ui/editor";
@@ -37,6 +39,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Image from "next/image";
+import { findYoutubeVideo } from "@/ai/flows/find-youtube-video";
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
@@ -63,6 +66,11 @@ export default function CreatorStudioPage() {
   const totalSteps = 8;
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
+  const [musicSearchQuery, setMusicSearchQuery] = React.useState("");
+  const [musicSearchResult, setMusicSearchResult] = React.useState<{ title: string; videoId: string } | null>(null);
+  const [isSearchingMusic, setIsSearchingMusic] = React.useState(false);
+
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -83,6 +91,44 @@ export default function CreatorStudioPage() {
   });
 
   const watchedData = form.watch();
+
+  const handleMusicSearch = async () => {
+    if (!musicSearchQuery) return;
+    setIsSearchingMusic(true);
+    setMusicSearchResult(null);
+    try {
+      const result = await findYoutubeVideo({ songDescription: musicSearchQuery });
+      if (result && result.videoId) {
+        setMusicSearchResult(result);
+      } else {
+         toast({
+            variant: "destructive",
+            title: "Música não encontrada",
+            description: "Não foi possível encontrar um vídeo para a sua busca. Tente com outros termos."
+        })
+      }
+    } catch (error) {
+       toast({
+            variant: "destructive",
+            title: "Erro na busca",
+            description: "Ocorreu um erro ao buscar a música. Tente novamente."
+        })
+    } finally {
+      setIsSearchingMusic(false);
+    }
+  };
+
+  const selectMusic = () => {
+    if (musicSearchResult) {
+      const youtubeUrl = `https://www.youtube.com/watch?v=${musicSearchResult.videoId}`;
+      form.setValue("musicUrl", youtubeUrl);
+      toast({
+        title: "Música selecionada!",
+        description: musicSearchResult.title,
+      })
+    }
+  };
+
 
   function onSubmit(data: FormData) {
     console.log(data);
@@ -116,7 +162,7 @@ export default function CreatorStudioPage() {
     {
       name: "musicUrl" as const,
       title: "Música Dedicada",
-      description: "Dedique uma música especial. Cole o link do YouTube aqui.",
+      description: "Dedique uma música especial. Digite o nome da música e do artista.",
     },
     {
       name: "backgroundAnimation" as const,
@@ -249,6 +295,7 @@ export default function CreatorStudioPage() {
                                         value={field.value}
                                         onChange={field.onChange}
                                         className="w-full"
+                                        readOnly
                                     />
                                     <input
                                         type="color"
@@ -256,7 +303,7 @@ export default function CreatorStudioPage() {
                                         onChange={e => field.onChange(e.target.value)}
                                         className="absolute right-2 top-1/2 h-8 w-8 -translate-y-1/2 cursor-pointer opacity-0"
                                     />
-                                     <div className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border" style={{ backgroundColor: field.value }}></div>
+                                     <div className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border" style={{ backgroundColor: field.value }}></div>
                                 </div>
                             </FormControl>
                             <FormMessage />
@@ -442,22 +489,48 @@ export default function CreatorStudioPage() {
                     </div>
                   )}
                   {currentStep === 5 && (
-                    <FormField
-                      control={form.control}
-                      name="musicUrl"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>URL da Música (YouTube)</FormLabel>
-                          <FormControl>
-                            <Input placeholder="https://www.youtube.com/watch?v=..." {...field} />
-                          </FormControl>
-                          <FormDescription>
-                            A música será reproduzida automaticamente na página.
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
+                    <div className="space-y-4">
+                      <FormLabel>Busque pela música</FormLabel>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          placeholder="Ex: Coldplay - A Sky Full of Stars"
+                          value={musicSearchQuery}
+                          onChange={(e) => setMusicSearchQuery(e.target.value)}
+                        />
+                        <Button type="button" onClick={handleMusicSearch} disabled={isSearchingMusic}>
+                          {isSearchingMusic ? "Buscando..." : <Search className="h-4 w-4" />}
+                        </Button>
+                      </div>
+
+                      {musicSearchResult && (
+                        <div className="p-4 border rounded-md bg-secondary/50">
+                          <p className="font-semibold truncate">{musicSearchResult.title}</p>
+                          <div className="flex items-center gap-4 mt-2">
+                             <Button type="button" size="sm" onClick={selectMusic} className="w-full">
+                                <Check className="mr-2 h-4 w-4"/>
+                                Selecionar esta
+                             </Button>
+                             <Button type="button" size="sm" variant="outline" className="w-full" onClick={() => setMusicSearchResult(null)}>
+                                <XIcon className="mr-2 h-4 w-4"/>
+                                Cancelar
+                             </Button>
+                          </div>
+                        </div>
                       )}
-                    />
+                      
+                       <FormField
+                        control={form.control}
+                        name="musicUrl"
+                        render={({ field }) => (
+                            <FormItem>
+                            {field.value && (
+                                <p className="text-sm text-green-400 p-2 bg-green-950/50 rounded-md">Música selecionada! Prossiga para a próxima etapa.</p>
+                            )}
+                             <FormMessage />
+                            </FormItem>
+                        )}
+                        />
+                    </div>
                   )}
                   {currentStep === 6 && (
                      <FormField
@@ -580,7 +653,7 @@ export default function CreatorStudioPage() {
         </div>
 
         {/* Preview Section */}
-        <main className="hidden w-full lg:flex items-start justify-center">
+        <main className="hidden w-full lg:flex items-center justify-center">
             <div className="w-full max-w-lg h-[920px] bg-zinc-900 rounded-2xl p-6 flex flex-col border-zinc-700 border-[24px]">
                 <div className="bg-zinc-800 rounded-t-lg p-2 flex items-center gap-1.5 border-b border-zinc-700">
                     <div className="flex items-center gap-1.5">
@@ -592,7 +665,7 @@ export default function CreatorStudioPage() {
                         https://luv.com/p/{watchedData.title?.toLowerCase().replace(/\s/g, '-') || 'pagina'}
                     </div>
                 </div>
-                <div className="flex-grow bg-black rounded-b-lg">
+                <div className="flex-grow bg-black rounded-b-lg overflow-hidden">
                     <PagePreview data={watchedData} />
                 </div>
             </div>
@@ -601,5 +674,3 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
-
-    
