@@ -101,15 +101,15 @@
 @keyframes purple-fog {
   0% {
     transform: scale(1.2) translate(0, 0);
-    opacity: 0.3;
+    opacity: 0.4;
   }
   50% {
     transform: scale(1.8) translate(30px, -30px);
-    opacity: 0.5;
+    opacity: 0.6;
   }
   100% {
     transform: scale(1.2) translate(0, 0);
-    opacity: 0.3;
+    opacity: 0.4;
   }
 }
 
@@ -120,7 +120,7 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle at center, hsl(var(--primary) / 0.4), transparent 70%);
+  background: radial-gradient(circle at center, hsl(var(--primary) / 0.5), transparent 70%);
   animation: purple-fog 20s ease-in-out infinite;
   z-index: -1;
 }
