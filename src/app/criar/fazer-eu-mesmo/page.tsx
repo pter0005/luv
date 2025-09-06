@@ -27,6 +27,7 @@ import {
   X as XIcon,
   Search,
   Check,
+  Loader,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Editor } from "@/components/ui/editor";
@@ -40,6 +41,7 @@ import {
 } from "@/components/ui/select";
 import Image from "next/image";
 import { findYoutubeVideo } from "@/ai/flows/find-youtube-video";
+import { useDebounce } from "@/hooks/use-debounce";
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
@@ -67,6 +69,7 @@ export default function CreatorStudioPage() {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const [musicSearchQuery, setMusicSearchQuery] = React.useState("");
+  const debouncedMusicSearchQuery = useDebounce(musicSearchQuery, 500);
   const [musicSearchResult, setMusicSearchResult] = React.useState<{ title: string; videoId: string } | null>(null);
   const [isSearchingMusic, setIsSearchingMusic] = React.useState(false);
 
@@ -92,31 +95,39 @@ export default function CreatorStudioPage() {
 
   const watchedData = form.watch();
 
-  const handleMusicSearch = async () => {
-    if (!musicSearchQuery) return;
-    setIsSearchingMusic(true);
-    setMusicSearchResult(null);
-    try {
-      const result = await findYoutubeVideo({ songDescription: musicSearchQuery });
-      if (result && result.videoId) {
-        setMusicSearchResult(result);
-      } else {
-         toast({
-            variant: "destructive",
-            title: "Música não encontrada",
-            description: "Não foi possível encontrar um vídeo para a sua busca. Tente com outros termos."
-        })
-      }
-    } catch (error) {
-       toast({
-            variant: "destructive",
-            title: "Erro na busca",
-            description: "Ocorreu um erro ao buscar a música. Tente novamente."
-        })
-    } finally {
-      setIsSearchingMusic(false);
-    }
-  };
+  React.useEffect(() => {
+    const handleMusicSearch = async () => {
+        if (!debouncedMusicSearchQuery) {
+            setMusicSearchResult(null);
+            return;
+        };
+        setIsSearchingMusic(true);
+        setMusicSearchResult(null);
+        try {
+            const result = await findYoutubeVideo({ songDescription: debouncedMusicSearchQuery });
+            if (result && result.videoId) {
+                setMusicSearchResult(result);
+            } else {
+                toast({
+                    variant: "destructive",
+                    title: "Música não encontrada",
+                    description: "Não foi possível encontrar um vídeo para a sua busca. Tente com outros termos."
+                })
+            }
+        } catch (error) {
+            toast({
+                variant: "destructive",
+                title: "Erro na busca",
+                description: "Ocorreu um erro ao buscar a música. Tente novamente."
+            })
+        } finally {
+            setIsSearchingMusic(false);
+        }
+    };
+
+    handleMusicSearch();
+  }, [debouncedMusicSearchQuery, toast]);
+
 
   const selectMusic = () => {
     if (musicSearchResult) {
@@ -484,15 +495,13 @@ export default function CreatorStudioPage() {
                   {currentStep === 5 && (
                     <div className="space-y-4">
                       <FormLabel>Busque pela música</FormLabel>
-                      <div className="flex items-center gap-2">
+                      <div className="relative">
                         <Input
                           placeholder="Ex: Coldplay - A Sky Full of Stars"
                           value={musicSearchQuery}
                           onChange={(e) => setMusicSearchQuery(e.target.value)}
                         />
-                        <Button type="button" onClick={handleMusicSearch} disabled={isSearchingMusic}>
-                          {isSearchingMusic ? "Buscando..." : <Search className="h-4 w-4" />}
-                        </Button>
+                        {isSearchingMusic && <Loader className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 animate-spin" />}
                       </div>
 
                       {musicSearchResult && (
@@ -668,3 +677,5 @@ export default function CreatorStudioPage() {
   );
 }
 
+
+    

@@ -276,9 +276,47 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
 };
 
 
+const MusicPlayer = ({ musicUrl }: { musicUrl?: string }) => {
+    const videoId = React.useMemo(() => {
+        if (!musicUrl) return null;
+        try {
+            const url = new URL(musicUrl);
+            if (url.hostname === 'youtu.be') {
+                return url.pathname.slice(1);
+            }
+            if (url.hostname === 'www.youtube.com' || url.hostname === 'youtube.com') {
+                return url.searchParams.get('v');
+            }
+            return null;
+        } catch (error) {
+            return null;
+        }
+
+    }, [musicUrl]);
+    
+    if (!videoId) return null;
+
+    const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&showinfo=0&rel=0&loop=1&playlist=${videoId}`;
+
+    return (
+        <div className="absolute top-0 left-0 w-0 h-0 overflow-hidden">
+            <iframe
+                width="1"
+                height="1"
+                src={embedUrl}
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+            ></iframe>
+        </div>
+    )
+}
+
 export function PagePreview({ data }: PagePreviewProps) {
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full h-full flex flex-col relative">
+        <MusicPlayer musicUrl={data.musicUrl} />
         {/* Page Content */}
         <div
             className="flex-grow p-4 flex flex-col items-center justify-start text-center relative overflow-y-auto"
