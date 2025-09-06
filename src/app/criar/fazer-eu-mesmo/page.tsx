@@ -74,8 +74,8 @@ export default function CreatorStudioPage() {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "João & Maria",
-      message: "<p>Nossa história é a prova de que o amor verdadeiro existe. Cada momento ao seu lado é um presente, e eu mal posso esperar por todos os capítulos que ainda vamos escrever juntos. Te amo!</p>",
+      title: "",
+      message: "",
       photos: [],
       photoDisplayType: "Cards",
       titleColor: "#FFFFFF",
@@ -667,5 +667,7 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
+
+    
 
     
