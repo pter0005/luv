@@ -80,7 +80,7 @@
   animation: background-pan 15s ease-in-out infinite;
 }
 
-@keyframes float {
+@keyframes float-up-down {
   0%,
   100% {
     transform: translateY(0);
@@ -91,7 +91,7 @@
 }
 
 .animate-float {
-  animation: float 6s ease-in-out infinite;
+  animation: float-up-down 6s ease-in-out infinite;
 }
 
 .section-padding {
