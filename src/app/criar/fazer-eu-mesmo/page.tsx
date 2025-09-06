@@ -37,6 +37,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Image from "next/image";
+import { AnimatedBackground } from "@/components/app/AnimatedBackground";
 
 const formSchema = z.object({
   photos: z.array(z.string()).optional(),
@@ -154,10 +155,11 @@ export default function CreatorStudioPage() {
   const currentFieldName = steps[currentStep - 1].name;
 
   return (
-    <div className="flex w-full min-h-screen bg-[#111111] text-white items-center justify-center p-4">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 max-w-7xl w-full items-center">
+    <div className="relative flex w-full min-h-screen items-center justify-center p-4">
+      <AnimatedBackground fixed />
+      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-x-16 max-w-7xl w-full items-center">
         {/* Form Section */}
-        <aside className="w-full max-w-lg mx-auto flex flex-col justify-center">
+        <aside className="w-full max-w-lg mx-auto flex flex-col justify-center bg-background/50 backdrop-blur-md border border-border p-8 rounded-2xl">
           <div className="mb-8">
             <Progress value={(currentStep / totalSteps) * 100} className="bg-zinc-700 h-2 [&>div]:bg-white" />
             <p className="text-right text-sm text-muted-foreground mt-2">{currentStep}/{totalSteps}</p>
@@ -426,17 +428,17 @@ export default function CreatorStudioPage() {
                 )}
               </div>
               <div className="flex items-center gap-4 mt-8">
-                <Button type="button" variant="secondary" onClick={handlePrevStep} disabled={currentStep === 1} className="w-full bg-zinc-800 hover:bg-zinc-700">
+                <Button type="button" variant="secondary" onClick={handlePrevStep} disabled={currentStep === 1} className="w-full">
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Voltar
                 </Button>
                 {currentStep < totalSteps ? (
-                  <Button type="button" onClick={handleNextStep} className="w-full bg-red-600 hover:bg-red-700">
+                  <Button type="button" onClick={handleNextStep} className="w-full">
                     Próxima Etapa
                     <ChevronRight className="ml-2 h-4 w-4" />
                   </Button>
                 ) : (
-                  <Button type="submit" size="lg" className="w-full bg-red-600 hover:bg-red-700">Salvar e Obter Link</Button>
+                  <Button type="submit" size="lg" className="w-full">Salvar e Obter Link</Button>
                 )}
               </div>
             </form>
@@ -445,7 +447,7 @@ export default function CreatorStudioPage() {
 
         {/* Preview Section */}
         <main className="w-full p-4 hidden lg:flex flex-col items-center justify-center bg-transparent">
-            <div className="w-full max-w-[400px] aspect-[9/19.5] mx-auto bg-zinc-900 rounded-[60px] shadow-2xl shadow-black/50 border-8 border-zinc-800 overflow-hidden">
+            <div className="w-full max-w-[400px] aspect-[9/19.5] mx-auto bg-zinc-900 rounded-[60px] shadow-2xl shadow-primary/20 border-8 border-zinc-800 overflow-hidden">
                 <PagePreview data={{...fieldHistory, ...form.getValues()}} />
             </div>
         </main>
