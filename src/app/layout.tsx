@@ -37,12 +37,14 @@ export default function RootLayout({
           'antialiased overflow-x-hidden bg-background min-h-screen'
         )}
       >
-        <HeartsBackground />
-        <AnimatedBackground fixed />
-        <div className="relative z-10">
-          <Header />
-          <main>{children}</main>
-          <Footer />
+        <div className="relative w-full h-full">
+          <AnimatedBackground fixed />
+          <HeartsBackground />
+          <div className="relative z-10 flex flex-col min-h-screen">
+            <Header />
+            <main className="flex-grow">{children}</main>
+            <Footer />
+          </div>
         </div>
         <Toaster />
       </body>

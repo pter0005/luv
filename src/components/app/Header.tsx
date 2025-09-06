@@ -27,10 +27,7 @@ export function Header() {
 
   const navLinks = [
     { href: "#recursos", label: "Recursos" },
-    { href: "#temas", label: "Temas" },
     { href: "#avaliacoes", label: "Avaliações" },
-    { href: "#planos", label: "Planos" },
-    { href: "#faq", label: "F.A.Q" },
   ];
 
   return (
@@ -40,7 +37,7 @@ export function Header() {
     )}>
       <div className="container flex items-center justify-between h-16 md:h-20">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="https://i.imgur.com/EMwsRdt.png" alt="Luv Logo" width={120} height={120} className="w-20 h-20 md:w-24 md:h-24" />
+          <Image src="https://i.imgur.com/EMwsRdt.png" alt="Luv Logo" width={80} height={80} className="w-16 h-16 md:w-20 md:h-20" />
         </Link>
         <nav className="hidden md:flex items-center space-x-8">
           {navLinks.map(link => (
@@ -86,5 +83,3 @@ export function Header() {
     </header>
   );
 }
-
-    

@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -16,7 +17,7 @@
     --secondary-foreground: 0 0% 98%;
     --muted: 257 40% 15%;
     --muted-foreground: 0 0% 63.9%;
-    --accent: 257 80% 60%;
+    --accent: 327 80% 60%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
@@ -39,7 +40,7 @@
     --secondary-foreground: 0 0% 98%;
     --muted: 257 40% 15%;
     --muted-foreground: 0 0% 63.9%;
-    --accent: 257 80% 60%;
+    --accent: 327 80% 60%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
@@ -59,57 +60,21 @@
 }
 
 .gradient-text {
-  @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
-}
-
-@keyframes background-pan {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.animated-gradient-bg {
-  background: linear-gradient(90deg, hsl(var(--background)), hsl(var(--primary) / 0.1), hsl(var(--accent) / 0.1), hsl(var(--background)));
-  background-size: 400% 400%;
-  animation: background-pan 15s ease-in-out infinite;
-}
-
-@keyframes float-up-down {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-}
-
-.animate-float {
-  animation: float-up-down 6s ease-in-out infinite;
-}
-
-.section-padding {
-  @apply py-12 md:py-20 lg:py-24;
+  @apply bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent;
 }
 
 @keyframes purple-fog {
   0% {
     transform: scale(1.2) translate(0, 0);
-    opacity: 0.4;
+    opacity: 0;
   }
   50% {
     transform: scale(1.8) translate(30px, -30px);
-    opacity: 0.6;
+    opacity: 0.4;
   }
   100% {
     transform: scale(1.2) translate(0, 0);
-    opacity: 0.4;
+    opacity: 0;
   }
 }
 
@@ -120,27 +85,48 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle at center, hsl(var(--primary) / 0.5), transparent 70%);
-  animation: purple-fog 20s ease-in-out infinite;
-  z-index: -1;
+  background: radial-gradient(circle at center, hsl(var(--primary) / 0.15), transparent 70%);
+  animation: purple-fog 25s ease-in-out infinite;
+  will-change: transform;
 }
+
 
 @keyframes rise {
   0% {
-    transform: translateY(100vh) scale(0.5);
+    transform: translateY(0) scale(1);
     opacity: 1;
   }
   100% {
-    transform: translateY(-10vh) scale(1.2);
+    transform: translateY(-100vh) scale(0.5);
     opacity: 0;
   }
 }
 
 .heart {
   position: absolute;
-  bottom: 0;
+  bottom: -10rem;
+  color: hsl(var(--primary) / 0.3);
   animation-name: rise;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
-  color: hsl(var(--primary) / 0.5);
+  will-change: transform, opacity;
 }
+
+.section-padding {
+  @apply py-16 md:py-24 lg:py-28;
+}
+
+.animate-blink {
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  from,
+  to {
+    color: transparent;
+  }
+  50% {
+    color: hsl(var(--primary));
+  }
+}
+

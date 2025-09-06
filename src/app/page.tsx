@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, Globe, QrCode, Gamepad2, PlayCircle, Eye, Check, X } from "lucide-react";
+import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, Globe, QrCode, Gamepad2, PlayCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -28,9 +28,6 @@ export default function CreatorPage() {
     { name: "Mariana & João", date: "15 de Maio, 2024", message: "Adorei a experiência! Pude criar uma página especial para o João com nossas fotos favoritas, uma playlist personalizada e um texto que representa nossa história. Ele ficou super emocionado quando viu!", image: "https://picsum.photos/100/100?random=1" },
     { name: "Ana & Pedro", date: "2 de Junho, 2024", message: "Com a Luv, pude expressar meu amor de um jeito totalmente diferente. Adorei criar uma página só para nós dois.", image: "https://picsum.photos/100/100?random=2" },
     { name: "Lucas & Carol", date: "20 de Março, 2024", message: "Montei uma página surpresa para a Carol, com nossas fotos de viagem e uma mensagem sincera. Ela adorou! Com certeza vou usar de novo.", image: "https://picsum.photos/100/100?random=3" },
-    { name: "Camila & Felipe", date: "1 de Fevereiro, 2024", message: "A interface é simples e criar uma página com nossas fotos e músicas favoritas foi super especial!", image: "https://picsum.photos/100/100?random=4" },
-    { name: "Bia & Henrique", date: "12 de Setembro, 2023", message: "A página ficou incrível e personalizada! Ele não esperava por algo tão emocionante.", image: "https://picsum.photos/100/100?random=5" },
-    { name: "Clara & Rafael", date: "5 de Abril, 2024", message: "Usar a Luv foi incrível! A plataforma é muito intuitiva e fácil de usar. Conseguimos montar um presente digital perfeito com músicas que marcaram nossa relação.", image: "https://picsum.photos/100/100?random=6" },
   ];
 
   const features = [
@@ -38,74 +35,50 @@ export default function CreatorPage() {
       icon: Gamepad2,
       title: "Jogo Enigmático 2D",
       description: "Uma revelação inesquecível através de um enigma personalizado.",
-      example: {
-        title: "Exemplo: Jogo Enigmático 2D",
-        description: "Surpreenda com um mini-jogo 2D. Ao resolver um enigma, a pessoa amada descobre a página que você criou. É uma experiência interativa e emocionante que transforma a revelação em um momento único.",
-        image: "https://picsum.photos/800/600?random=20",
-        imageHint: "pixel art game"
-      }
+      image: "https://picsum.photos/800/600?random=20",
+      imageHint: "pixel art game"
     },
     {
       icon: Calendar,
       title: "Contador de tempo",
       description: "Mostre há quanto tempo vocês estão juntos com um contador em tempo real.",
-      example: {
-        title: "Exemplo: Contador de Tempo",
-        description: "Visualize o tempo do seu relacionamento em anos, meses, dias, horas e até segundos. Um lembrete constante do tempo precioso que vocês compartilham, atualizado em tempo real.",
-        image: "https://picsum.photos/800/600?random=21",
-        imageHint: "time counter"
-      }
+      image: "https://picsum.photos/800/600?random=21",
+      imageHint: "time counter"
     },
     {
       icon: ImageIcon,
-      title: "Animações de fundo",
-      description: "Escolha entre várias animações de fundo para personalizar a página.",
-      example: {
-        title: "Exemplo: Animações de Fundo",
-        description: "Dê vida à sua página com fundos animados. Escolha entre corações flutuantes, uma névoa suave ou outras animações para criar a atmosfera perfeita para a sua declaração de amor.",
-        image: "https://picsum.photos/800/600?random=22",
-        imageHint: "animated background"
-      }
+      title: "Galerias de Fotos",
+      description: "Conte sua história com galerias de fotos animadas e personalizadas.",
+      image: "https://picsum.photos/800/600?random=22",
+      imageHint: "photo gallery"
     },
     {
       icon: Music,
       title: "Música dedicada",
-      description: "Dedique uma música especial. A música será reproduzida automaticamente.",
-      example: {
-        title: "Exemplo: Música Dedicada",
-        description: "Adicione a trilha sonora do seu amor. A música que você escolher tocará automaticamente, criando uma imersão completa e tornando a experiência ainda mais emocionante e pessoal.",
-        image: "https://picsum.photos/800/600?random=23",
-        imageHint: "music player"
-      }
+      description: "Adicione a trilha sonora do seu amor com uma música do YouTube.",
+      image: "https://picsum.photos/800/600?random=23",
+      imageHint: "music player"
     },
     {
       icon: Globe,
-      title: "Em todo lugar",
-      description: "Crie e compartilhe de qualquer lugar do mundo. Aceitamos pagamentos internacionais.",
-      example: {
-        title: "Exemplo: Acesso Global",
-        description: "Não importa onde você ou seu amor estejam, a Luv conecta vocês. Crie sua página de qualquer lugar e compartilhe com o mundo. O amor não tem fronteiras, e sua declaração também não deveria ter.",
-        image: "https://picsum.photos/800/600?random=24",
-        imageHint: "world map"
-      }
+      title: "Acesso Global",
+      description: "Sua página acessível de qualquer lugar do mundo, com um link exclusivo.",
+      image: "https://picsum.photos/800/600?random=24",
+      imageHint: "world map"
     },
     {
       icon: QrCode,
-      title: "QR Code exclusivo",
-      description: "Crie um QR Code exclusivo para sua página, gerado automaticamente.",
-      example: {
-        title: "Exemplo: QR Code Exclusivo",
-        description: "Receba um QR Code único para sua página. Perfeito para imprimir em um cartão, presentear ou usar em uma caça ao tesouro romântica. Aponte a câmera e a mágica acontece.",
-        image: "https://picsum.photos/800/600?random=25",
-        imageHint: "qr code"
-      }
+      title: "QR Code Exclusivo",
+      description: "Receba um QR Code para imprimir e surpreender de forma criativa.",
+      image: "https://picsum.photos/800/600?random=25",
+      imageHint: "qr code"
     },
   ];
 
   return (
     <>
       {/* Hero Section */}
-       <section className="relative overflow-hidden section-padding pt-24 md:pt-32">
+      <section className="relative section-padding flex items-center min-h-[calc(100vh-80px)]">
         <div className="container relative z-10 grid lg:grid-cols-2 gap-12 items-center">
           <div className="text-center lg:text-left">
              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground font-display leading-tight">
@@ -123,66 +96,42 @@ export default function CreatorPage() {
             </Link>
           </div>
           <div className="relative w-full max-w-md mx-auto lg:max-w-none lg:mx-0">
-             <Image
-              src="https://picsum.photos/800/800"
-              alt="Casal feliz"
-              width={800}
-              height={800}
-              className="rounded-3xl shadow-2xl shadow-primary/20 relative aspect-square object-cover"
-              data-ai-hint="happy couple"
-            />
+             <div className="aspect-square relative">
+                <Image
+                  src="https://picsum.photos/800/800"
+                  alt="Casal feliz"
+                  fill
+                  className="rounded-3xl shadow-2xl shadow-primary/20 object-cover"
+                  data-ai-hint="happy couple"
+                />
+             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="recursos" className="section-padding bg-background/50 backdrop-blur-md relative z-10">
+       {/* Features Section */}
+      <section id="recursos" className="section-padding bg-background/80 backdrop-blur-sm">
         <div className="container text-center">
           <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Uma Experiência <span className="gradient-text">Incomparável</span></h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16">Cada detalhe foi pensado para proporcionar uma declaração de amor que transcende o comum. Oferecemos mais que uma página, uma memória viva.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, i) => (
-              <Dialog key={i}>
-                <div className="group relative rounded-lg overflow-hidden cursor-pointer shadow-lg hover:shadow-primary/20 transition-shadow duration-300">
-                  <Image
-                      src={feature.example.image}
-                      alt={feature.title}
-                      width={600}
-                      height={400}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      data-ai-hint={feature.example.imageHint}
-                    />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent" />
-                  <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
-                    <feature.icon className="w-8 h-8 md:w-10 md:h-10 mb-4 text-primary drop-shadow-lg" />
-                    <h3 className="text-xl md:text-2xl font-bold font-display">{feature.title}</h3>
-                    <p className="text-white/80 mb-4 text-sm md:text-base">{feature.description}</p>
-                    <DialogTrigger asChild>
-                      <Button variant="outline" className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/20 text-white w-full mt-auto">
-                        Ver exemplo
-                      </Button>
-                    </DialogTrigger>
-                  </div>
-                </div>
-                <DialogContent className="bg-card/95 backdrop-blur-lg text-foreground max-w-3xl p-0 border-0">
-                  <DialogHeader className="p-6">
-                    <DialogTitle className="text-2xl md:text-3xl font-display text-primary flex items-center gap-3"><feature.icon className="w-6 h-6 md:w-8 md:h-8" /> {feature.example.title}</DialogTitle>
-                    <DialogDescription className="text-base pt-2 text-muted-foreground">
-                      {feature.example.description}
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="px-6 pb-6">
+               <Card key={i} className="bg-card/80 border-border text-left overflow-hidden group">
+                  <div className="relative aspect-[4/3] overflow-hidden">
                      <Image
-                        src={feature.example.image}
-                        alt={feature.example.title}
-                        width={800}
-                        height={600}
-                        className="rounded-lg object-cover w-full h-auto"
-                        data-ai-hint={feature.example.imageHint}
+                        src={feature.image}
+                        alt={feature.title}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        data-ai-hint={feature.imageHint}
                       />
                   </div>
-                </DialogContent>
-               </Dialog>
+                 <CardHeader>
+                    <feature.icon className="w-8 h-8 mb-2 text-primary" />
+                    <CardTitle>{feature.title}</CardTitle>
+                    <CardDescription>{feature.description}</CardDescription>
+                 </CardHeader>
+               </Card>
             ))}
           </div>
            <Card className="mt-12 bg-gradient-to-r from-primary/20 to-accent/20 border-primary/30 p-6 md:p-8 text-center">
@@ -198,48 +147,12 @@ export default function CreatorPage() {
                     <Button size="lg" variant="outline" className="bg-background/80 hover:bg-background">Como funciona?</Button>
                 </Link>
             </CardContent>
-        </Card>
-        </div>
-      </section>
-
-      {/* Themes Section */}
-      <section id="temas" className="section-padding bg-secondary/30 backdrop-blur-md relative z-10">
-        <div className="container text-center">
-          <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Temas <span className="gradient-text">Exclusivos Luv</span></h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16">Selecione o cenário perfeito para sua história. Cada tema é uma tela em branco para suas emoções, desenhado para encantar e surpreender.</p>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
-            <Card className="bg-card/80 border-border overflow-hidden group">
-              <CardHeader>
-                <CardTitle>Padrão</CardTitle>
-                <CardDescription>Tema padrão com contador de tempo e animações de fundo.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Image src="https://picsum.photos/600/400?random=10" alt="Tema Padrão" width={600} height={400} className="rounded-lg mb-4 group-hover:scale-105 transition-transform duration-500" data-ai-hint="love letter" />
-                <div className="flex justify-between items-center">
-                  <Button variant="ghost">Experimentar agora</Button>
-                  <Link href="/criar"><Button>Criar página</Button></Link>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-card/80 border-border overflow-hidden group">
-              <CardHeader>
-                <CardTitle>Netflix</CardTitle>
-                <CardDescription>Tema inspirado na Netflix com data e episódios (fotos) favoritos.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Image src="https://picsum.photos/600/400?random=11" alt="Tema Netflix" width={600} height={400} className="rounded-lg mb-4 group-hover:scale-105 transition-transform duration-500" data-ai-hint="movie streaming" />
-                <div className="flex justify-between items-center">
-                  <Button variant="ghost">Experimentar agora</Button>
-                  <Link href="/criar"><Button>Criar página</Button></Link>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+           </Card>
         </div>
       </section>
 
       {/* Testimonials Section */}
-      <section id="avaliacoes" className="section-padding bg-background/50 backdrop-blur-md relative z-10 overflow-hidden">
+      <section id="avaliacoes" className="section-padding bg-background/80 backdrop-blur-sm">
         <div className="container text-center">
           <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Histórias que <span className="gradient-text">Inspiram</span></h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16">Relatos de quem escolheu a Luv para eternizar seus momentos e vivenciou uma experiência única e emocionante.</p>
@@ -247,8 +160,7 @@ export default function CreatorPage() {
               {testimonials.map((testimonial, index) => (
                   <Card
                     key={index}
-                    className="bg-card/80 border-border p-6 text-left flex flex-col justify-between opacity-0 animate-fade-in-up"
-                    style={{ animationDelay: `${index * 0.2}s` }}
+                    className="bg-card/80 border-border p-6 text-left flex flex-col justify-between"
                   >
                     <div>
                       <div className="flex items-center gap-4 mb-4">
@@ -269,132 +181,8 @@ export default function CreatorPage() {
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section id="planos" className="section-padding bg-secondary/30 backdrop-blur-md relative z-10 overflow-hidden">
-        <div className="container relative z-10 text-center">
-          <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Nossos <span className="gradient-text">Planos</span></h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16">Escolha o plano ideal para sua jornada de amor. Cada um é um convite para uma experiência memorável.</p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-
-            <Card className="bg-card/80 border-border flex flex-col">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-2xl">Mensal</CardTitle>
-                <CardDescription>Ideal para uma surpresa pontual e encantadora.</CardDescription>
-                <p className="text-4xl font-bold pt-4">R$20,00 <span className="text-lg font-normal text-muted-foreground">/mês</span></p>
-              </CardHeader>
-              <CardContent className="flex-grow">
-                <ul className="space-y-3 text-muted-foreground text-left">
-                  <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Texto dedicado</span></li>
-                  <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Contador em tempo real</span></li>
-                  <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Data de início</span></li>
-                  <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>QR Code exclusivo</span></li>
-                  <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Máximo de 4 imagens</span></li>
-                  <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>URL personalizada</span></li>
-                  <li className="flex items-center gap-3"><X className="w-5 h-5 text-red-500" /><span>Sem música</span></li>
-                  <li className="flex items-center gap-3"><X className="w-5 h-5 text-red-500" /><span>Sem fundo dinâmico</span></li>
-                  <li className="flex items-center gap-3"><X className="w-5 h-5 text-red-500" /><span>Sem jogo 2D</span></li>
-                </ul>
-              </CardContent>
-              <div className="p-6 pt-0 mt-4">
-                <Link href="/criar"><Button className="w-full">Criar minha página</Button></Link>
-              </div>
-            </Card>
-
-             <Card className="bg-card/80 border-primary/50 relative flex flex-col shadow-2xl shadow-primary/20">
-              <div className="absolute top-0 right-4 -translate-y-1/2 bg-primary text-primary-foreground px-3 py-1 text-sm font-semibold rounded-full">Recomendado</div>
-              <CardHeader className="pb-4">
-                <CardTitle className="text-2xl">Para sempre</CardTitle>
-                <CardDescription>Acesso vitalício à sua obra de arte digital.</CardDescription>
-                <p className="text-4xl font-bold pt-4">R$34,99</p>
-                <p className="line-through text-muted-foreground">R$79,90</p>
-              </CardHeader>
-              <CardContent className="flex-grow">
-                <ul className="space-y-3 text-muted-foreground text-left">
-                    <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Tudo do plano Mensal</span></li>
-                    <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Imagens ilimitadas</span></li>
-                    <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Trilha Sonora Personalizada</span></li>
-                    <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Fundo Dinâmico e Interativo</span></li>
-                    <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Animações Exclusivas</span></li>
-                    <li className="flex items-center gap-3 text-foreground font-semibold"><Gamepad2 className="w-5 h-5 text-primary" /><span>Jogo 2D com enigma</span></li>
-                </ul>
-              </CardContent>
-              <div className="p-6 pt-0 mt-4">
-                <Link href="/criar"><Button className="w-full">Adquirir Passaporte Eterno</Button></Link>
-              </div>
-            </Card>
-
-            <Card className="bg-card/80 border-border flex flex-col">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-2xl">Sob Medida</CardTitle>
-                <CardDescription>Para ideias que transcendem. Crie algo único.</CardDescription>
-                <p className="text-4xl font-bold pt-4">Consulte</p>
-              </CardHeader>
-              <CardContent className="flex-grow">
-                <ul className="space-y-3 text-muted-foreground text-left">
-                  <li className="flex items-center gap-3"><Check className="w-5 h-5 text-green-500" /><span>Tudo do plano Para Sempre</span></li>
-                  <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Jogo 2D personalizado</span></li>
-                  <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Designs de página exclusivos</span></li>
-                  <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Vídeos e animações sob demanda</span></li>
-                  <li className="flex items-center gap-3 text-foreground font-semibold"><Check className="w-5 h-5 text-primary" /><span>Suporte premium dedicado</span></li>
-                </ul>
-              </CardContent>
-              <div className="p-6 pt-0 mt-4">
-                 <Link href="/criar"><Button className="w-full" variant="default">Fazer um Orçamento</Button></Link>
-              </div>
-            </Card>
-
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section id="faq" className="section-padding bg-background/50 backdrop-blur-md relative z-10">
-        <div className="container max-w-4xl">
-          <div className="text-center">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Perguntas <span className="gradient-text">Frequentes</span></h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12">Respostas para as dúvidas mais comuns sobre a experiência Luv.</p>
-          </div>
-          <Accordion type="single" collapsible className="w-full">
-             <AccordionItem value="item-1">
-              <AccordionTrigger>O que é a Luv?</AccordionTrigger>
-              <AccordionContent>
-                Luv é uma plataforma exclusiva para a criação de páginas personalizadas e imersivas, transformando declarações de amor em experiências digitais inesquecíveis.
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-2">
-              <AccordionTrigger>Como posso criar uma página personalizada?</AccordionTrigger>
-              <AccordionContent>
-                Nosso processo guiado é simples e intuitivo. Basta preencher o formulário com suas memórias e sentimentos e, após o pagamento, nossa mágica acontece.
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-3">
-              <AccordionTrigger>O que está incluído na minha página?</AccordionTrigger>
-              <AccordionContent>
-                Sua página é um reflexo da sua história, com todos os elementos que você escolheu no formulário, de acordo com o passaporte selecionado.
-              </AccordionContent>
-            </AccordionItem>
-             <AccordionItem value="item-4">
-              <AccordionTrigger>Como recebo minha página após o pagamento?</AccordionTrigger>
-              <AccordionContent>
-                Após a confirmação, você receberá um QR code e um link exclusivo por email, prontos para compartilhar e encantar.
-              </AccordionContent>
-            </AccordionItem>
-             <AccordionItem value="item-5">
-              <AccordionTrigger>A página personalizada tem validade?</AccordionTrigger>
-              <AccordionContent>
-                Sim. O plano mensal garante acesso por 1 mês, enquanto o passaporte "Para Sempre" torna sua declaração vitalícia, um legado digital do seu amor.
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-           <div className="text-center mt-12">
-            <p className="text-muted-foreground">Ainda tem dúvidas?</p>
-            <Button variant="link" className="text-base text-primary">Fale com um de nossos especialistas</Button>
-          </div>
-        </div>
-      </section>
-
       {/* Final CTA */}
-      <section className="section-padding bg-secondary/30 backdrop-blur-md relative z-10">
+      <section className="section-padding bg-card/50">
          <div className="container text-center">
           <h2 className="text-4xl lg:text-5xl font-bold tracking-tighter mb-4 text-foreground font-display">
             Comece a sua <span className="gradient-text">obra de arte</span>
@@ -413,5 +201,3 @@ export default function CreatorPage() {
     </>
   );
 }
-
-    
