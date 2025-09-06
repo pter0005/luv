@@ -400,12 +400,7 @@ export default function CreatorStudioPage() {
                             >
                               <FormItem>
                                 <FormControl>
-                                  <RadioGroupItem value="Coverflow" id="coverflow">Coverflow</RadioGroupItem>
-                                </FormControl>
-                              </FormItem>
-                              <FormItem>
-                                <FormControl>
-                                  <RadioGroupItem value="Cube" id="cube">Cube</RadioGroupItem>
+                                  <RadioGroupItem value="Coverflow" id="coverflow">Carrossel</RadioGroupItem>
                                 </FormControl>
                               </FormItem>
                               <FormItem>

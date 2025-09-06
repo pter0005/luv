@@ -11,10 +11,11 @@ import Image from "next/image";
 // Import Swiper React components
 import SwiperCore from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination, Navigation } from 'swiper/modules';
+import { Autoplay, EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination, Navigation } from 'swiper/modules';
 
 // Import Swiper styles
 import 'swiper/css';
+import 'swiper/css/autoplay';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/effect-cube';
 import 'swiper/css/effect-flip';
@@ -23,7 +24,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
 // Install Swiper modules
-SwiperCore.use([EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination, Navigation]);
+SwiperCore.use([Autoplay, EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination, Navigation]);
 
 const formSchema = z.object({
   title: z.string(),
@@ -132,33 +133,18 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
       pagination: { clickable: true },
       navigation: photos.length > 1,
       grabCursor: true,
+      autoplay: {
+        delay: 3000,
+        disableOnInteraction: false,
+      },
     };
 
     switch (displayType) {
       case 'Coverflow':
         return {
           ...commonProps,
-          effect: 'coverflow' as const,
-          slidesPerView: 'auto' as const,
+          slidesPerView: 1.5,
           centeredSlides: true,
-          coverflowEffect: {
-            rotate: 50,
-            stretch: 0,
-            depth: 100,
-            modifier: 1,
-            slideShadows: true,
-          },
-        };
-      case 'Cube':
-        return {
-          ...commonProps,
-          effect: 'cube' as const,
-          cubeEffect: {
-            shadow: true,
-            slideShadows: true,
-            shadowOffset: 20,
-            shadowScale: 0.94,
-          },
         };
       case 'Flip':
         return {
@@ -180,8 +166,6 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
     }
   };
 
-  const isCoverflow = displayType === 'Coverflow';
-  const isCube = displayType === 'Cube';
   const isCards = displayType === 'Cards' || !displayType;
 
   return (
@@ -193,20 +177,10 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
         .mySwiper {
           width: 100%;
           height: 100%;
-          padding-top: ${isCube ? '50px' : '0'};
-          padding-bottom: ${isCube ? '50px' : '0'};
         }
         .swiper-slide {
           background-position: center;
           background-size: cover;
-        }
-        .mySwiper .swiper-slide-coverflow {
-          width: 220px !important;
-          height: 220px !important;
-        }
-        .mySwiper .swiper-slide-cube {
-          width: 250px !important;
-          height: 250px !important;
         }
         .mySwiper .swiper-slide-cards {
            border-radius: 18px;
@@ -235,8 +209,6 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           <SwiperSlide
             key={index}
             className={cn({
-              'swiper-slide-coverflow': isCoverflow,
-              'swiper-slide-cube': isCube,
               'swiper-slide-cards': isCards,
             })}
           >
