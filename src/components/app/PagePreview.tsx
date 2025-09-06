@@ -139,7 +139,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
   const commonProps = {
     loop: true,
     pagination: { clickable: true },
-    navigation: false, // Setas de navegação desabilitadas
+    navigation: false,
     grabCursor: true,
     autoplay: {
       delay: 3000,
@@ -152,22 +152,41 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
       case 'Coverflow':
         return {
           ...commonProps,
-          effect: 'slide' as const, // Efeito de carrossel simples
-          slidesPerView: 1,
+          effect: 'coverflow' as const,
+          slidesPerView: 'auto',
           centeredSlides: true,
+          coverflowEffect: {
+            rotate: 50,
+            stretch: 0,
+            depth: 100,
+            modifier: 1,
+            slideShadows: true,
+          },
+        };
+      case 'Cube':
+        return {
+          ...commonProps,
+          effect: 'cube' as const,
+          cubeEffect: {
+            shadow: true,
+            slideShadows: true,
+            shadowOffset: 20,
+            shadowScale: 0.94,
+          },
         };
       case 'Flip':
         return {
           ...commonProps,
           effect: 'flip' as const,
-          slidesPerView: 1,
+          flipEffect: {
+            slideShadows: true,
+          },
         };
       case 'Cards':
       default:
         return {
           ...commonProps,
           effect: 'cards' as const,
-          slidesPerView: 1,
           cardsEffect: {
             slideShadows: true,
           },
@@ -175,24 +194,32 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
     }
   };
 
-
   return (
     <div className={cn(
       "w-full mb-6 relative flex items-center justify-center",
       {
         'swiper-container-coverflow': displayType === 'Coverflow',
+        'swiper-container-cube': displayType === 'Cube',
         'swiper-container-cards': displayType === 'Cards' || !displayType,
         'swiper-container-flip': displayType === 'Flip',
       }
     )}>
       <style jsx global>{`
+        .swiper-container-coverflow .swiper-slide {
+            width: 75%;
+        }
         .swiper-container-coverflow, .swiper-container-flip {
-            height: 300px;
+            height: 250px;
         }
         
         .swiper-container-cards {
             height: 320px;
-            width: 280px;
+            width: 240px;
+        }
+        
+        .swiper-container-cube {
+            width: 200px;
+            height: 200px;
         }
 
         .mySwiper {
@@ -209,13 +236,11 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           background-color: transparent;
         }
 
-        .mySwiper .swiper-slide-cards, .mySwiper .swiper-slide-flip, .mySwiper .swiper-slide-coverflow {
+        .mySwiper .swiper-slide {
            border-radius: 18px;
-           height: 100%;
-           width: 100%;
            overflow: hidden;
         }
-
+        
         .swiper-pagination-bullet-active {
           background: hsl(var(--primary)) !important;
         }
@@ -228,16 +253,14 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           height: 100%;
           position: relative;
         }
+        .slide-image-wrapper img {
+            object-fit: cover;
+        }
       `}</style>
       <Swiper {...getSwiperEffectProps()} className="mySwiper">
         {photos.map((photo, index) => (
           <SwiperSlide
             key={index}
-            className={cn({
-              'swiper-slide-coverflow': displayType === 'Coverflow',
-              'swiper-slide-cards': displayType === 'Cards' || !displayType,
-              'swiper-slide-flip': displayType === 'Flip',
-            })}
           >
             <div className="slide-image-wrapper">
                <Image
@@ -245,7 +268,6 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
                 alt={`User photo ${index + 1}`}
                 fill
                 sizes="(max-width: 400px) 100vw, 250px"
-                className="object-cover"
               />
             </div>
           </SwiperSlide>
@@ -306,4 +328,5 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
+
 
