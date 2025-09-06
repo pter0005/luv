@@ -107,9 +107,7 @@ export default function CreatorPage() {
   return (
     <>
       <HeartsBackground />
-      <div className="hidden lg:block">
-        <AnimatedBackground fixed />
-      </div>
+      <AnimatedBackground fixed />
       {/* Hero Section */}
        <section className="relative overflow-hidden section-padding pt-24 md:pt-32">
         <div className="container relative z-10 grid lg:grid-cols-2 gap-12 items-center">
