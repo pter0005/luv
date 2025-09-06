@@ -27,5 +27,3 @@ const AuroraBackground = () => {
 };
 
 export { AuroraBackground };
-
-    

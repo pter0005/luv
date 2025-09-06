@@ -28,5 +28,3 @@ export function MeteorsBackground() {
     </div>
   );
 }
-
-    

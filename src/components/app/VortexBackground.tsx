@@ -32,5 +32,3 @@ const VortexBackground = () => {
 };
 
 export { VortexBackground };
-
-    
