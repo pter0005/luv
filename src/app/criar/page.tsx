@@ -6,10 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Brush, Files } from "lucide-react";
 import Link from "next/link";
+import { HeartsBackground } from "@/components/app/HeartsBackground";
 
 export default function CriarPage() {
     return (
         <div className="relative min-h-screen">
+            <HeartsBackground />
             <AnimatedBackground fixed />
             <div className="relative z-10 container section-padding flex flex-col items-center justify-center min-h-screen">
                 <div className="w-full max-w-md text-center mb-12">

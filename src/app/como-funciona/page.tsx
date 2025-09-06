@@ -7,10 +7,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Gamepad2, Gift, Puzzle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { HeartsBackground } from "@/components/app/HeartsBackground";
 
 export default function ComoFuncionaPage() {
   return (
     <div className="relative">
+      <HeartsBackground />
       <AnimatedBackground />
       <div className="relative z-10">
         <header className="absolute top-0 left-0 w-full p-4">
