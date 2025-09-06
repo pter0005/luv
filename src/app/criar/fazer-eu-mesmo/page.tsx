@@ -26,10 +26,6 @@ import {
   Upload,
   X as XIcon,
   Paintbrush,
-  Heart,
-  Star,
-  Cloud,
-  Clapperboard
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Editor } from "@/components/ui/editor";
@@ -42,18 +38,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Image from "next/image";
-import { AnimatedBackground } from "@/components/app/AnimatedBackground";
 
 const formSchema = z.object({
-  photos: z.array(z.string()).optional(),
-  photoDisplayType: z.string().optional(),
   title: z.string().min(1, "O título é obrigatório."),
   titleColor: z.string().optional(),
   message: z.string().optional(),
   messageFontSize: z.string().optional(),
   startDate: z.date().optional(),
   dateDisplayType: z.string().optional(),
-  musicUrl: z.string().optional(),
+  photos: z.array(z.string()).optional(),
+  photoDisplayType: z.string().optional(),
+  musicUrl: z.string().url("URL inválida.").optional().or(z.literal('')),
   backgroundAnimation: z.string().optional(),
   contactName: z.string().optional(),
   contactEmail: z.string().email("Email inválido.").optional(),
@@ -66,7 +61,6 @@ type FormData = z.infer<typeof formSchema>;
 export default function CreatorStudioPage() {
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = React.useState(1);
-  const [fieldHistory, setFieldHistory] = React.useState<Partial<FormData>>({});
   const totalSteps = 8;
   const colorPickerRef = React.useRef<HTMLInputElement>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -86,7 +80,7 @@ export default function CreatorStudioPage() {
       contactName: "",
       contactEmail: "",
       contactPhone: "",
-      plan: "forever"
+      plan: "forever",
     },
   });
 
@@ -95,8 +89,8 @@ export default function CreatorStudioPage() {
   function onSubmit(data: FormData) {
     console.log(data);
     toast({
-      title: "Página Salva!",
-      description: "Sua página foi salva com sucesso. (Simulação)",
+      title: "Página Salva! (Simulação)",
+      description: "Seus dados foram enviados com sucesso.",
     });
   }
 
@@ -104,52 +98,56 @@ export default function CreatorStudioPage() {
     {
       name: "title" as const,
       title: "Título da página",
-      description: "Escreva o título dedicatório para a página. Ex: João & Maria ou Feliz Aniversário ou etc!",
+      description: "Escreva o título dedicatório. Ex: João & Maria, Feliz Aniversário, etc.",
     },
     {
       name: "message" as const,
       title: "Mensagem",
-      description: "Escreva uma mensagem especial. Seja criativo e demonstre todo seu carinho.",
+      description: "Escreva uma mensagem especial. Seja criativo e demonstre seu carinho.",
     },
     {
       name: "startDate" as const,
-      title: "Data de início",
-      description: "Informe a data que simboliza o início de uma união.",
+      title: "Data Especial",
+      description: "Informe a data que simboliza o início de uma união ou um momento marcante.",
     },
     {
       name: "photos" as const,
       title: "Fotos",
-      description: "Anexe fotos e escolha o modo de exibição para personalizar a página. Você pode adicionar até 8 fotos.",
+      description: "Anexe até 8 fotos e escolha o modo de exibição para personalizar a galeria.",
     },
     {
       name: "musicUrl" as const,
-      title: "Música dedicada",
+      title: "Música Dedicada",
       description: "Dedique uma música especial. Cole o link do YouTube aqui.",
     },
     {
-        name: "backgroundAnimation" as const,
-        title: "Animação de fundo",
-        description: "Escolha uma animação para o fundo da página.",
+      name: "backgroundAnimation" as const,
+      title: "Animação de Fundo",
+      description: "Escolha uma animação para o fundo da página para um toque especial.",
     },
     {
-        name: "contactName" as const,
-        title: "Informações de Contato",
-        description: "Preencha para receber o link e QR code da sua página.",
+      name: "contactName" as const, // Combined contact fields into one step
+      title: "Informações de Contato",
+      description: "Preencha para receber o link e QR code da sua página personalizada.",
     },
     {
-        name: "plan" as const,
-        title: "Escolha seu Plano",
-        description: "Selecione o plano ideal para sua página personalizada.",
-    }
+      name: "plan" as const,
+      title: "Escolha seu Plano",
+      description: "Selecione o plano ideal para sua página e finalize a criação.",
+    },
   ];
 
   const handleNextStep = async () => {
-    const currentFieldName = steps[currentStep - 1].name;
-    const isValid = await form.trigger(currentFieldName);
-  
+    const currentField = steps[currentStep - 1].name;
+    let fieldsToValidate: (keyof FormData)[] = [currentField];
+    
+    if (currentField === 'contactName') {
+        fieldsToValidate = ['contactName', 'contactEmail', 'contactPhone'];
+    }
+
+    const isValid = await form.trigger(fieldsToValidate);
+
     if (isValid) {
-      setFieldHistory((prev) => ({ ...prev, ...form.getValues() }));
-      
       if (currentStep < totalSteps) {
         setCurrentStep(currentStep + 1);
       }
@@ -166,6 +164,15 @@ export default function CreatorStudioPage() {
     const files = event.target.files;
     if (files) {
       const currentPhotos = form.getValues("photos") || [];
+      if (currentPhotos.length + files.length > 8) {
+        toast({
+            variant: "destructive",
+            title: "Limite de fotos excedido!",
+            description: "Você pode adicionar no máximo 8 fotos."
+        })
+        return;
+      }
+
       const newPhotos: string[] = [];
       Array.from(files).forEach(file => {
         const reader = new FileReader();
@@ -188,287 +195,253 @@ export default function CreatorStudioPage() {
     form.setValue("photos", updatedPhotos);
   };
 
-  const currentFieldName = steps[currentStep - 1].name;
 
   return (
-    <div className="relative flex w-full min-h-screen items-center p-4">
-      <AnimatedBackground fixed />
-       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-x-12 w-full h-full max-w-7xl mx-auto items-start">
+    <div className="flex min-h-screen w-full items-center justify-center bg-background p-4">
+      <div className="grid w-full max-w-7xl grid-cols-1 gap-16 lg:grid-cols-2">
         {/* Form Section */}
-        <aside className="w-full flex flex-col">
-         <div className="w-full max-w-md mx-auto">
-          <div className="mb-8">
-            <Progress value={(currentStep / totalSteps) * 100} className="bg-zinc-700 h-2 [&>div]:bg-white" />
-            <p className="text-right text-sm text-muted-foreground mt-2">{currentStep}/{totalSteps}</p>
-          </div>
+        <div className="flex w-full flex-col">
+          <div className="mx-auto w-full max-w-md">
+            <div className="mb-8">
+              <Progress value={(currentStep / totalSteps) * 100} className="h-2" />
+              <p className="mt-2 text-right text-sm text-muted-foreground">{currentStep}/{totalSteps}</p>
+            </div>
 
-          <div>
-            <h2 className="text-3xl font-bold">{steps[currentStep - 1].title}</h2>
-            <p className="text-muted-foreground mt-2">{steps[currentStep - 1].description}</p>
-          </div>
+            <div>
+              <h2 className="text-3xl font-bold">{steps[currentStep - 1].title}</h2>
+              <p className="mt-2 text-muted-foreground">{steps[currentStep - 1].description}</p>
+            </div>
 
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8">
-              <div className="min-h-[350px]">
-                {currentStep === 1 && (
-                  <div className="space-y-8">
-                    <FormField
-                      control={form.control}
-                      key="title"
-                      name="title"
-                      render={({ field }) => (
-                        <FormItem>
-                           <FormLabel>Título</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Ex: João & Maria ou Feliz Aniversário" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      key="titleColor"
-                      name="titleColor"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Cor do título</FormLabel>
-                          <div className="flex items-center gap-4">
-                            <Button
-                              type="button"
-                              onClick={() => colorPickerRef.current?.click()}
-                              className="w-full justify-start text-left font-normal border border-input"
-                              style={{ backgroundColor: field.value }}
-                            >
-                              <Paintbrush className="mr-2 h-4 w-4" />
-                              <span className="truncate">
-                                {field.value || "Selecione uma cor"}
-                              </span>
-                            </Button>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8">
+                <div className="min-h-[350px]">
+                  {currentStep === 1 && (
+                    <div className="space-y-8">
+                      <FormField
+                        control={form.control}
+                        name="title"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Título</FormLabel>
                             <FormControl>
-                              <input
-                                type="color"
-                                ref={colorPickerRef}
-                                {...field}
-                                className="w-0 h-0 opacity-0"
-                              />
+                              <Input placeholder="Ex: João & Maria ou Feliz Aniversário" {...field} />
                             </FormControl>
-                          </div>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                )}
-                {currentStep === 2 && (
-                  <div className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="messageFontSize"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Tamanho do Texto</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Selecione um tamanho" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="text-sm">Pequeno</SelectItem>
-                              <SelectItem value="text-base">Padrão</SelectItem>
-                              <SelectItem value="text-lg">Médio</SelectItem>
-                              <SelectItem value="text-xl">Grande</SelectItem>
-                              <SelectItem value="text-2xl">Extra Grande</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      key="message"
-                      name="message"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Editor
-                                value={field.value || ''}
-                                onChange={field.onChange}
-                                placeholder="Escreva sua mensagem aqui..."
-                              />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                )}
-                {currentStep === 3 && (
-                   <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-start">
-                    <FormField
-                      control={form.control}
-                      key="startDate"
-                      name="startDate"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col items-center">
-                           <FormControl>
-                              <Calendar
-                                mode="single"
-                                selected={field.value}
-                                onSelect={field.onChange}
-                                disabled={(date) =>
-                                  date > new Date() || date < new Date("1900-01-01")
-                                }
-                                initialFocus
-                                fromYear={1960}
-                                toYear={new Date().getFullYear()}
-                                captionLayout="dropdown-buttons"
-                              />
-                           </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      key="dateDisplayType"
-                      name="dateDisplayType"
-                      render={({ field }) => (
-                        <FormItem className="space-y-3">
-                          <FormLabel className="font-semibold">Modo de Exibição</FormLabel>
-                          <FormControl>
-                            <RadioGroup
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                              className="flex flex-col gap-3"
-                            >
-                              <FormItem>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="titleColor"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Cor do título</FormLabel>
+                            <div className="flex items-center gap-4">
                                 <FormControl>
-                                  <RadioGroupItem value="padrão" id="padrão">
-                                    Padrão
-                                  </RadioGroupItem>
+                                    <div className="relative w-full">
+                                        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                             <span className="h-5 w-5 rounded-full border border-zinc-500" style={{backgroundColor: field.value}}/>
+                                        </div>
+                                        <Input
+                                            className="pl-10"
+                                            value={field.value}
+                                            onChange={(e) => field.onChange(e.target.value)}
+                                        />
+                                         <input
+                                            type="color"
+                                            ref={colorPickerRef}
+                                            value={field.value}
+                                            onChange={(e) => field.onChange(e.target.value)}
+                                            className="absolute right-2 top-1/2 h-8 w-8 -translate-y-1/2 cursor-pointer opacity-0"
+                                        />
+                                    </div>
                                 </FormControl>
-                              </FormItem>
-                              <FormItem>
-                                <FormControl>
-                                  <RadioGroupItem value="classico" id="classico">
-                                    Clássico
-                                  </RadioGroupItem>
-                                </FormControl>
-                              </FormItem>
-                              <FormItem>
-                                <FormControl>
-                                  <RadioGroupItem value="simples" id="simples">
-                                     Simples
-                                  </RadioGroupItem>
-                                </FormControl>
-                              </FormItem>
-                            </RadioGroup>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                )}
-                {currentStep === 4 && (
-                   <div className="space-y-8">
-                    <FormField
-                      control={form.control}
-                      name="photos"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <div className="border-2 border-dashed border-zinc-700 rounded-lg p-8 text-center cursor-pointer hover:border-zinc-500 transition-colors"
-                              onClick={() => fileInputRef.current?.click()}>
-                              <Upload className="mx-auto h-10 w-10 text-zinc-500 mb-2" />
-                              <p className="font-semibold">Clique para adicionar fotos</p>
-                              <p className="text-xs text-zinc-500">PNG, JPG, JPEG, GIF (máx. 8 fotos)</p>
-                               <input
-                                type="file"
-                                ref={fileInputRef}
-                                multiple
-                                accept="image/*"
-                                onChange={handleFileChange}
-                                className="hidden"
-                              />
                             </div>
-                          </FormControl>
-
-                          {field.value && field.value.length > 0 && (
-                            <div className="grid grid-cols-4 gap-4 mt-4">
-                              {(field.value || []).map((photo, index) => (
-                                <div key={index} className="relative group">
-                                  <Image
-                                    src={photo}
-                                    alt={`Preview ${index}`}
-                                    width={100}
-                                    height={100}
-                                    className="rounded-md object-cover w-full h-24"
-                                  />
-                                  <Button
-                                    type="button"
-                                    variant="destructive"
-                                    size="icon"
-                                    className="absolute -top-2 -right-2 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                                    onClick={() => removePhoto(index)}
-                                  >
-                                    <XIcon className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                     <FormField
-                      control={form.control}
-                      name="photoDisplayType"
-                      render={({ field }) => (
-                        <FormItem className="space-y-3">
-                          <FormLabel className="font-semibold">Modo de mostrar</FormLabel>
-                           <FormControl>
-                            <RadioGroup
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                              className="grid grid-cols-2 gap-4"
-                            >
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  )}
+                  {currentStep === 2 && (
+                    <div className="space-y-4">
+                        <FormField
+                            control={form.control}
+                            name="messageFontSize"
+                            render={({ field }) => (
                                 <FormItem>
+                                <FormLabel>Tamanho do Texto</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
                                     <FormControl>
-                                    <RadioGroupItem value="Coverflow" id="coverflow">Coverflow</RadioGroupItem>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Selecione um tamanho" />
+                                    </SelectTrigger>
                                     </FormControl>
+                                    <SelectContent>
+                                    <SelectItem value="text-sm">Pequeno</SelectItem>
+                                    <SelectItem value="text-base">Padrão</SelectItem>
+                                    <SelectItem value="text-lg">Médio</SelectItem>
+                                    <SelectItem value="text-xl">Grande</SelectItem>
+                                    <SelectItem value="text-2xl">Extra Grande</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
                                 </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="message"
+                            render={({ field }) => (
                                 <FormItem>
+                                <FormLabel>Sua Mensagem</FormLabel>
                                 <FormControl>
-                                  <RadioGroupItem value="Cards" id="cards">Cards</RadioGroupItem>
+                                    <Editor
+                                        value={field.value || ""}
+                                        onChange={field.onChange}
+                                        placeholder="Escreva sua mensagem aqui..."
+                                    />
                                 </FormControl>
-                              </FormItem>
-                              <FormItem>
-                                <FormControl>
-                                  <RadioGroupItem value="Flip" id="flip">Flip</RadioGroupItem>
-                                </FormControl>
-                              </FormItem>
-                              <FormItem>
-                                <FormControl>
-                                    <RadioGroupItem value="Cube" id="cube">Cube</RadioGroupItem>
-                                </FormControl>
+                                <FormMessage />
                                 </FormItem>
-                            </RadioGroup>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                )}
-                {currentStep === 5 && (
+                            )}
+                        />
+                    </div>
+                  )}
+                  {currentStep === 3 && (
+                    <div className="grid grid-cols-1 gap-8 items-start">
+                        <FormField
+                            control={form.control}
+                            name="startDate"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-col items-center">
+                                <FormControl>
+                                    <Calendar
+                                        mode="single"
+                                        selected={field.value}
+                                        onSelect={field.onChange}
+                                        disabled={(date) =>
+                                        date > new Date() || date < new Date("1900-01-01")
+                                        }
+                                        initialFocus
+                                        fromYear={1960}
+                                        toYear={new Date().getFullYear()}
+                                        captionLayout="dropdown-buttons"
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                         <FormField
+                            control={form.control}
+                            name="dateDisplayType"
+                            render={({ field }) => (
+                                <FormItem className="space-y-3">
+                                <FormLabel className="font-semibold">Modo de Exibição do Contador</FormLabel>
+                                <FormControl>
+                                    <RadioGroup
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                        className="grid grid-cols-2 gap-4"
+                                    >
+                                        <FormItem>
+                                            <RadioGroupItem value="padrão" id="padrão">Padrão</RadioGroupItem>
+                                        </FormItem>
+                                        <FormItem>
+                                            <RadioGroupItem value="classico" id="classico">Clássico</RadioGroupItem>
+                                        </FormItem>
+                                        <FormItem>
+                                            <RadioGroupItem value="simples" id="simples">Simples</RadioGroupItem>
+                                        </FormItem>
+                                    </RadioGroup>
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                  )}
+                  {currentStep === 4 && (
+                    <div className="space-y-8">
+                        <FormField
+                            control={form.control}
+                            name="photos"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Suas Fotos</FormLabel>
+                                    <FormControl>
+                                        <div className="border-2 border-dashed border-zinc-700 rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors"
+                                        onClick={() => fileInputRef.current?.click()}>
+                                        <Upload className="mx-auto h-10 w-10 text-zinc-500 mb-2" />
+                                        <p className="font-semibold">Clique para adicionar fotos</p>
+                                        <p className="text-xs text-zinc-500">PNG, JPG, GIF (máx. 8 fotos)</p>
+                                        <input
+                                            type="file"
+                                            ref={fileInputRef}
+                                            multiple
+                                            accept="image/*"
+                                            onChange={handleFileChange}
+                                            className="hidden"
+                                        />
+                                        </div>
+                                    </FormControl>
+
+                                    {field.value && field.value.length > 0 && (
+                                        <div className="grid grid-cols-4 gap-4 mt-4">
+                                        {(field.value || []).map((photo, index) => (
+                                            <div key={index} className="relative group">
+                                            <Image
+                                                src={photo}
+                                                alt={`Preview ${index}`}
+                                                width={100}
+                                                height={100}
+                                                className="rounded-md object-cover w-full h-24"
+                                            />
+                                            <Button
+                                                type="button"
+                                                variant="destructive"
+                                                size="icon"
+                                                className="absolute -top-2 -right-2 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                                onClick={() => removePhoto(index)}
+                                            >
+                                                <XIcon className="h-4 w-4" />
+                                            </Button>
+                                            </div>
+                                        ))}
+                                        </div>
+                                    )}
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="photoDisplayType"
+                            render={({ field }) => (
+                                <FormItem className="space-y-3">
+                                <FormLabel className="font-semibold">Modo de Exibição da Galeria</FormLabel>
+                                <FormControl>
+                                    <RadioGroup
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                    className="grid grid-cols-2 gap-4"
+                                    >
+                                        <RadioGroupItem value="Coverflow">Coverflow</RadioGroupItem>
+                                        <RadioGroupItem value="Cards">Cards</RadioGroupItem>
+                                        <RadioGroupItem value="Flip">Flip</RadioGroupItem>
+                                        <RadioGroupItem value="Cube">Cube</RadioGroupItem>
+                                    </RadioGroup>
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                  )}
+                  {currentStep === 5 && (
                     <FormField
                       control={form.control}
-                      key="musicUrl"
                       name="musicUrl"
                       render={({ field }) => (
                         <FormItem>
@@ -476,16 +449,16 @@ export default function CreatorStudioPage() {
                           <FormControl>
                             <Input placeholder="https://www.youtube.com/watch?v=..." {...field} />
                           </FormControl>
-                           <FormDescription>
+                          <FormDescription>
                             A música será reproduzida automaticamente na página.
                           </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                )}
-                 {currentStep === 6 && (
-                    <FormField
+                  )}
+                  {currentStep === 6 && (
+                     <FormField
                       control={form.control}
                       name="backgroundAnimation"
                       render={({ field }) => (
@@ -493,7 +466,7 @@ export default function CreatorStudioPage() {
                           <FormLabel className="font-semibold">Animação de Fundo</FormLabel>
                           <FormControl>
                             <RadioGroup
-                              onValueChange={field.onChange}
+                              onValuecha-nge={field.onChange}
                               defaultValue={field.value}
                               className="grid grid-cols-2 gap-4"
                             >
@@ -507,18 +480,17 @@ export default function CreatorStudioPage() {
                         </FormItem>
                       )}
                     />
-                )}
-                 {currentStep === 7 && (
+                  )}
+                  {currentStep === 7 && (
                     <div className="space-y-4">
                         <FormField
                             control={form.control}
-                            key="contactName"
                             name="contactName"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Seu Nome</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="João da Silva" {...field} />
+                                        <Input placeholder="Seu nome completo" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -526,13 +498,12 @@ export default function CreatorStudioPage() {
                         />
                         <FormField
                             control={form.control}
-                            key="contactEmail"
                             name="contactEmail"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Seu E-mail</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="joao.silva@email.com" {...field} />
+                                        <Input placeholder="seu.email@exemplo.com" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -540,7 +511,6 @@ export default function CreatorStudioPage() {
                         />
                         <FormField
                             control={form.control}
-                            key="contactPhone"
                             name="contactPhone"
                             render={({ field }) => (
                                 <FormItem>
@@ -553,13 +523,14 @@ export default function CreatorStudioPage() {
                             )}
                         />
                     </div>
-                 )}
-                 {currentStep === 8 && (
-                      <FormField
+                  )}
+                  {currentStep === 8 && (
+                    <FormField
                       control={form.control}
                       name="plan"
                       render={({ field }) => (
                         <FormItem className="space-y-3">
+                            <FormLabel className="font-semibold">Selecione seu Plano</FormLabel>
                           <FormControl>
                             <RadioGroup
                               onValueChange={field.onChange}
@@ -584,46 +555,49 @@ export default function CreatorStudioPage() {
                         </FormItem>
                       )}
                     />
-                 )}
-              </div>
-              <div className="flex items-center gap-4 mt-8">
-                 <Button type="button" variant="secondary" onClick={handlePrevStep} disabled={currentStep === 1} className="w-full bg-zinc-800 hover:bg-zinc-700">
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Voltar etapa
-                </Button>
-                {currentStep < totalSteps ? (
-                  <Button type="button" onClick={handleNextStep} className="w-full bg-red-600 hover:bg-red-700">
-                    Próxima etapa
-                    <ChevronRight className="ml-2 h-4 w-4" />
+                  )}
+
+                </div>
+                <div className="flex items-center gap-4 mt-8">
+                  <Button type="button" variant="secondary" onClick={handlePrevStep} disabled={currentStep === 1} className="w-full">
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Voltar
                   </Button>
-                ) : (
-                  <Button type="submit" size="lg" className="w-full bg-red-600 hover:bg-red-700">Salvar e Obter Link</Button>
-                )}
-              </div>
-            </form>
-          </Form>
+                  {currentStep < totalSteps ? (
+                    <Button type="button" onClick={handleNextStep} className="w-full">
+                      Próxima Etapa
+                      <ChevronRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  ) : (
+                    <Button type="submit" size="lg" className="w-full">Salvar e Obter Link</Button>
+                  )}
+                </div>
+              </form>
+            </Form>
           </div>
-        </aside>
+        </div>
 
         {/* Preview Section */}
-        <main className="w-full h-full hidden lg:flex flex-col items-center justify-center bg-transparent">
-          <div className="w-[580px] min-h-[920px] h-[920px] bg-zinc-900 rounded-xl p-6 flex flex-col">
-             <div className="bg-zinc-800 rounded-t-lg p-2 flex items-center gap-1.5 border-b border-zinc-700">
-                <div className="flex items-center gap-1.5">
-                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+        <main className="hidden w-full lg:flex items-start justify-center">
+            <div className="w-full max-w-[640px] h-[920px] bg-zinc-900 rounded-2xl p-4 flex flex-col border-zinc-700 border-[14px]">
+                <div className="bg-zinc-800 rounded-t-lg p-2 flex items-center gap-1.5 border-b border-zinc-700">
+                    <div className="flex items-center gap-1.5">
+                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
+                    <div className="flex-grow bg-zinc-700 rounded-sm px-2 py-1 text-xs text-zinc-400 text-center truncate">
+                        https://luv.com/p/{watchedData.title?.toLowerCase().replace(/\s/g, '-') || 'pagina'}
+                    </div>
                 </div>
-                <div className="flex-grow bg-zinc-700 rounded-sm px-2 py-1 text-xs text-zinc-400 text-center truncate">
-                    https://luv.com/p/{watchedData.title?.toLowerCase().replace(/\s/g, '-') || 'pagina'}
+                <div className="flex-grow bg-black rounded-b-lg">
+                    <PagePreview data={watchedData} />
                 </div>
             </div>
-            <div className="flex-grow bg-black rounded-b-lg">
-                <PagePreview data={{ ...fieldHistory, ...form.getValues() }} />
-            </div>
-          </div>
         </main>
       </div>
     </div>
   );
 }
+
+    

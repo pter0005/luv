@@ -47,10 +47,10 @@ const formSchema = z.object({
 type PageData = z.infer<typeof formSchema>;
 
 interface PagePreviewProps {
-  data: PageData;
+  data: Partial<PageData>;
 }
 
-const Countdown = ({ startDate, displayType }: { startDate: Date; displayType?: string }) => {
+const Countdown = ({ startDate, displayType }: { startDate?: Date; displayType?: string }) => {
   const [duration, setDuration] = React.useState({
     years: 0,
     months: 0,
@@ -74,6 +74,8 @@ const Countdown = ({ startDate, displayType }: { startDate: Date; displayType?: 
 
     return () => clearInterval(interval);
   }, [startDate]);
+
+  if (!startDate) return null;
   
   if (displayType === "classico") {
     return (
@@ -165,7 +167,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           slidesPerView: 'auto' as const,
           centeredSlides: true,
           coverflowEffect: {
-            rotate: 0, // Simplified to no rotation
+            rotate: 0,
             stretch: 0,
             depth: 100,
             modifier: 1,
@@ -312,3 +314,5 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
+
+    
