@@ -34,8 +34,8 @@ export default function CreatorPage() {
   ];
 
   const features = [
-    { 
-      icon: Gamepad2, 
+    {
+      icon: Gamepad2,
       title: "Jogo Enigmático 2D",
       description: "Uma revelação inesquecível através de um enigma personalizado.",
       example: {
@@ -45,9 +45,9 @@ export default function CreatorPage() {
         imageHint: "pixel art game"
       }
     },
-    { 
-      icon: Calendar, 
-      title: "Contador de tempo", 
+    {
+      icon: Calendar,
+      title: "Contador de tempo",
       description: "Mostre há quanto tempo vocês estão juntos com um contador em tempo real.",
       example: {
         title: "Exemplo: Contador de Tempo",
@@ -56,9 +56,9 @@ export default function CreatorPage() {
         imageHint: "time counter"
       }
     },
-    { 
-      icon: ImageIcon, 
-      title: "Animações de fundo", 
+    {
+      icon: ImageIcon,
+      title: "Animações de fundo",
       description: "Escolha entre várias animações de fundo para personalizar a página.",
       example: {
         title: "Exemplo: Animações de Fundo",
@@ -67,9 +67,9 @@ export default function CreatorPage() {
         imageHint: "animated background"
       }
     },
-    { 
-      icon: Music, 
-      title: "Música dedicada", 
+    {
+      icon: Music,
+      title: "Música dedicada",
       description: "Dedique uma música especial. A música será reproduzida automaticamente.",
       example: {
         title: "Exemplo: Música Dedicada",
@@ -78,9 +78,9 @@ export default function CreatorPage() {
         imageHint: "music player"
       }
     },
-    { 
-      icon: Globe, 
-      title: "Em todo lugar", 
+    {
+      icon: Globe,
+      title: "Em todo lugar",
       description: "Crie e compartilhe de qualquer lugar do mundo. Aceitamos pagamentos internacionais.",
       example: {
         title: "Exemplo: Acesso Global",
@@ -89,9 +89,9 @@ export default function CreatorPage() {
         imageHint: "world map"
       }
     },
-    { 
-      icon: QrCode, 
-      title: "QR Code exclusivo", 
+    {
+      icon: QrCode,
+      title: "QR Code exclusivo",
       description: "Crie um QR Code exclusivo para sua página, gerado automaticamente.",
       example: {
         title: "Exemplo: QR Code Exclusivo",
@@ -144,7 +144,7 @@ export default function CreatorPage() {
             {features.map((feature, i) => (
               <Dialog key={i}>
                 <div className="group relative rounded-lg overflow-hidden cursor-pointer shadow-lg hover:shadow-primary/20 transition-shadow duration-300">
-                  <Image 
+                  <Image
                       src={feature.example.image}
                       alt={feature.title}
                       width={600}
@@ -172,7 +172,7 @@ export default function CreatorPage() {
                     </DialogDescription>
                   </DialogHeader>
                   <div className="px-6 pb-6">
-                     <Image 
+                     <Image
                         src={feature.example.image}
                         alt={feature.example.title}
                         width={800}
@@ -245,8 +245,8 @@ export default function CreatorPage() {
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16">Relatos de quem escolheu a Luv para eternizar seus momentos e vivenciou uma experiência única e emocionante.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {testimonials.map((testimonial, index) => (
-                  <Card 
-                    key={index} 
+                  <Card
+                    key={index}
                     className="bg-card/80 border-border p-6 text-left flex flex-col justify-between opacity-0 animate-fade-in-up"
                     style={{ animationDelay: `${index * 0.2}s` }}
                   >
@@ -275,7 +275,7 @@ export default function CreatorPage() {
           <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Nossos <span className="gradient-text">Planos</span></h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16">Escolha o plano ideal para sua jornada de amor. Cada um é um convite para uma experiência memorável.</p>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            
+
             <Card className="bg-card/80 border-border flex flex-col">
               <CardHeader className="pb-4">
                 <CardTitle className="text-2xl">Mensal</CardTitle>
@@ -392,7 +392,7 @@ export default function CreatorPage() {
           </div>
         </div>
       </section>
-      
+
       {/* Final CTA */}
       <section className="section-padding bg-secondary/30 backdrop-blur-md relative z-10">
          <div className="container text-center">
@@ -413,3 +413,5 @@ export default function CreatorPage() {
     </>
   );
 }
+
+    
