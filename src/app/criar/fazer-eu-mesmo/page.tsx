@@ -25,6 +25,7 @@ import {
   ChevronRight,
   Upload,
   X as XIcon,
+  Paintbrush,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Editor } from "@/components/ui/editor";
@@ -159,7 +160,7 @@ export default function CreatorStudioPage() {
       <AnimatedBackground fixed />
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-x-24 w-full h-full max-w-7xl mx-auto items-center">
         {/* Form Section */}
-        <aside className="w-full flex flex-col">
+        <aside className="w-full flex flex-col items-center justify-start">
          <div className="w-full max-w-md mx-auto">
           <div className="mb-8">
             <Progress value={(currentStep / totalSteps) * 100} className="bg-zinc-700 h-2 [&>div]:bg-white" />
@@ -185,6 +186,38 @@ export default function CreatorStudioPage() {
                           <FormControl>
                             <Input placeholder="Ex: João & Maria ou Feliz Aniversário ou etc" {...field} />
                           </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      key="titleColor"
+                      name="titleColor"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Cor do título</FormLabel>
+                          <div className="flex items-center gap-4">
+                            <Button
+                              type="button"
+                              onClick={() => colorPickerRef.current?.click()}
+                              className="w-full justify-start text-left font-normal"
+                              style={{ backgroundColor: field.value }}
+                            >
+                              <Paintbrush className="mr-2 h-4 w-4" />
+                              <span className="truncate">
+                                {field.value || "Selecione uma cor"}
+                              </span>
+                            </Button>
+                            <FormControl>
+                              <input
+                                type="color"
+                                ref={colorPickerRef}
+                                {...field}
+                                className="w-0 h-0 opacity-0"
+                              />
+                            </FormControl>
+                          </div>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -383,6 +416,11 @@ export default function CreatorStudioPage() {
                                   <RadioGroupItem value="Flip" id="flip">Flip</RadioGroupItem>
                                 </FormControl>
                               </FormItem>
+                              <FormItem>
+                                <FormControl>
+                                    <RadioGroupItem value="Cube" id="cube">Cube</RadioGroupItem>
+                                </FormControl>
+                                </FormItem>
                             </RadioGroup>
                           </FormControl>
                           <FormMessage />
@@ -413,7 +451,7 @@ export default function CreatorStudioPage() {
 
         {/* Preview Section */}
         <main className="w-full h-full hidden lg:flex flex-col items-center justify-center bg-transparent">
-          <div className="w-[480px] h-[720px] bg-black">
+          <div className="w-[520px] h-[820px] bg-black shadow-2xl shadow-primary/20">
             <PagePreview data={{ ...fieldHistory, ...form.getValues() }} />
           </div>
         </main>
