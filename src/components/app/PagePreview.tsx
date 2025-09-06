@@ -22,6 +22,9 @@ import 'swiper/css/effect-flip';
 import 'swiper/css/effect-cards';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import { HeartsBackground } from "./HeartsBackground";
+import { StarsBackground } from "./StarsBackground";
+import { CloudsBackground } from "./CloudsBackground";
 
 // Register Swiper modules
 SwiperCore.use([Autoplay, EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination, Navigation]);
@@ -313,10 +316,25 @@ const MusicPlayer = ({ musicUrl }: { musicUrl?: string }) => {
     )
 }
 
+const DynamicBackground = ({ animation }: { animation?: string }) => {
+    switch (animation) {
+        case 'hearts':
+            return <HeartsBackground />;
+        case 'stars':
+            return <StarsBackground />;
+        case 'clouds':
+            return <CloudsBackground />;
+        default:
+            return null;
+    }
+}
+
 export function PagePreview({ data }: PagePreviewProps) {
   return (
-    <div className="w-full h-full flex flex-col relative">
+    <div className="w-full h-full flex flex-col relative overflow-hidden">
         <MusicPlayer musicUrl={data.musicUrl} />
+        <DynamicBackground animation={data.backgroundAnimation} />
+        
         {/* Page Content */}
         <div
             className="flex-grow p-4 flex flex-col items-center justify-start text-center relative overflow-y-auto"
@@ -352,5 +370,3 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
-
-    
