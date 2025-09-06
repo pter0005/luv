@@ -131,7 +131,7 @@
     opacity: 1;
   }
   100% {
-    transform: translateY(-10vh) scale(1);
+    transform: translateY(-10vh) scale(1.2);
     opacity: 0;
   }
 }
@@ -139,7 +139,8 @@
 .heart {
   position: absolute;
   bottom: 0;
-  font-size: 2rem; /* Adjust size */
-  animation: rise 10s infinite ease-in;
+  animation-name: rise;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
   color: hsl(var(--primary) / 0.5);
 }

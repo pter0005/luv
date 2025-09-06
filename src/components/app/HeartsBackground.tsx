@@ -1,16 +1,16 @@
 
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 export function HeartsBackground() {
-  const [hearts, setHearts] = useState<JSX.Element[]>([]);
+  const hearts = Array.from({ length: 15 }); // Create 15 hearts
 
-  useEffect(() => {
-    const createHeart = () => {
-      const heart = (
+  return (
+    <div className="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none overflow-hidden">
+      {hearts.map((_, i) => (
         <div
-          key={Math.random()}
+          key={i}
           className="heart"
           style={{
             left: `${Math.random() * 100}vw`,
@@ -21,19 +21,7 @@ export function HeartsBackground() {
         >
           ❤
         </div>
-      );
-      setHearts((prevHearts) => [...prevHearts, heart]);
-
-      // Remove heart after animation finishes to prevent DOM buildup
-      setTimeout(() => {
-        setHearts((prevHearts) => prevHearts.slice(1));
-      }, 10000); // Should match longest animation duration
-    };
-
-    const interval = setInterval(createHeart, 500); // Create a new heart every 500ms
-
-    return () => clearInterval(interval);
-  }, []);
-
-  return <div className="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none overflow-hidden">{hearts}</div>;
+      ))}
+    </div>
+  );
 }
