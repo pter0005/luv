@@ -25,7 +25,6 @@ import {
   ChevronRight,
   Upload,
   X as XIcon,
-  Paintbrush,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Editor } from "@/components/ui/editor";
@@ -51,7 +50,7 @@ const formSchema = z.object({
   musicUrl: z.string().url("URL inválida.").optional().or(z.literal('')),
   backgroundAnimation: z.string().optional(),
   contactName: z.string().optional(),
-  contactEmail: z.string().email("Email inválido.").optional(),
+  contactEmail: z.string().email("Email inválido.").optional().or(z.literal('')),
   contactPhone: z.string().optional(),
   plan: z.string().optional(),
 });
@@ -62,17 +61,16 @@ export default function CreatorStudioPage() {
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = React.useState(1);
   const totalSteps = 8;
-  const colorPickerRef = React.useRef<HTMLInputElement>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      title: "João & Maria",
+      message: "<p>Nossa história é a prova de que o amor verdadeiro existe. Cada momento ao seu lado é um presente, e eu mal posso esperar por todos os capítulos que ainda vamos escrever juntos. Te amo!</p>",
       photos: [],
       photoDisplayType: "Cards",
-      title: "",
       titleColor: "#FFFFFF",
-      message: "",
       messageFontSize: "text-base",
       dateDisplayType: "padrão",
       musicUrl: "",
@@ -145,6 +143,14 @@ export default function CreatorStudioPage() {
         fieldsToValidate = ['contactName', 'contactEmail', 'contactPhone'];
     }
 
+    if (currentField === 'musicUrl') {
+        const musicUrl = form.getValues('musicUrl');
+        if (musicUrl === '') {
+             if (currentStep < totalSteps) setCurrentStep(currentStep + 1);
+             return;
+        }
+    }
+
     const isValid = await form.trigger(fieldsToValidate);
 
     if (isValid) {
@@ -197,11 +203,11 @@ export default function CreatorStudioPage() {
 
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-background p-4">
+    <div className="flex min-h-screen w-full items-start justify-center bg-background p-4">
       <div className="grid w-full max-w-7xl grid-cols-1 gap-16 lg:grid-cols-2">
         {/* Form Section */}
-        <div className="flex w-full flex-col">
-          <div className="mx-auto w-full max-w-md">
+        <div className="w-full flex flex-col">
+          <aside className="w-full max-w-md mx-auto">
             <div className="mb-8">
               <Progress value={(currentStep / totalSteps) * 100} className="h-2" />
               <p className="mt-2 text-right text-sm text-muted-foreground">{currentStep}/{totalSteps}</p>
@@ -236,27 +242,23 @@ export default function CreatorStudioPage() {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Cor do título</FormLabel>
-                            <div className="flex items-center gap-4">
-                                <FormControl>
-                                    <div className="relative w-full">
-                                        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                             <span className="h-5 w-5 rounded-full border border-zinc-500" style={{backgroundColor: field.value}}/>
-                                        </div>
-                                        <Input
-                                            className="pl-10"
-                                            value={field.value}
-                                            onChange={(e) => field.onChange(e.target.value)}
-                                        />
-                                         <input
-                                            type="color"
-                                            ref={colorPickerRef}
-                                            value={field.value}
-                                            onChange={(e) => field.onChange(e.target.value)}
-                                            className="absolute right-2 top-1/2 h-8 w-8 -translate-y-1/2 cursor-pointer opacity-0"
-                                        />
-                                    </div>
-                                </FormControl>
-                            </div>
+                             <FormControl>
+                                <div className="relative">
+                                     <Input
+                                        type="text"
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                        className="w-full"
+                                    />
+                                    <input
+                                        type="color"
+                                        value={field.value}
+                                        onChange={e => field.onChange(e.target.value)}
+                                        className="absolute right-2 top-1/2 h-8 w-8 -translate-y-1/2 cursor-pointer opacity-0"
+                                    />
+                                     <div className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border" style={{ backgroundColor: field.value }}></div>
+                                </div>
+                            </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
@@ -466,7 +468,7 @@ export default function CreatorStudioPage() {
                           <FormLabel className="font-semibold">Animação de Fundo</FormLabel>
                           <FormControl>
                             <RadioGroup
-                              onValuecha-nge={field.onChange}
+                              onValueChange={field.onChange}
                               defaultValue={field.value}
                               className="grid grid-cols-2 gap-4"
                             >
@@ -574,12 +576,12 @@ export default function CreatorStudioPage() {
                 </div>
               </form>
             </Form>
-          </div>
+          </aside>
         </div>
 
         {/* Preview Section */}
         <main className="hidden w-full lg:flex items-start justify-center">
-            <div className="w-full max-w-[640px] h-[920px] bg-zinc-900 rounded-2xl p-4 flex flex-col border-zinc-700 border-[14px]">
+            <div className="w-full max-w-lg h-[920px] bg-zinc-900 rounded-2xl p-6 flex flex-col border-zinc-700 border-[24px]">
                 <div className="bg-zinc-800 rounded-t-lg p-2 flex items-center gap-1.5 border-b border-zinc-700">
                     <div className="flex items-center gap-1.5">
                         <div className="w-3 h-3 rounded-full bg-red-500"></div>

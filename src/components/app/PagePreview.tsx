@@ -257,7 +257,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
             object-fit: cover;
         }
       `}</style>
-      <Swiper {...getSwiperEffectProps()} className={cn("mySwiper", `swiper-container-${displayType?.toLowerCase()}`)}>
+      <Swiper {...getSwiperEffectProps()} key={displayType} className={cn("mySwiper", `swiper-container-${displayType?.toLowerCase()}`)}>
         {photos.map((photo, index) => (
           <SwiperSlide key={index}>
              <div className="slide-image-wrapper">
