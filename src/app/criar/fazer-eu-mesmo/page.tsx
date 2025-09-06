@@ -260,413 +260,413 @@ export default function CreatorStudioPage() {
 
 
   return (
-    <div className="flex min-h-screen w-full items-start p-4">
-      <div className="grid w-full max-w-7xl grid-cols-1 gap-16 lg:grid-cols-2">
-        {/* Form Section */}
-        <div className="w-full flex flex-col">
-          <aside className="w-full max-w-md mx-auto">
-            <div className="mb-8">
-              <Progress value={(currentStep / totalSteps) * 100} className="h-2" />
-              <p className="mt-2 text-right text-sm text-muted-foreground">{currentStep}/{totalSteps}</p>
-            </div>
+    <div className="grid w-full min-h-screen grid-cols-1 lg:grid-cols-2">
+      {/* Form Section */}
+      <div className="flex flex-col items-center justify-center p-4 md:p-8">
+        <div className="w-full max-w-md">
+          <div className="mb-8">
+            <Progress value={(currentStep / totalSteps) * 100} className="h-2" />
+            <p className="mt-2 text-right text-sm text-muted-foreground">{currentStep}/{totalSteps}</p>
+          </div>
 
-            <div>
-              <h2 className="text-3xl font-bold">{steps[currentStep - 1].title}</h2>
-              <p className="mt-2 text-muted-foreground">{steps[currentStep - 1].description}</p>
-            </div>
+          <div>
+            <h2 className="text-3xl font-bold">{steps[currentStep - 1].title}</h2>
+            <p className="mt-2 text-muted-foreground">{steps[currentStep - 1].description}</p>
+          </div>
 
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8">
-                <div className="min-h-[350px]">
-                  {currentStep === 1 && (
-                    <div className="space-y-8">
-                      <FormField
-                        control={form.control}
-                        name="title"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Título</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Ex: João & Maria ou Feliz Aniversário" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="titleColor"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Cor do título</FormLabel>
-                             <FormControl>
-                                <div className="relative flex items-center gap-4">
-                                     <input
-                                        type="color"
-                                        value={field.value}
-                                        onChange={e => field.onChange(e.target.value)}
-                                        className="h-10 w-14 cursor-pointer appearance-none border-0 bg-transparent p-0 [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded-md [&::-webkit-color-swatch]:border-0"
-                                    />
-                                    <span>Clique no quadrado para escolher uma cor</span>
-                                </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  )}
-                  {currentStep === 2 && (
-                    <div className="space-y-4">
-                        <FormField
-                            control={form.control}
-                            name="messageFontSize"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Tamanho do Texto</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                    <FormControl>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Selecione um tamanho" />
-                                    </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                    <SelectItem value="text-sm">Pequeno</SelectItem>
-                                    <SelectItem value="text-base">Padrão</SelectItem>
-                                    <SelectItem value="text-lg">Médio</SelectItem>
-                                    <SelectItem value="text-xl">Grande</SelectItem>
-                                    <SelectItem value="text-2xl">Extra Grande</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="message"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Sua Mensagem</FormLabel>
-                                <FormControl>
-                                    <Editor
-                                        value={field.value || ""}
-                                        onChange={field.onChange}
-                                        placeholder="Escreva sua mensagem aqui..."
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
-                  )}
-                  {currentStep === 3 && (
-                    <div className="grid grid-cols-1 gap-8 items-start">
-                        <FormField
-                            control={form.control}
-                            name="startDate"
-                            render={({ field }) => (
-                                <FormItem className="flex flex-col items-center">
-                                <FormControl>
-                                    <Calendar
-                                        mode="single"
-                                        selected={field.value}
-                                        onSelect={field.onChange}
-                                        disabled={(date) =>
-                                        date > new Date() || date < new Date("1900-01-01")
-                                        }
-                                        initialFocus
-                                        fromYear={1960}
-                                        toYear={new Date().getFullYear()}
-                                        captionLayout="dropdown-buttons"
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                         <FormField
-                            control={form.control}
-                            name="dateDisplayType"
-                            render={({ field }) => (
-                                <FormItem className="space-y-3">
-                                <FormLabel className="font-semibold">Modo de Exibição do Contador</FormLabel>
-                                <FormControl>
-                                    <RadioGroup
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                        className="grid grid-cols-2 gap-4"
-                                    >
-                                        <RadioGroupItem value="padrão" id="date-padrão">Padrão</RadioGroupItem>
-                                        <RadioGroupItem value="classico" id="date-classico">Clássico</RadioGroupItem>
-                                        <RadioGroupItem value="simples" id="date-simples">Simples</RadioGroupItem>
-                                    </RadioGroup>
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
-                  )}
-                  {currentStep === 4 && (
-                    <div className="space-y-8">
-                        <FormField
-                            control={form.control}
-                            name="photos"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Suas Fotos</FormLabel>
-                                    <FormControl>
-                                        <div className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors"
-                                        onClick={() => fileInputRef.current?.click()}>
-                                        <Upload className="mx-auto h-10 w-10 text-muted-foreground mb-2" />
-                                        <p className="font-semibold">Clique para adicionar fotos</p>
-                                        <p className="text-xs text-muted-foreground">PNG, JPG, GIF (máx. 8 fotos)</p>
-                                        <input
-                                            type="file"
-                                            ref={fileInputRef}
-                                            multiple
-                                            accept="image/*"
-                                            onChange={handleFileChange}
-                                            className="hidden"
-                                        />
-                                        </div>
-                                    </FormControl>
-
-                                    {field.value && field.value.length > 0 && (
-                                        <div className="grid grid-cols-4 gap-4 mt-4">
-                                        {(field.value || []).map((photo, index) => (
-                                            <div key={index} className="relative group">
-                                            <Image
-                                                src={photo}
-                                                alt={`Preview ${index}`}
-                                                width={100}
-                                                height={100}
-                                                className="rounded-md object-cover w-full h-24"
-                                            />
-                                            <Button
-                                                type="button"
-                                                variant="destructive"
-                                                size="icon"
-                                                className="absolute -top-2 -right-2 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                                                onClick={() => removePhoto(index)}
-                                            >
-                                                <XIcon className="h-4 w-4" />
-                                            </Button>
-                                            </div>
-                                        ))}
-                                        </div>
-                                    )}
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="photoDisplayType"
-                            render={({ field }) => (
-                                <FormItem className="space-y-3">
-                                <FormLabel className="font-semibold">Modo de Exibição da Galeria</FormLabel>
-                                <FormControl>
-                                    <RadioGroup
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                    className="grid grid-cols-2 gap-4"
-                                    >
-                                        <RadioGroupItem value="Coverflow" id="gallery-coverflow">Coverflow</RadioGroupItem>
-                                        <RadioGroupItem value="Cards" id="gallery-cards">Cards</RadioGroupItem>
-                                        <RadioGroupItem value="Flip" id="gallery-flip">Flip</RadioGroupItem>
-                                        <RadioGroupItem value="Cube" id="gallery-cube">Cube</RadioGroupItem>
-                                    </RadioGroup>
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
-                  )}
-                  {currentStep === 5 && (
-                    <div className="space-y-4">
-                      <FormLabel>Busque pela música</FormLabel>
-                      <div className="relative">
-                        <Input
-                          placeholder="Ex: Coldplay - A Sky Full of Stars"
-                          value={musicSearchQuery}
-                          onChange={(e) => setMusicSearchQuery(e.target.value)}
-                        />
-                        {isSearchingMusic && <Loader className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 animate-spin" />}
-                      </div>
-
-                      {musicSearchResult && (
-                        <div className="p-4 border rounded-md bg-secondary/50">
-                          <p className="font-semibold truncate">{musicSearchResult.title}</p>
-                          <div className="flex items-center gap-4 mt-2">
-                             <Button type="button" size="sm" onClick={selectMusic} className="w-full">
-                                <Check className="mr-2 h-4 w-4"/>
-                                Selecionar esta
-                             </Button>
-                             <Button type="button" size="sm" variant="outline" className="w-full" onClick={() => setMusicSearchResult(null)}>
-                                <XIcon className="mr-2 h-4 w-4"/>
-                                Cancelar
-                             </Button>
-                          </div>
-                        </div>
-                      )}
-                      
-                       <FormField
-                        control={form.control}
-                        name="musicUrl"
-                        render={({ field }) => (
-                            <FormItem>
-                            {field.value && (
-                                <p className="text-sm text-green-400 p-2 bg-green-950/50 rounded-md">Música selecionada! Prossiga para a próxima etapa.</p>
-                            )}
-                             <FormMessage />
-                            </FormItem>
-                        )}
-                        />
-                    </div>
-                  )}
-                  {currentStep === 6 && (
-                     <FormField
-                      control={form.control}
-                      name="backgroundAnimation"
-                      render={({ field }) => (
-                        <FormItem className="space-y-3">
-                          <FormLabel className="font-semibold">Animação de Fundo</FormLabel>
-                          <FormControl>
-                            <RadioGroup
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                              className="grid grid-cols-2 gap-4"
-                            >
-                              <RadioGroupItem value="none" id="bg-none">Nenhuma</RadioGroupItem>
-                              <RadioGroupItem value="hearts" id="bg-hearts">Chuva de Corações</RadioGroupItem>
-                              <RadioGroupItem value="stars" id="bg-stars">Céu Estrelado</RadioGroupItem>
-                              <RadioGroupItem value="clouds" id="bg-clouds">Nuvens</RadioGroupItem>
-                            </RadioGroup>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  )}
-                  {currentStep === 7 && (
-                    <div className="space-y-4">
-                        <FormField
-                            control={form.control}
-                            name="contactName"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Seu Nome</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Seu nome completo" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="contactEmail"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Seu E-mail</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="seu.email@exemplo.com" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="contactPhone"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Seu Telefone</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="(99) 99999-9999" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
-                  )}
-                  {currentStep === 8 && (
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8">
+              <div className="min-h-[350px]">
+                {currentStep === 1 && (
+                  <div className="space-y-8">
                     <FormField
                       control={form.control}
-                      name="plan"
+                      name="title"
                       render={({ field }) => (
-                        <FormItem className="space-y-3">
-                            <FormLabel className="font-semibold">Selecione seu Plano</FormLabel>
+                        <FormItem>
+                          <FormLabel>Título</FormLabel>
                           <FormControl>
-                            <RadioGroup
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                              className="space-y-4"
-                            >
-                                <RadioGroupItem value="monthly" id="plan-monthly">
-                                    <div className="font-bold">Mensal - R$20,00/mês</div>
-                                    <div className="text-sm text-muted-foreground">Ideal para uma surpresa pontual.</div>
-                                </RadioGroupItem>
-                                <RadioGroupItem value="forever" id="plan-forever">
-                                    <div className="font-bold">Para Sempre - R$34,99</div>
-                                    <div className="text-sm text-muted-foreground">Acesso vitalício à sua obra de arte digital.</div>
-                                </RadioGroupItem>
-                                <RadioGroupItem value="custom" id="plan-custom">
-                                    <div className="font-bold">Sob Medida - Consulte</div>
-                                    <div className="text-sm text-muted-foreground">Para ideias que transcendem. Crie algo único.</div>
-                                </RadioGroupItem>
-                            </RadioGroup>
+                            <Input placeholder="Ex: João & Maria ou Feliz Aniversário" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                  )}
+                    <FormField
+                      control={form.control}
+                      name="titleColor"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Cor do título</FormLabel>
+                           <FormControl>
+                              <div className="relative flex items-center gap-4">
+                                   <input
+                                      type="color"
+                                      value={field.value}
+                                      onChange={e => field.onChange(e.target.value)}
+                                      className="h-10 w-14 cursor-pointer appearance-none border-0 bg-transparent p-0 [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded-md [&::-webkit-color-swatch]:border-0"
+                                  />
+                                  <span>Clique no quadrado para escolher uma cor</span>
+                              </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                )}
+                {currentStep === 2 && (
+                  <div className="space-y-4">
+                      <FormField
+                          control={form.control}
+                          name="messageFontSize"
+                          render={({ field }) => (
+                              <FormItem>
+                              <FormLabel>Tamanho do Texto</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <FormControl>
+                                  <SelectTrigger>
+                                      <SelectValue placeholder="Selecione um tamanho" />
+                                  </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                  <SelectItem value="text-sm">Pequeno</SelectItem>
+                                  <SelectItem value="text-base">Padrão</SelectItem>
+                                  <SelectItem value="text-lg">Médio</SelectItem>
+                                  <SelectItem value="text-xl">Grande</SelectItem>
+                                  <SelectItem value="text-2xl">Extra Grande</SelectItem>
+                                  </SelectContent>
+                              </Select>
+                              <FormMessage />
+                              </FormItem>
+                          )}
+                      />
+                      <FormField
+                          control={form.control}
+                          name="message"
+                          render={({ field }) => (
+                              <FormItem>
+                              <FormLabel>Sua Mensagem</FormLabel>
+                              <FormControl>
+                                  <Editor
+                                      value={field.value || ""}
+                                      onChange={field.onChange}
+                                      placeholder="Escreva sua mensagem aqui..."
+                                  />
+                              </FormControl>
+                              <FormMessage />
+                              </FormItem>
+                          )}
+                      />
+                  </div>
+                )}
+                {currentStep === 3 && (
+                  <div className="grid grid-cols-1 gap-8 items-start">
+                      <FormField
+                          control={form.control}
+                          name="startDate"
+                          render={({ field }) => (
+                              <FormItem className="flex flex-col items-center">
+                              <FormControl>
+                                  <Calendar
+                                      mode="single"
+                                      selected={field.value}
+                                      onSelect={field.onChange}
+                                      disabled={(date) =>
+                                      date > new Date() || date < new Date("1900-01-01")
+                                      }
+                                      initialFocus
+                                      fromYear={1960}
+                                      toYear={new Date().getFullYear()}
+                                      captionLayout="dropdown-buttons"
+                                  />
+                              </FormControl>
+                              <FormMessage />
+                              </FormItem>
+                          )}
+                      />
+                       <FormField
+                          control={form.control}
+                          name="dateDisplayType"
+                          render={({ field }) => (
+                              <FormItem className="space-y-3">
+                              <FormLabel className="font-semibold">Modo de Exibição do Contador</FormLabel>
+                              <FormControl>
+                                  <RadioGroup
+                                      onValueChange={field.onChange}
+                                      defaultValue={field.value}
+                                      className="grid grid-cols-2 gap-4"
+                                  >
+                                      <RadioGroupItem value="padrão" id="date-padrão">Padrão</RadioGroupItem>
+                                      <RadioGroupItem value="classico" id="date-classico">Clássico</RadioGroupItem>
+                                      <RadioGroupItem value="simples" id="date-simples">Simples</RadioGroupItem>
+                                  </RadioGroup>
+                              </FormControl>
+                              <FormMessage />
+                              </FormItem>
+                          )}
+                      />
+                  </div>
+                )}
+                {currentStep === 4 && (
+                  <div className="space-y-8">
+                      <FormField
+                          control={form.control}
+                          name="photos"
+                          render={({ field }) => (
+                              <FormItem>
+                                  <FormLabel>Suas Fotos</FormLabel>
+                                  <FormControl>
+                                      <div className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors"
+                                      onClick={() => fileInputRef.current?.click()}>
+                                      <Upload className="mx-auto h-10 w-10 text-muted-foreground mb-2" />
+                                      <p className="font-semibold">Clique para adicionar fotos</p>
+                                      <p className="text-xs text-muted-foreground">PNG, JPG, GIF (máx. 8 fotos)</p>
+                                      <input
+                                          type="file"
+                                          ref={fileInputRef}
+                                          multiple
+                                          accept="image/*"
+                                          onChange={handleFileChange}
+                                          className="hidden"
+                                      />
+                                      </div>
+                                  </FormControl>
 
-                </div>
-                <div className="flex items-center gap-4 mt-8">
-                  <Button type="button" variant="secondary" onClick={handlePrevStep} disabled={currentStep === 1} className="w-full">
-                    <ArrowLeft className="mr-2 h-4 w-4" />
-                    Voltar
+                                  {field.value && field.value.length > 0 && (
+                                      <div className="grid grid-cols-4 gap-4 mt-4">
+                                      {(field.value || []).map((photo, index) => (
+                                          <div key={index} className="relative group">
+                                          <Image
+                                              src={photo}
+                                              alt={`Preview ${index}`}
+                                              width={100}
+                                              height={100}
+                                              className="rounded-md object-cover w-full h-24"
+                                          />
+                                          <Button
+                                              type="button"
+                                              variant="destructive"
+                                              size="icon"
+                                              className="absolute -top-2 -right-2 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                              onClick={() => removePhoto(index)}
+                                          >
+                                              <XIcon className="h-4 w-4" />
+                                          </Button>
+                                          </div>
+                                      ))}
+                                      </div>
+                                  )}
+                                  <FormMessage />
+                              </FormItem>
+                          )}
+                      />
+                      <FormField
+                          control={form.control}
+                          name="photoDisplayType"
+                          render={({ field }) => (
+                              <FormItem className="space-y-3">
+                              <FormLabel className="font-semibold">Modo de Exibição da Galeria</FormLabel>
+                              <FormControl>
+                                  <RadioGroup
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                  className="grid grid-cols-2 gap-4"
+                                  >
+                                      <RadioGroupItem value="Coverflow" id="gallery-coverflow">Coverflow</RadioGroupItem>
+                                      <RadioGroupItem value="Cards" id="gallery-cards">Cards</RadioGroupItem>
+                                      <RadioGroupItem value="Flip" id="gallery-flip">Flip</RadioGroupItem>
+                                      <RadioGroupItem value="Cube" id="gallery-cube">Cube</RadioGroupItem>
+                                  </RadioGroup>
+                              </FormControl>
+                              <FormMessage />
+                              </FormItem>
+                          )}
+                      />
+                  </div>
+                )}
+                {currentStep === 5 && (
+                  <div className="space-y-4">
+                    <FormLabel>Busque pela música</FormLabel>
+                    <div className="relative">
+                      <Input
+                        placeholder="Ex: Coldplay - A Sky Full of Stars"
+                        value={musicSearchQuery}
+                        onChange={(e) => setMusicSearchQuery(e.target.value)}
+                      />
+                      {isSearchingMusic && <Loader className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 animate-spin" />}
+                    </div>
+
+                    {musicSearchResult && (
+                      <div className="p-4 border rounded-md bg-secondary/50">
+                        <p className="font-semibold truncate">{musicSearchResult.title}</p>
+                        <div className="flex items-center gap-4 mt-2">
+                           <Button type="button" size="sm" onClick={selectMusic} className="w-full">
+                              <Check className="mr-2 h-4 w-4"/>
+                              Selecionar esta
+                           </Button>
+                           <Button type="button" size="sm" variant="outline" className="w-full" onClick={() => setMusicSearchResult(null)}>
+                              <XIcon className="mr-2 h-4 w-4"/>
+                              Cancelar
+                           </Button>
+                        </div>
+                      </div>
+                    )}
+                    
+                     <FormField
+                      control={form.control}
+                      name="musicUrl"
+                      render={({ field }) => (
+                          <FormItem>
+                          {field.value && (
+                              <p className="text-sm text-green-400 p-2 bg-green-950/50 rounded-md">Música selecionada! Prossiga para a próxima etapa.</p>
+                          )}
+                           <FormMessage />
+                          </FormItem>
+                      )}
+                      />
+                  </div>
+                )}
+                {currentStep === 6 && (
+                   <FormField
+                    control={form.control}
+                    name="backgroundAnimation"
+                    render={({ field }) => (
+                      <FormItem className="space-y-3">
+                        <FormLabel className="font-semibold">Animação de Fundo</FormLabel>
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            className="grid grid-cols-2 gap-4"
+                          >
+                            <RadioGroupItem value="none" id="bg-none">Nenhuma</RadioGroupItem>
+                            <RadioGroupItem value="hearts" id="bg-hearts">Chuva de Corações</RadioGroupItem>
+                            <RadioGroupItem value="stars" id="bg-stars">Céu Estrelado</RadioGroupItem>
+                            <RadioGroupItem value="clouds" id="bg-clouds">Nuvens</RadioGroupItem>
+                          </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+                {currentStep === 7 && (
+                  <div className="space-y-4">
+                      <FormField
+                          control={form.control}
+                          name="contactName"
+                          render={({ field }) => (
+                              <FormItem>
+                                  <FormLabel>Seu Nome</FormLabel>
+                                  <FormControl>
+                                      <Input placeholder="Seu nome completo" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                              </FormItem>
+                          )}
+                      />
+                      <FormField
+                          control={form.control}
+                          name="contactEmail"
+                          render={({ field }) => (
+                              <FormItem>
+                                  <FormLabel>Seu E-mail</FormLabel>
+                                  <FormControl>
+                                      <Input placeholder="seu.email@exemplo.com" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                              </FormItem>
+                          )}
+                      />
+                      <FormField
+                          control={form.control}
+                          name="contactPhone"
+                          render={({ field }) => (
+                              <FormItem>
+                                  <FormLabel>Seu Telefone</FormLabel>
+                                  <FormControl>
+                                      <Input placeholder="(99) 99999-9999" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                              </FormItem>
+                          )}
+                      />
+                  </div>
+                )}
+                {currentStep === 8 && (
+                  <FormField
+                    control={form.control}
+                    name="plan"
+                    render={({ field }) => (
+                      <FormItem className="space-y-3">
+                          <FormLabel className="font-semibold">Selecione seu Plano</FormLabel>
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            className="space-y-4"
+                          >
+                              <RadioGroupItem value="monthly" id="plan-monthly">
+                                  <div className="font-bold">Mensal - R$20,00/mês</div>
+                                  <div className="text-sm text-muted-foreground">Ideal para uma surpresa pontual.</div>
+                              </RadioGroupItem>
+                              <RadioGroupItem value="forever" id="plan-forever">
+                                  <div className="font-bold">Para Sempre - R$34,99</div>
+                                  <div className="text-sm text-muted-foreground">Acesso vitalício à sua obra de arte digital.</div>
+                              </RadioGroupItem>
+                              <RadioGroupItem value="custom" id="plan-custom">
+                                  <div className="font-bold">Sob Medida - Consulte</div>
+                                  <div className="text-sm text-muted-foreground">Para ideias que transcendem. Crie algo único.</div>
+                              </RadioGroupItem>
+                          </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
+              </div>
+              <div className="flex items-center gap-4 mt-8">
+                <Button type="button" variant="secondary" onClick={handlePrevStep} disabled={currentStep === 1} className="w-full">
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Voltar
+                </Button>
+                {currentStep < totalSteps ? (
+                  <Button type="button" onClick={handleNextStep} className="w-full">
+                    Próxima Etapa
+                    <ChevronRight className="ml-2 h-4 w-4" />
                   </Button>
-                  {currentStep < totalSteps ? (
-                    <Button type="button" onClick={handleNextStep} className="w-full">
-                      Próxima Etapa
-                      <ChevronRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  ) : (
-                    <Button type="submit" size="lg" className="w-full">Salvar e Obter Link</Button>
-                  )}
-                </div>
-              </form>
-            </Form>
-          </aside>
+                ) : (
+                  <Button type="submit" size="lg" className="w-full">Salvar e Obter Link</Button>
+                )}
+              </div>
+            </form>
+          </Form>
         </div>
+      </div>
 
-        {/* Preview Section */}
-        <main className="hidden w-full lg:flex items-center justify-center">
-            <div className="w-full max-w-lg h-[95vh] bg-zinc-900 rounded-2xl flex flex-col">
-                <div className="bg-zinc-800 rounded-t-lg p-2 flex items-center gap-1.5 border-b border-zinc-700">
-                    <div className="flex items-center gap-1.5">
-                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                    </div>
-                    <div className="flex-grow bg-zinc-700 rounded-sm px-2 py-1 text-xs text-zinc-400 text-center truncate">
-                        https://luv.com/p/{watchedData.title?.toLowerCase().replace(/\s/g, '-') || 'pagina'}
-                    </div>
-                </div>
-                <div className="flex-grow bg-black rounded-b-lg overflow-hidden">
-                    <PagePreview data={watchedData} />
-                </div>
-            </div>
-        </main>
+      {/* Preview Section */}
+      <div className="hidden lg:flex sticky top-0 items-center justify-center w-full h-screen bg-zinc-900 p-8">
+          <div className="w-full max-w-lg h-full bg-zinc-950 rounded-2xl flex flex-col shadow-2xl">
+              <div className="bg-zinc-800 rounded-t-lg p-2 flex items-center gap-1.5 border-b border-zinc-700">
+                  <div className="flex items-center gap-1.5">
+                      <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                      <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                      <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                  </div>
+                  <div className="flex-grow bg-zinc-700 rounded-sm px-2 py-1 text-xs text-zinc-400 text-center truncate">
+                      https://luv.com/p/{watchedData.title?.toLowerCase().replace(/\s/g, '-') || 'pagina'}
+                  </div>
+              </div>
+              <div className="flex-grow bg-black rounded-b-lg overflow-hidden">
+                  <PagePreview data={watchedData} />
+              </div>
+          </div>
       </div>
     </div>
   );
 }
+
+    
