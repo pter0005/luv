@@ -197,22 +197,29 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
       }
     )}>
       <style jsx global>{`
-        .swiper-container-coverflow, .swiper-container-cube, .swiper-container-cards, .swiper-container-flip {
+        .swiper-container-coverflow, .swiper-container-flip {
             height: 300px;
+        }
+
+        .swiper-container-cube {
+            height: 250px;
+            width: 250px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .swiper-container-cards {
+            height: 320px;
         }
 
         .mySwiper {
           width: 100%;
           height: 100%;
+        }
+
+        .swiper-container-coverflow .mySwiper {
           padding-top: 50px;
           padding-bottom: 50px;
-        }
-        
-        .swiper-container-cube .mySwiper {
-          width: 300px;
-          height: 300px;
-          padding-top: 0;
-          padding-bottom: 0;
         }
 
         .swiper-slide {
@@ -221,11 +228,12 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
           display: flex;
           align-items: center;
           justify-content: center;
+          background-color: transparent;
         }
 
         .swiper-slide-coverflow {
-           width: 300px;
-           height: 300px;
+           width: 250px;
+           height: 250px;
         }
         
         .swiper-slide-cube {
@@ -256,7 +264,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
         .swiper-wrapper {
           align-items: center; 
         }
-        .swiper-slide .slide-image-wrapper {
+        .slide-image-wrapper {
           width: 100%;
           height: 100%;
           position: relative;
