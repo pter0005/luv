@@ -647,7 +647,7 @@ export default function CreatorStudioPage() {
 
         {/* Preview Section */}
         <main className="hidden w-full lg:flex items-center justify-center">
-            <div className="w-full max-w-lg h-[920px] bg-zinc-900 rounded-2xl p-6 flex flex-col border-zinc-700 border-[24px]">
+            <div className="w-full max-w-lg h-[95vh] bg-zinc-900 rounded-2xl flex flex-col">
                 <div className="bg-zinc-800 rounded-t-lg p-2 flex items-center gap-1.5 border-b border-zinc-700">
                     <div className="flex items-center gap-1.5">
                         <div className="w-3 h-3 rounded-full bg-red-500"></div>
@@ -668,6 +668,3 @@ export default function CreatorStudioPage() {
   );
 }
 
-    
-
-    
