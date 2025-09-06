@@ -157,7 +157,7 @@ export default function CreatorStudioPage() {
   return (
     <div className="relative flex w-full min-h-screen items-center justify-center p-4">
       <AnimatedBackground fixed />
-      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-x-8 max-w-6xl w-full">
+      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-x-8 max-w-7xl w-full items-center">
         {/* Form Section */}
         <aside className="w-full flex flex-col justify-center">
          <div className="w-full max-w-lg mx-auto">
@@ -449,7 +449,7 @@ export default function CreatorStudioPage() {
 
         {/* Preview Section */}
         <main className="w-full p-4 hidden lg:flex flex-col items-center justify-center bg-transparent">
-            <div className="w-full max-w-[400px] aspect-[9/19.5] mx-auto bg-zinc-900 rounded-[60px] shadow-2xl shadow-primary/20 border-[14px] border-zinc-800 overflow-hidden">
+            <div className="w-full max-w-[400px] aspect-[9/19.5] mx-auto bg-zinc-900 rounded-[60px] shadow-2xl shadow-primary/20 p-4 border-8 border-zinc-800 overflow-hidden">
                 <PagePreview data={{...fieldHistory, ...form.getValues()}} />
             </div>
         </main>
@@ -457,3 +457,5 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
+
+    
