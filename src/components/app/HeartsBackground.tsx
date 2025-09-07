@@ -15,6 +15,7 @@ export function HeartsBackground() {
   useEffect(() => {
     const generatedHearts = Array.from({ length: 40 }).map((_, i) => {
         const size = Math.random() * 4 + 1; // Aumentado de 0.5rem-3rem para 1rem-5rem
+        const rotation = Math.random() * 50 - 25; // Rotação aleatória de -25 a 25 graus
         return {
           id: i,
           style: {
@@ -23,6 +24,7 @@ export function HeartsBackground() {
             animationDelay: `${Math.random() * 15}s`,
             width: `${size}rem`,
             height: `${size}rem`,
+            transform: `rotate(${rotation}deg)`,
           },
         }
     });
