@@ -681,7 +681,7 @@ export default function CreatorStudioPage() {
       </div>
 
       {/* Preview Section */}
-      <div className="hidden lg:flex sticky top-0 items-center justify-center w-full h-screen bg-zinc-900 p-8">
+      <div className="hidden lg:flex sticky top-0 items-center justify-center w-full h-screen p-8">
           <div className="w-full max-w-lg h-full bg-zinc-950 rounded-2xl flex flex-col shadow-2xl">
               <div className="bg-zinc-800 rounded-t-lg p-2 flex items-center gap-1.5 border-b border-zinc-700">
                   <div className="flex items-center gap-1.5">
@@ -701,3 +701,5 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
+
+    
