@@ -340,7 +340,7 @@ const DynamicBackground = ({ animation }: { animation?: string }) => {
 
 export function PagePreview({ data }: PagePreviewProps) {
   return (
-    <div className="w-full h-full flex flex-col relative overflow-hidden">
+    <div className="w-full h-full flex flex-col relative overflow-hidden bg-black">
         <MusicPlayer musicUrl={data.musicUrl} />
         <DynamicBackground key={data.backgroundAnimation} animation={data.backgroundAnimation} />
         
@@ -379,5 +379,3 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
-
-    
