@@ -14,14 +14,14 @@ export function HeartsBackground() {
 
   useEffect(() => {
     const generatedHearts = Array.from({ length: 40 }).map((_, i) => {
-        const size = Math.random() * 4 + 1; // Aumentado de 0.5rem-3rem para 1rem-5rem
-        const rotation = Math.random() * 50 - 25; // Rotação aleatória de -25 a 25 graus
+        const size = Math.random() * 2 + 1; // 1rem to 3rem
+        const rotation = Math.random() * 50 - 25; // -25deg to 25deg
         return {
           id: i,
           style: {
             left: `${Math.random() * 100}vw`,
-            animationDuration: `${Math.random() * 10 + 10}s`, // 10s to 20s
-            animationDelay: `${Math.random() * 15}s`,
+            animationDuration: `${Math.random() * 5 + 5}s`, // 5s to 10s
+            animationDelay: `${Math.random() * 5}s`,
             width: `${size}rem`,
             height: `${size}rem`,
             transform: `rotate(${rotation}deg)`,

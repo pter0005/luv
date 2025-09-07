@@ -86,7 +86,7 @@ export default function CreatorStudioPage() {
       messageFontSize: "text-base",
       dateDisplayType: "padrão",
       musicUrl: "",
-      backgroundAnimation: "meteors",
+      backgroundAnimation: "none",
       contactName: "",
       contactEmail: "",
       contactPhone: "",
@@ -262,11 +262,6 @@ export default function CreatorStudioPage() {
   const animationOptions = [
     { value: 'none', label: 'Nenhuma', video: null, pro: false },
     { value: 'hearts', label: 'Chuva de corações', video: 'https://i.imgur.com/3Yw1h2Z.mp4', pro: false },
-    { value: 'stars', label: 'Céu Estrelado com Cometas', video: 'https://i.imgur.com/s27598y.mp4', pro: true },
-    { value: 'meteors', label: 'Céu Estrelado com Meteoros', video: 'https://i.imgur.com/c1I4j4G.mp4', pro: true },
-    { value: 'aurora', label: 'Aurora', video: 'https://i.imgur.com/e47F8Gz.mp4', pro: true },
-    { value: 'vortex', label: 'Vórtice de cores', video: 'https://i.imgur.com/e5k05k4.mp4', pro: true },
-    { value: 'clouds', label: 'Nuvens', video: 'https://i.imgur.com/8u3215f.png', pro: false },
   ];
 
 
@@ -706,5 +701,3 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
-
-    
