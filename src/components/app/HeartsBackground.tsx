@@ -13,13 +13,13 @@ export function HeartsBackground() {
   const [hearts, setHearts] = useState<HeartStyle[]>([]);
 
   useEffect(() => {
-    const generatedHearts = Array.from({ length: 40 }).map((_, i) => {
+    const generatedHearts = Array.from({ length: 20 }).map((_, i) => {
         const size = Math.random() * 2 + 1; // 1rem to 3rem
         const rotation = Math.random() * 50 - 25; // -25deg to 25deg
         return {
           id: i,
           style: {
-            left: `${Math.random() * 100}vw`,
+            left: `${Math.random() * 100}%`,
             animationDuration: `${Math.random() * 5 + 5}s`, // 5s to 10s
             animationDelay: `${Math.random() * 5}s`,
             width: `${size}rem`,
@@ -36,7 +36,7 @@ export function HeartsBackground() {
   }
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full -z-20 pointer-events-none overflow-hidden">
+    <div className="absolute top-0 left-0 w-full h-full -z-20 pointer-events-none overflow-hidden">
         <div className="relative w-full h-full">
             {hearts.map(heart => (
             <div
