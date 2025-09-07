@@ -13,7 +13,7 @@ export function HeartsBackground() {
   const [hearts, setHearts] = useState<HeartStyle[]>([]);
 
   useEffect(() => {
-    const generatedHearts = Array.from({ length: 20 }).map((_, i) => {
+    const generatedHearts = Array.from({ length: 40 }).map((_, i) => {
         const size = Math.random() * 2 + 1; // 1rem to 3rem
         const rotation = Math.random() * 50 - 25; // -25deg to 25deg
         return {
