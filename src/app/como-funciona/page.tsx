@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -65,7 +64,7 @@ export default function ComoFuncionaPage() {
                 <CardContent className="p-0 h-full">
                    <div className="w-full h-full rounded-lg flex items-center justify-center relative">
                         <JigsawPuzzle
-                          imageSrc="https://i.imgur.com/EMwsRdt.png"
+                          imageSrc="https://i.imgur.com/BzGXfqj.png"
                           onSolved={() => {}}
                           title="Experimente montar!"
                           description="Arraste as peças para revelar a imagem."
