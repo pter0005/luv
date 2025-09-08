@@ -46,6 +46,7 @@ const formSchema = z.object({
   customAudio: z.string().optional(),
   backgroundAnimation: z.string().optional(),
   heartColor: z.string().optional(),
+  loveLightColor: z.string().optional(),
   contactName: z.string().optional(),
   contactEmail: z.string().email("Email inválido.").optional(),
   contactPhone: z.string().optional(),
@@ -318,16 +319,21 @@ const MusicPlayer = ({ data }: { data: Partial<PageData> }) => {
     return null;
 }
 
-const DynamicBackground = ({ animation, heartColor }: { animation?: string, heartColor?: 'purple' | 'red' }) => {
-    switch (animation) {
+const DynamicBackground = ({ data }: { data: Partial<PageData> }) => {
+    switch (data.backgroundAnimation) {
         case 'hearts':
-            return <HeartsBackground color={heartColor} />;
+            return <HeartsBackground color={data.heartColor as 'purple' | 'red'} />;
         case 'stars':
             return <StarsBackground />;
         case 'colored-stars':
             return <ColoredStarsBackground />;
         case 'mystic-fog':
-             return <div className="mystic-fog"></div>;
+             return (
+                <>
+                    <div className="mystic-fog-1"></div>
+                    <div className="mystic-fog-2"></div>
+                </>
+             );
         default:
             return null;
     }
@@ -389,8 +395,7 @@ export function PagePreview({ data }: PagePreviewProps) {
         <MusicPlayer data={data} />
         <DynamicBackground 
             key={`${data.backgroundAnimation}-${data.heartColor}`} 
-            animation={data.backgroundAnimation} 
-            heartColor={data.heartColor as 'purple' | 'red'} 
+            data={data}
         />
         
         {hasCustomAudio && (

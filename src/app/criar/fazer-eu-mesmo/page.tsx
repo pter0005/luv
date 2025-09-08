@@ -66,6 +66,7 @@ const formSchema = z.object({
   customAudio: z.string().optional(),
   backgroundAnimation: z.string().optional(),
   heartColor: z.string().optional(),
+  loveLightColor: z.string().optional(),
   contactName: z.string().optional(),
   contactEmail: z.string().email("Email inválido.").optional().or(z.literal('')),
   contactPhone: z.string().optional(),
@@ -106,6 +107,7 @@ export default function CreatorStudioPage() {
       customAudio: "",
       backgroundAnimation: "none",
       heartColor: "purple",
+      loveLightColor: "purple",
       contactName: "",
       contactEmail: "",
       contactPhone: "",
@@ -663,8 +665,8 @@ export default function CreatorStudioPage() {
                                         {opt.value === 'hearts' && <div className="w-full h-full bg-black relative overflow-hidden"><HeartsBackground color={watchedData.heartColor as 'purple' | 'red'} /></div>}
                                         {opt.value === 'colored-stars' && <div className="w-full h-full bg-black relative overflow-hidden"><ColoredStarsBackground /></div>}
                                         {opt.value === 'mystic-fog' && <div className="w-full h-full bg-black relative overflow-hidden">
-                                            <div className="mystic-fog mystic-fog-1"></div>
-                                            <div className="mystic-fog mystic-fog-2"></div>
+                                            <div className="mystic-fog-1"></div>
+                                            <div className="mystic-fog-2"></div>
                                         </div>}
                                         {opt.value === 'none' && <div className="w-full h-full bg-card"></div>}
                                   </div>

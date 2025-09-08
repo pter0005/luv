@@ -15,7 +15,8 @@ export function AnimatedBackground({ fixed = false }: AnimatedBackgroundProps) {
       fixed ? "fixed" : "absolute"
     )}>
        <div className="absolute inset-0 w-full h-full bg-gradient-to-t from-background via-background/80 to-transparent"></div>
-       <div className="mystic-fog"></div>
+       <div className="mystic-fog-1"></div>
+       <div className="mystic-fog-2"></div>
     </div>
   );
 }
