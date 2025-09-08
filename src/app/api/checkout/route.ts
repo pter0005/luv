@@ -32,7 +32,10 @@ export async function POST(req: NextRequest) {
         
         const preference = new Preference(client);
 
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `https://${req.headers.get('host')}`;
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+        if (!baseUrl) {
+            throw new Error("NEXT_PUBLIC_BASE_URL is not set in environment variables.");
+        }
 
         const result = await preference.create({
             body: {
