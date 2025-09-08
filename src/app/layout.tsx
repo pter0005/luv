@@ -9,6 +9,9 @@ import { Footer } from '@/components/app/Footer';
 export const metadata: Metadata = {
   title: 'Luv ©',
   description: 'Declare seu amor de forma única',
+  icons: {
+    icon: 'https://i.imgur.com/EMwsRdt.png',
+  },
 };
 
 export default function RootLayout({
@@ -47,5 +50,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-    
