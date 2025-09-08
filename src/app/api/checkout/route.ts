@@ -15,6 +15,11 @@ const client = new MercadoPagoConfig({
     options: { timeout: 5000, idempotencyKey: 'abc' }
 });
 
+// Helper function to check if the access token is for a test user
+const isTestUser = (token: string | undefined): boolean => {
+    return !!token && token.includes('TEST-');
+}
+
 export async function POST(req: NextRequest) {
     if (!MERCADO_PAGO_ACCESS_TOKEN) {
         return NextResponse.json({ error: 'Mercado Pago credentials not configured.' }, { status: 500 });
@@ -30,6 +35,11 @@ export async function POST(req: NextRequest) {
         
         const preference = new Preference(client);
 
+        // For test users, Mercado Pago requires a specific test user email.
+        const payerEmail = isTestUser(MERCADO_PAGO_ACCESS_TOKEN) 
+            ? 'test_user_12345678@testuser.com' 
+            : email;
+
         const result = await preference.create({
             body: {
                 items: [
@@ -42,7 +52,7 @@ export async function POST(req: NextRequest) {
                     },
                 ],
                 payer: {
-                    email: email,
+                    email: payerEmail,
                 },
                 back_urls: {
                     success: `${process.env.NEXT_PUBLIC_BASE_URL}/criar/sucesso/${pageId}?status=approved`,
@@ -59,9 +69,11 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({ id: result.id, init_point: result.init_point });
 
-    } catch (error) {
+    } catch (error: any) {
         console.error('Mercado Pago API error:', error);
-        return NextResponse.json({ error: 'Failed to create payment preference' }, { status: 500 });
+        // Return the actual error message from Mercado Pago API if available
+        const errorMessage = error?.cause?.message || 'Failed to create payment preference';
+        return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
 }
 
