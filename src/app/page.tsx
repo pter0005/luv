@@ -44,8 +44,8 @@ export default function CreatorPage() {
       icon: Calendar,
       title: "Contador de tempo",
       description: "Mostre há quanto tempo vocês estão juntos com um contador em tempo real.",
-      image: "https://picsum.photos/800/600?random=21",
-      imageHint: "time counter"
+      image: "https://picsum.photos/800/600?random=28",
+      imageHint: "love clock"
     },
     {
       icon: ImageIcon,
