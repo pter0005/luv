@@ -30,11 +30,13 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-export async function savePageData(data: Omit<FormData, 'status'>): Promise<string> {
+export async function savePageData(data: Omit<FormData, 'status'> & { plan: 'essencial' | 'orcamento' }): Promise<string> {
   try {
+    const status = data.plan === 'essencial' ? 'pending_payment' : 'pending_quote';
+    
     const pageData = {
       ...data,
-      status: 'pending_payment',
+      status: status,
       createdAt: new Date(),
     };
     const docRef = await addDoc(collection(db, 'pages'), pageData);

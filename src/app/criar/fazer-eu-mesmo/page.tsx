@@ -34,6 +34,8 @@ import {
   Pause,
   Eye,
   Puzzle,
+  FileText,
+  Gem,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Editor } from "@/components/ui/editor";
@@ -89,7 +91,7 @@ const formSchema = z.object({
   contactName: z.string().min(1, "O nome é obrigatório."),
   contactEmail: z.string().email("Email inválido.").min(1, "O e-mail é obrigatório."),
   contactPhone: z.string().min(1, "O telefone é obrigatório."),
-  plan: z.string().optional(),
+  plan: z.string().min(1, "Você deve escolher uma opção."),
 });
 
 export type FormData = z.infer<typeof formSchema>;
@@ -119,7 +121,7 @@ export default function CreatorStudioPage() {
   const { toast } = useToast();
   const router = useRouter();
   const [currentStep, setCurrentStep] = React.useState(1);
-  const totalSteps = 8; // Reduced from 9 to 8
+  const totalSteps = 8;
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const puzzleFileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -158,7 +160,7 @@ export default function CreatorStudioPage() {
       contactName: "",
       contactEmail: "",
       contactPhone: "",
-      plan: "essencial", // Default plan
+      plan: "essencial",
     },
   });
 
@@ -254,13 +256,21 @@ export default function CreatorStudioPage() {
   async function onSubmit(data: FormData) {
     setIsSubmitting(true);
     try {
-        const finalData = { ...data, plan: 'essencial' }; // Ensure plan is set
-        const pageId = await savePageData(finalData);
-        toast({
-          title: "Página salva com sucesso!",
-          description: "Você será redirecionado para a tela de pagamento.",
-        });
-        router.push(`/criar/sucesso/${pageId}`);
+        const pageId = await savePageData(data as any);
+        
+        if (data.plan === 'essencial') {
+            toast({
+              title: "Página salva com sucesso!",
+              description: "Você será redirecionado para a tela de pagamento.",
+            });
+            router.push(`/criar/sucesso/${pageId}`);
+        } else {
+             toast({
+              title: "Solicitação enviada!",
+              description: "Seu pedido de orçamento foi enviado com sucesso.",
+            });
+            router.push(`/criar/sucesso-orcamento`);
+        }
     } catch (error) {
       console.error("Failed to process page:", error);
       toast({
@@ -309,9 +319,9 @@ export default function CreatorStudioPage() {
       description: "Escolha como a pessoa irá descobrir o conteúdo da página.",
     },
     {
-      name: "contactName" as const, // Combined contact fields into one step
-      title: "Informações de Contato e Finalização",
-      description: "Preencha para receber o link e finalize a criação para ir ao pagamento.",
+      name: "contactName" as const,
+      title: "Finalização",
+      description: "Preencha seus dados e escolha o tipo de criação.",
     },
   ];
 
@@ -320,7 +330,7 @@ export default function CreatorStudioPage() {
     let fieldsToValidate: (keyof FormData)[] = [currentField];
     
     if (currentField === 'contactName') {
-        fieldsToValidate = ['contactName', 'contactEmail', 'contactPhone'];
+        fieldsToValidate = ['contactName', 'contactEmail', 'contactPhone', 'plan'];
     }
 
     if (currentField === 'musicChoice') {
@@ -357,7 +367,7 @@ export default function CreatorStudioPage() {
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+      setCurrentStep(currentStep + 1);
     }
   };
 
@@ -903,7 +913,7 @@ export default function CreatorStudioPage() {
                     />
                 )}
                 {currentStep === 8 && (
-                  <div className="space-y-4">
+                   <div className="space-y-4">
                       <FormField
                           control={form.control}
                           name="contactName"
@@ -943,6 +953,42 @@ export default function CreatorStudioPage() {
                               </FormItem>
                           )}
                       />
+                       <FormField
+                          control={form.control}
+                          name="plan"
+                          render={({ field }) => (
+                              <FormItem className="space-y-3">
+                              <FormLabel className="font-semibold">Qual o próximo passo?</FormLabel>
+                              <FormControl>
+                                  <RadioGroup
+                                      onValueChange={field.onChange}
+                                      defaultValue={field.value}
+                                      className="grid grid-cols-1 gap-4"
+                                  >
+                                      <RadioGroupItem value="essencial" id="plan-essencial">
+                                        <div className="flex items-start gap-4">
+                                            <Gem className="w-6 h-6 text-primary mt-1" />
+                                            <div>
+                                                <h3 className="font-bold">Plano Essencial - R$14,99</h3>
+                                                <p className="text-sm text-muted-foreground">Finalize com os recursos que você escolheu e pague para ativar a página.</p>
+                                            </div>
+                                        </div>
+                                      </RadioGroupItem>
+                                      <RadioGroupItem value="orcamento" id="plan-orcamento">
+                                          <div className="flex items-start gap-4">
+                                            <FileText className="w-6 h-6 text-primary mt-1" />
+                                            <div>
+                                                <h3 className="font-bold">Projeto Sob Medida</h3>
+                                                <p className="text-sm text-muted-foreground">Envie sua criação para nós. Entraremos em contato para um orçamento personalizado.</p>
+                                            </div>
+                                        </div>
+                                      </RadioGroupItem>
+                                  </RadioGroup>
+                              </FormControl>
+                              <FormMessage />
+                              </FormItem>
+                          )}
+                      />
                   </div>
                 )}
               </div>
@@ -961,7 +1007,7 @@ export default function CreatorStudioPage() {
                     {isSubmitting ? (
                         <Loader className="mr-2 h-4 w-4 animate-spin"/>
                     ) : (
-                        "Finalizar e Pagar"
+                        watchedData.plan === 'orcamento' ? 'Solicitar Orçamento' : 'Finalizar e Pagar'
                     )}
                   </Button>
                 )}
@@ -995,5 +1041,3 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
-
-    
