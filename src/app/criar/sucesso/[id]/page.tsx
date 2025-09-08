@@ -26,8 +26,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     const status = searchParams.get('status');
-    setPaymentStatus(status);
-
+    
     const checkPageData = async () => {
         setLoading(true);
         try {
@@ -37,13 +36,22 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                 // If status is already paid in DB, show success
                 if (data.status === 'paid') {
                     setPaymentStatus('approved');
-                } else if (status === 'approved') {
+                } else if (status === 'approved' && data.status !== 'paid') {
                     // If redirected with approved but DB is not updated, try to confirm it now.
-                    // This handles cases where the webhook is slow.
+                    // This handles cases where the webhook is slow or fails.
                     const result = await confirmPaymentAndSendEmail(params.id);
                     if (result.success) {
                         setPaymentStatus('approved');
+                         // Refetch data to be sure
+                        const updatedData = await getPageData(params.id);
+                        setPageData(updatedData);
+                    } else {
+                        // Keep payment status from URL but show an error that confirmation failed
+                        setPaymentStatus(status);
+                        toast({ variant: "destructive", title: "Erro de Confirmação", description: "O pagamento foi aprovado, mas houve um erro ao ativar a página. Tente recarregar."});
                     }
+                } else {
+                  setPaymentStatus(status);
                 }
             } else {
                 toast({ variant: "destructive", title: "Página não encontrada" });
@@ -104,12 +112,10 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
         if (result.success) {
             toast({ 
                 title: "Pagamento de Teste Aprovado!", 
-                description: `A página agora está ativa e pronta para ser compartilhada.`
+                description: `O e-mail de teste foi enviado para ${pageData?.contactEmail}. Verifique sua caixa de entrada.`
             });
-            // Force a reload of the page data to reflect the new paid status
-            setPaymentStatus('approved');
         } else {
-            throw new Error(result.message || "Falha ao simular pagamento.");
+            throw new Error(result.message || "Falha ao simular pagamento e enviar e-mail.");
         }
     } catch (error: any) {
         toast({
@@ -239,8 +245,20 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                 </h1>
                 <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
                 Ocorreu um problema ao processar seu pagamento. Por favor, tente novamente ou use outra forma de pagamento.
+                Se o problema persistir, entre em contato conosco em <a href="mailto:criarcomluv@gmail.com" className="underline font-semibold hover:text-primary">criarcomluv@gmail.com</a>.
                 </p>
-                {/* Render payment card again */}
+                <Button 
+                    size="lg" 
+                    onClick={handleCheckout}
+                    disabled={isProcessingPayment || !pageData}
+                >
+                    {isProcessingPayment ? 'Processando...' : (
+                        <>
+                            <Wallet className="mr-2 h-5 w-5" />
+                            Tentar Novamente - R$ {FIXED_PRICE.toFixed(2).replace('.', ',')}
+                        </>
+                    )}
+                </Button>
             </>
         )
     }
@@ -316,7 +334,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                         {isTesting ? 'Testando...' : (
                             <>
                                 <TestTube2 className="mr-2 h-4 w-4" />
-                                Simular Pagamento e Ativar Página
+                                Simular Pagamento e Enviar E-mail de Teste
                             </>
                         )}
                     </Button>
@@ -340,5 +358,3 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
-
-    
