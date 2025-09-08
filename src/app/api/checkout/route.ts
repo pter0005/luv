@@ -17,7 +17,7 @@ const client = new MercadoPagoConfig({
 
 // Helper function to check if the access token is for a test user
 const isTestUser = (token: string | undefined): boolean => {
-    return !!token && token.includes('TEST-');
+    return !!token && token.startsWith('APP_USR-');
 }
 
 export async function POST(req: NextRequest) {
