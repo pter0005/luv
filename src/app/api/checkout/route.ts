@@ -6,6 +6,7 @@ import { config } from 'dotenv';
 config(); // Carrega as variáveis de ambiente do arquivo .env
 
 const MERCADO_PAGO_ACCESS_TOKEN = process.env.MERCADO_PAGO_ACCESS_TOKEN;
+const FIXED_PRICE = 14.99;
 
 if (!MERCADO_PAGO_ACCESS_TOKEN) {
     console.warn("MERCADO_PAGO_ACCESS_TOKEN is not set in environment variables.");
@@ -23,9 +24,9 @@ export async function POST(req: NextRequest) {
 
     try {
         const body = await req.json();
-        const { pageId, title, price, email } = body;
+        const { pageId, title, email } = body;
 
-        if (!pageId || !title || !price || !email) {
+        if (!pageId || !title || !email) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
         
@@ -40,7 +41,7 @@ export async function POST(req: NextRequest) {
                         id: pageId,
                         title: `Página Personalizada: ${title}`,
                         quantity: 1,
-                        unit_price: price,
+                        unit_price: FIXED_PRICE,
                         description: 'Acesso à página personalizada Luv.',
                     },
                 ],

@@ -2,11 +2,11 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { getPageData } from '@/actions/page';
+import { confirmPaymentAndSendEmail, getPageData } from '@/actions/page';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, CheckCircle, Clock, Copy, Download, Share2, Wallet } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Clock, Copy, Download, Share2, Wallet, TestTube2 } from 'lucide-react';
 import Link from 'next/link';
 import { useQRCode } from 'next-qrcode';
 import { useToast } from '@/hooks/use-toast';
@@ -19,6 +19,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(true);
   const [isPaid, setIsPaid] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [isTesting, setIsTesting] = useState(false);
   const { Canvas } = useQRCode();
 
   useEffect(() => {
@@ -57,7 +58,6 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
         body: JSON.stringify({
           pageId: params.id,
           title: pageData.title,
-          price: FIXED_PRICE,
           email: pageData.contactEmail,
         }),
       });
@@ -83,6 +83,27 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
       setIsProcessingPayment(false);
     }
   };
+
+  const handleTestPayment = async () => {
+    setIsTesting(true);
+    try {
+        const result = await confirmPaymentAndSendEmail(params.id);
+        if (result.success) {
+            toast({ title: "Teste bem-sucedido!", description: "O e-mail de confirmação foi enviado." });
+            setIsPaid(true); // Atualiza a UI para refletir o status de pago
+        } else {
+            throw new Error(result.message || "Falha ao simular pagamento.");
+        }
+    } catch (error: any) {
+        toast({
+            variant: "destructive",
+            title: "Erro no Teste",
+            description: error.message || "Não foi possível simular o pagamento.",
+        });
+    } finally {
+        setIsTesting(false);
+    }
+  }
 
 
   const pageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/p/${params.id}`;
@@ -210,7 +231,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                         Acesso vitalício à sua página personalizada.
                     </CardDescription>
                 </CardHeader>
-                <CardContent className="text-center">
+                <CardContent className="space-y-4">
                     <Button 
                         size="lg" 
                         className="w-full" 
@@ -230,6 +251,25 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                      <p className="text-xs text-muted-foreground mt-1">
                         Pague com Cartão de Crédito, Débito ou Pix. Não é necessário ter conta.
                      </p>
+                     <div className="relative flex py-5 items-center">
+                        <div className="flex-grow border-t border-border"></div>
+                        <span className="flex-shrink mx-4 text-muted-foreground text-xs">PARA TESTES</span>
+                        <div className="flex-grow border-t border-border"></div>
+                    </div>
+                     <Button 
+                        size="sm" 
+                        variant="secondary" 
+                        className="w-full" 
+                        onClick={handleTestPayment}
+                        disabled={isTesting || !pageData}
+                    >
+                        {isTesting ? 'Testando...' : (
+                            <>
+                                <TestTube2 className="mr-2 h-4 w-4" />
+                                Simular Pagamento e Enviar E-mail de Teste
+                            </>
+                        )}
+                    </Button>
                 </CardContent>
             </Card>
         </>

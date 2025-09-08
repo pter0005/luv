@@ -21,16 +21,20 @@ const formSchema = z.object({
   backgroundAnimation: z.string().optional(),
   heartColor: z.string().optional(),
   loveLightColor: z.string().optional(),
-  contactName: z.string().optional(),
-  contactEmail: z.string().email("Email inválido.").optional().or(z.literal('')),
-  contactPhone: z.string().optional(),
-  plan: z.string().optional(),
-  status: z.string().optional(),
+  unlockType: z.string().optional(),
+  puzzleImage: z.string().optional(),
+  puzzleTitle: z.string().optional(),
+  puzzleDescription: z.string().optional(),
+  contactName: z.string().min(1, "O nome é obrigatório."),
+  contactEmail: z.string().email("Email inválido.").min(1, "O e-mail é obrigatório."),
+  contactPhone: z.string().min(1, "O telefone é obrigatório."),
+  plan: z.string().min(1, "Você deve escolher uma opção."),
 });
+
 
 type FormData = z.infer<typeof formSchema>;
 
-export async function savePageData(data: Omit<FormData, 'status'> & { plan: 'essencial' | 'orcamento' }): Promise<string> {
+export async function savePageData(data: FormData): Promise<string> {
   try {
     const status = data.plan === 'essencial' ? 'pending_payment' : 'pending_quote';
     
@@ -62,14 +66,22 @@ export async function confirmPaymentAndSendEmail(pageId: string) {
 
         if (pageData.status === 'paid') {
             console.log(`Payment for page ${pageId} has already been confirmed.`);
+            // Still try to send email in case it failed before
+            if (pageData.contactEmail) {
+                 await prepareAndSendEmail({
+                    name: pageData.contactName || 'Criador(a)',
+                    email: pageData.contactEmail,
+                    pageId: pageId,
+                    pageTitle: pageData.title!,
+                });
+                return { success: true, message: 'Already paid, email sent again.' };
+            }
             return { success: true, message: 'Already paid.' };
         }
         
-        // Update status to 'paid'
         await updateDoc(pageDocRef, { status: 'paid' });
         console.log(`Page ${pageId} status updated to paid.`);
 
-        // Send the email if an email address is provided
         if (pageData.contactEmail) {
             console.log(`Attempting to send email for page ${pageId} to ${pageData.contactEmail}`);
             await prepareAndSendEmail({
@@ -78,10 +90,11 @@ export async function confirmPaymentAndSendEmail(pageId: string) {
                 pageId: pageId,
                 pageTitle: pageData.title!,
             });
-            console.log('Email data added to Firestore queue for sending to:', pageData.contactEmail);
-             return { success: true };
+            console.log('Email process initiated for:', pageData.contactEmail);
+            return { success: true };
+        } else {
+             return { success: false, message: 'No contact email found.' };
         }
-         return { success: false, message: 'No contact email found.' };
 
     } catch (error) {
         console.error('Error confirming payment and sending email:', error);
@@ -114,3 +127,4 @@ export async function getPageData(id: string) {
         throw new Error("Failed to retrieve page data.");
     }
 }
+
