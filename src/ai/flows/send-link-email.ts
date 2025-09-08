@@ -56,9 +56,8 @@ const sendLinkEmailFlow = ai.defineFlow(
 
     try {
       await resend.emails.send({
-        // For testing, Resend allows sending from this unverified domain.
-        // For production, replace with your own verified domain, e.g., 'Luv <contato@seu-dominio.com>'
-        from: 'Luv <onboarding@resend.dev>',
+        // For production, use your own verified domain, e.g., 'Luv <contato@seu-dominio.com>'
+        from: 'Luv <contato@criarcomluv.site>',
         to: [email],
         subject: `Sua página especial "${pageTitle}" está pronta!`,
         html: `
