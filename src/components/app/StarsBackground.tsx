@@ -9,14 +9,8 @@ interface Star {
   style: React.CSSProperties;
 }
 
-interface Meteor {
-  id: number;
-  style: React.CSSProperties;
-}
-
 export function StarsBackground() {
   const [stars, setStars] = useState<Star[]>([]);
-  const [meteors, setMeteors] = useState<Meteor[]>([]);
 
   useEffect(() => {
     const generateStars = () => {
@@ -37,21 +31,7 @@ export function StarsBackground() {
       setStars(newStars);
     };
 
-    const generateMeteors = () => {
-        const newMeteors: Meteor[] = Array.from({ length: 7 }).map((_, i) => ({
-            id: i,
-            style: {
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                animationDuration: `${Math.random() * 5 + 5}s`, // 5s to 10s
-                animationDelay: `${Math.random() * 10 + 2}s`, // 2s to 12s
-            }
-        }));
-        setMeteors(newMeteors);
-    }
-
     generateStars();
-    generateMeteors();
   }, []);
 
   return (
@@ -64,14 +44,8 @@ export function StarsBackground() {
             style={star.style}
           />
         ))}
-         {meteors.map(meteor => (
-          <div
-            key={meteor.id}
-            className="meteor"
-            style={meteor.style}
-          />
-        ))}
       </div>
     </div>
   );
 }
+

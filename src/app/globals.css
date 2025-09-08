@@ -150,33 +150,6 @@
     will-change: opacity;
 }
 
-/* Shooting Star Animation */
-@keyframes meteor-shower {
-  0% {
-    transform: rotate(215deg) translateX(50vw);
-    opacity: 0;
-  }
-  70% {
-    opacity: 1;
-  }
-  100% {
-    transform: rotate(215deg) translateX(-50vw);
-    opacity: 0;
-  }
-}
-
-.meteor {
-  position: absolute;
-  height: 2px;
-  width: 150px;
-  background: linear-gradient(to right, white, transparent);
-  border-radius: 9999px;
-  animation-name: meteor-shower;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-}
-
-
 /* Aurora animation */
 @keyframes aurora-glow {
     0% {
