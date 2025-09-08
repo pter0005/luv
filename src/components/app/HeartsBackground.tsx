@@ -1,8 +1,6 @@
-
 "use client";
 
 import React from 'react';
-import { Heart } from 'lucide-react';
 
 interface HeartStyle {
   id: number;
