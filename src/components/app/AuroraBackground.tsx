@@ -1,29 +1,14 @@
-
 "use client";
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { cn } from "@/lib/utils";
 
-const AuroraBackground = () => {
-  const [items, setItems] = useState<React.CSSProperties[]>([]);
-
-  useEffect(() => {
-    const newItems: React.CSSProperties[] = [];
-    for (let i = 0; i < 40; i++) {
-      newItems.push({
-        transform: `rotate(${Math.random() * 360}deg) translate(0, -${Math.random() * 100}vh)`,
-        animationDuration: `${Math.random() * 3 + 2}s`,
-        animationDelay: `${Math.random() * 3}s`,
-      });
-    }
-    setItems(newItems);
-  }, []);
+export function AuroraBackground() {
 
   return (
-    <div className="aurora">
-      {items.map((style, i) => (
-        <div key={i} className="aurora__item" style={style} />
-      ))}
+    <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden -z-10 aurora">
+      <div className="aurora__item"></div>
+      <div className="aurora__item"></div>
+      <div className="aurora__item"></div>
     </div>
   );
-};
-
-export { AuroraBackground };
+}

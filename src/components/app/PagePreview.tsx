@@ -24,6 +24,10 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { HeartsBackground } from "./HeartsBackground";
 import { MeteorsBackground } from "./MeteorsBackground";
+import { AuroraBackground } from "./AuroraBackground";
+import { CloudsBackground } from "./CloudsBackground";
+import { VortexBackground } from "./VortexBackground";
+
 
 // Register Swiper modules
 SwiperCore.use([Autoplay, EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination, Navigation]);
@@ -322,6 +326,12 @@ const DynamicBackground = ({ animation, heartColor }: { animation?: string, hear
             return <HeartsBackground color={heartColor} />;
         case 'stars':
             return <MeteorsBackground />;
+        case 'vortex':
+            return <VortexBackground />;
+        case 'aurora':
+            return <AuroraBackground />;
+        case 'clouds':
+            return <CloudsBackground />;
         default:
             return null;
     }

@@ -182,3 +182,103 @@
     box-shadow: 0 0 5px 0.5px #fff;
     animation: meteor-fall 5s linear infinite;
 }
+
+/* Vortex animation */
+@keyframes vortex-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+.vortex {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+.vortex-item {
+    position: absolute;
+    width: 2px;
+    height: 250px;
+    background: linear-gradient(to top, transparent, hsl(var(--primary) / 0.8));
+    animation: vortex-spin 10s linear infinite, vortex-fade 2s ease-in-out infinite alternate;
+    transform-origin: 0 0;
+    transform: translate(var(--tx), var(--ty));
+}
+@keyframes vortex-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+
+/* Aurora animation */
+@keyframes aurora-glow {
+    0% {
+        transform: translate(var(--x-start), var(--y-start)) scale(1);
+        opacity: 0.3;
+    }
+    50% {
+        transform: translate(var(--x-end), var(--y-end)) scale(1.5);
+        opacity: 0.1;
+    }
+    100% {
+        transform: translate(var(--x-start), var(--y-start)) scale(1);
+        opacity: 0.3;
+    }
+}
+.aurora {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+.aurora__item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40vh;
+    height: 40vh;
+    background: radial-gradient(circle, hsl(var(--primary)) 0%, hsl(var(--accent)) 70%, transparent 100%);
+    border-radius: 50%;
+    filter: blur(80px);
+    mix-blend-mode: screen;
+    animation: aurora-glow 15s ease-in-out infinite alternate;
+    --x-start: 10vw;
+    --y-start: 10vh;
+    --x-end: 80vw;
+    --y-end: 70vh;
+}
+
+.aurora__item:nth-child(2) {
+    --x-start: 80vw;
+    --y-start: 20vh;
+    --x-end: 20vw;
+    --y-end: 80vh;
+    animation-delay: 3s;
+    animation-duration: 18s;
+}
+
+.aurora__item:nth-child(3) {
+    --x-start: 30vw;
+    --y-start: 70vh;
+    --x-end: 70vw;
+    --y-end: 10vh;
+    animation-delay: 6s;
+    animation-duration: 12s;
+}
+
+/* Clouds Animation */
+@keyframes move-clouds {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+.clouds {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 100%;
+    background: url('https://i.imgur.com/eB3t5O5.png') repeat-x;
+    background-size: contain;
+    animation: move-clouds 60s linear infinite;
+    opacity: 0.2;
+    z-index: 1;
+}
+

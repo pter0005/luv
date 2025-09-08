@@ -223,7 +223,7 @@ export default function CreatorStudioPage() {
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep + 1);
+      setCurrentStep(currentStep - 1);
     }
   };
 
@@ -264,8 +264,11 @@ export default function CreatorStudioPage() {
   
   const animationOptions = [
     { value: 'none', label: 'Nenhuma', video: null, pro: false },
-    { value: 'hearts', label: 'Chuva de corações', video: 'https://i.imgur.com/3Yw1h2Z.mp4', pro: false },
+    { value: 'hearts', label: 'Chuva de Corações', video: 'https://i.imgur.com/3Yw1h2Z.mp4', pro: false },
     { value: 'stars', label: 'Céu Estrelado', video: 'https://i.imgur.com/kE4e2s9.mp4', pro: false },
+    { value: 'vortex', label: 'Nebulosa Roxa', video: 'https://i.imgur.com/3Yw1h2Z.mp4', pro: true },
+    { value: 'aurora', label: 'Aurora Boreal', video: 'https://i.imgur.com/3Yw1h2Z.mp4', pro: true },
+    { value: 'clouds', label: 'Nuvens', video: 'https://i.imgur.com/3Yw1h2Z.mp4', pro: true },
   ];
 
 
@@ -692,7 +695,7 @@ export default function CreatorStudioPage() {
 
               </div>
               <div className="flex items-center gap-4 mt-8">
-                <Button type="button" variant="secondary" onClick={handlePrevStep} disabled={currentStep === 1} className="w-full">
+                <Button type="button" variant="secondary" onClick={handlePrevStep} disabled={currentStep === 1}>
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Voltar
                 </Button>
@@ -711,8 +714,10 @@ export default function CreatorStudioPage() {
       </div>
 
       {/* Preview Section */}
-      <div className="hidden lg:flex sticky top-0 items-center justify-center w-full h-screen p-8">
-         <div className="absolute inset-0 w-full h-full -z-10 overflow-hidden pointer-events-none purple-fog"></div>
+      <div className="hidden lg:flex sticky top-0 items-center justify-center w-full h-screen p-8 bg-background">
+         <div className="absolute inset-0 w-full h-full -z-10 overflow-hidden pointer-events-none">
+            <div className="purple-fog"></div>
+         </div>
           <div className="relative w-full max-w-lg h-full group/preview">
               <div className="relative z-10 w-full h-full bg-zinc-950 rounded-2xl flex flex-col shadow-2xl">
                   <div className="bg-zinc-800 rounded-t-lg p-2 flex items-center gap-1.5 border-b border-zinc-700">
