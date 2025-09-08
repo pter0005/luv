@@ -25,60 +25,15 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navLinks = [
-    { href: "#recursos", label: "Recursos" },
-    { href: "#avaliacoes", label: "Avaliações" },
-  ];
-
   return (
     <header className={cn(
       "sticky top-0 left-0 w-full z-50 transition-all duration-300",
       isScrolled ? "bg-background/80 backdrop-blur-lg border-b border-border" : "bg-transparent"
     )}>
-      <div className="container flex items-center justify-between h-24">
+      <div className="container flex items-center justify-center h-24">
         <Link href="/" className="flex items-center gap-2">
           <Image src="https://i.imgur.com/EMwsRdt.png" alt="Luv Logo" width={112} height={112} className="w-24 h-24 md:w-28 md:h-28" />
         </Link>
-        <nav className="hidden md:flex items-center space-x-8">
-          {navLinks.map(link => (
-            <Link key={link.href} href={link.href} className="font-medium text-muted-foreground hover:text-foreground transition-colors">
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-        <div className="hidden md:flex items-center space-x-4">
-          <Button variant="ghost">Entrar</Button>
-          <Link href="/criar">
-            <Button>Criar Página</Button>
-          </Link>
-        </div>
-        <div className="md:hidden">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu className="h-6 w-6" />
-                <span className="sr-only">Menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right">
-              <nav className="flex flex-col space-y-2 mt-8">
-                {navLinks.map(link => (
-                  <SheetClose asChild key={link.href}>
-                    <Link href={link.href} className="text-lg font-medium hover:text-primary transition-colors p-2 rounded-md">
-                      {link.label}
-                    </Link>
-                  </SheetClose>
-                ))}
-              </nav>
-              <div className="mt-8 pt-8 border-t border-border space-y-4">
-                 <Button variant="ghost" className="w-full">Entrar</Button>
-                 <Link href="/criar" className="w-full">
-                    <Button className="w-full">Criar Página</Button>
-                 </Link>
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
       </div>
     </header>
   );
