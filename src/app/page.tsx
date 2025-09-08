@@ -79,10 +79,10 @@ export default function CreatorPage() {
 
   return (
     <>
-      <AnimatedBackground fixed />
-      <HeartsBackground color="purple" />
       {/* Hero Section */}
-      <section className="relative section-padding flex items-center min-h-[calc(100vh-80px)]">
+      <section className="relative section-padding flex items-center min-h-[calc(100vh-80px)] overflow-hidden">
+        <AnimatedBackground />
+        <HeartsBackground color="purple" />
         <div className="container relative z-10 grid lg:grid-cols-2 gap-12 items-center">
           <div className="text-center lg:text-left">
              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground font-display leading-tight">
@@ -138,19 +138,22 @@ export default function CreatorPage() {
                </Card>
             ))}
           </div>
-           <Card className="mt-12 bg-gradient-to-r from-primary/20 to-accent/20 border-primary/30 p-6 md:p-8 text-center">
-            <CardHeader className="p-0 mb-4 items-center">
-                <div className="p-3 bg-background rounded-full mb-3">
-                    <PlayCircle className="w-8 h-8 md:w-10 md:h-10 text-primary" />
-                </div>
-                <CardTitle className="text-2xl md:text-3xl">Veja a Revelação em Ação</CardTitle>
-                <CardDescription className="text-base md:text-lg text-foreground/80 mt-2">Descubra como funciona a experiência interativa que torna sua declaração inesquecível.</CardDescription>
-            </CardHeader>
-            <CardContent className="p-0">
-                <Link href="/como-funciona">
-                    <Button size="lg" variant="outline" className="bg-background/80 hover:bg-background">Como funciona?</Button>
-                </Link>
-            </CardContent>
+           <Card className="mt-12 bg-gradient-to-r from-primary/20 to-accent/20 border-primary/30 p-6 md:p-8 text-center relative overflow-hidden">
+             <AnimatedBackground />
+            <div className="relative z-10">
+              <CardHeader className="p-0 mb-4 items-center">
+                  <div className="p-3 bg-background rounded-full mb-3">
+                      <PlayCircle className="w-8 h-8 md:w-10 md:h-10 text-primary" />
+                  </div>
+                  <CardTitle className="text-2xl md:text-3xl">Veja a Revelação em Ação</CardTitle>
+                  <CardDescription className="text-base md:text-lg text-foreground/80 mt-2">Descubra como funciona a experiência interativa que torna sua declaração inesquecível.</CardDescription>
+              </CardHeader>
+              <CardContent className="p-0">
+                  <Link href="/como-funciona">
+                      <Button size="lg" variant="outline" className="bg-background/80 hover:bg-background">Como funciona?</Button>
+                  </Link>
+              </CardContent>
+            </div>
            </Card>
         </div>
       </section>
@@ -186,8 +189,9 @@ export default function CreatorPage() {
       </section>
 
       {/* Final CTA */}
-      <section className="section-padding bg-card/50">
-         <div className="container text-center">
+      <section className="section-padding bg-card/50 relative overflow-hidden">
+        <AnimatedBackground />
+        <div className="container text-center relative z-10">
           <h2 className="text-4xl lg:text-5xl font-bold tracking-tighter mb-4 text-foreground font-display">
             Comece a sua <span className="gradient-text">obra de arte</span>
           </h2>
@@ -205,3 +209,5 @@ export default function CreatorPage() {
     </>
   );
 }
+
+    
