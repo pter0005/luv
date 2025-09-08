@@ -87,12 +87,17 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   const handleTestPayment = async () => {
     setIsTesting(true);
     try {
+        // This confirms payment and sends the email
         const result = await confirmPaymentAndSendEmail(params.id);
         if (result.success) {
-            toast({ title: "Teste bem-sucedido!", description: "O e-mail de confirmação foi enviado." });
-            setIsPaid(true); // Atualiza a UI para refletir o status de pago
+            toast({ 
+                title: "E-mail de teste enviado!", 
+                description: `Verifique a caixa de entrada de: ${pageData?.contactEmail}`
+            });
+            // We will NOT set isPaid to true here, to force the user to check the email
+            // This makes the test flow more realistic.
         } else {
-            throw new Error(result.message || "Falha ao simular pagamento.");
+            throw new Error(result.message || "Falha ao simular pagamento e enviar e-mail.");
         }
     } catch (error: any) {
         toast({
