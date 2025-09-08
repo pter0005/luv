@@ -1,0 +1,60 @@
+
+"use client";
+
+import { useEffect, useState } from 'react';
+import { getPageData } from '@/actions/page';
+import { PublicPage } from '@/components/app/PublicPage';
+import { Skeleton } from '@/components/ui/skeleton';
+
+export default function Page({ params }: { params: { id: string } }) {
+  const [pageData, setPageData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getPageData(params.id);
+        if (data) {
+          // Dates are stored as timestamps, so we need to convert them back to Date objects
+          if (data.startDate) {
+            data.startDate = data.startDate.toDate();
+          }
+          setPageData(data);
+        } else {
+          console.error("Page not found");
+        }
+      } catch (error) {
+        console.error("Failed to fetch page data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [params.id]);
+
+  if (loading) {
+    return (
+      <div className="w-full h-screen bg-black flex items-center justify-center p-8">
+        <div className="w-full max-w-md space-y-6">
+            <Skeleton className="h-64 w-full" />
+            <Skeleton className="h-12 w-3/4 mx-auto" />
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-40 w-full" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!pageData) {
+    return (
+      <div className="w-full h-screen bg-black flex flex-col items-center justify-center text-center p-4">
+        <h1 className="text-4xl font-bold text-white mb-4">Página Não Encontrada</h1>
+        <p className="text-muted-foreground">O link que você acessou pode estar quebrado ou a página pode ter sido removida.</p>
+      </div>
+    );
+  }
+
+  return <PublicPage data={pageData} />;
+}
+

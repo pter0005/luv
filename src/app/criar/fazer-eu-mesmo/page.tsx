@@ -51,6 +51,8 @@ import { HeartsBackground } from "@/components/app/HeartsBackground";
 import { StarsBackground } from "@/components/app/StarsBackground";
 import { ColoredStarsBackground } from "@/components/app/ColoredStarsBackground";
 import { VortexBackground } from "@/components/app/VortexBackground";
+import { savePageData } from "@/actions/page";
+import { useRouter } from "next/navigation";
 
 
 const formSchema = z.object({
@@ -74,10 +76,11 @@ const formSchema = z.object({
   plan: z.string().optional(),
 });
 
-type FormData = z.infer<typeof formSchema>;
+export type FormData = z.infer<typeof formSchema>;
 
 export default function CreatorStudioPage() {
   const { toast } = useToast();
+  const router = useRouter();
   const [currentStep, setCurrentStep] = React.useState(1);
   const totalSteps = 8;
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -86,6 +89,7 @@ export default function CreatorStudioPage() {
   const debouncedMusicSearchQuery = useDebounce(musicSearchQuery, 500);
   const [musicSearchResult, setMusicSearchResult] = React.useState<{ title: string; videoId: string } | null>(null);
   const [isSearchingMusic, setIsSearchingMusic] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   // Audio recording state
   const [isRecording, setIsRecording] = React.useState(false);
@@ -205,12 +209,24 @@ export default function CreatorStudioPage() {
   };
 
 
-  function onSubmit(data: FormData) {
-    console.log(data);
-    toast({
-      title: "Página Salva! (Simulação)",
-      description: "Seus dados foram enviados com sucesso.",
-    });
+  async function onSubmit(data: FormData) {
+    setIsSubmitting(true);
+    try {
+      const pageId = await savePageData(data);
+      toast({
+        title: "Página Salva com Sucesso!",
+        description: "Você será redirecionado em breve.",
+      });
+      router.push(`/criar/sucesso/${pageId}`);
+    } catch (error) {
+      console.error("Failed to save page data:", error);
+      toast({
+        variant: "destructive",
+        title: "Erro ao salvar",
+        description: "Não foi possível salvar sua página. Tente novamente.",
+      });
+      setIsSubmitting(false);
+    }
   }
 
   const steps = [
@@ -777,8 +793,7 @@ export default function CreatorStudioPage() {
                               <RadioGroupItem value="custom" id="plan-custom">
                                   <div className="font-bold">Sob Medida - Consulte</div>
                                   <div className="text-sm text-muted-foreground">Para ideias que transcendem. Crie algo único.</div>
-                              </RadioGroupItem>
-                          </RadioGroup>
+                              </RadioGrom up>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -798,7 +813,13 @@ export default function CreatorStudioPage() {
                     <ChevronRight className="ml-2 h-4 w-4" />
                   </Button>
                 ) : (
-                  <Button type="submit" size="lg" className="w-full">Salvar e Obter Link</Button>
+                  <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                        <Loader className="mr-2 h-4 w-4 animate-spin"/>
+                    ) : (
+                        "Salvar e Obter Link"
+                    )}
+                  </Button>
                 )}
               </div>
             </form>

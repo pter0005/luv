@@ -8,12 +8,10 @@ import * as z from "zod";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
-// Import Swiper React components
 import SwiperCore from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, EffectCoverflow, EffectFlip, EffectCards, EffectCube, Pagination, Navigation } from 'swiper/modules';
 
-// Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/autoplay';
 import 'swiper/css/effect-coverflow';
@@ -22,19 +20,18 @@ import 'swiper/css/effect-flip';
 import 'swiper/css/effect-cards';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+
 import { HeartsBackground } from "./HeartsBackground";
 import { StarsBackground } from "./StarsBackground";
 import { ColoredStarsBackground } from "./ColoredStarsBackground";
+import { VortexBackground } from "./VortexBackground";
 import { Button } from "../ui/button";
 import { Music, Pause, Play } from "lucide-react";
-import { VortexBackground } from "./VortexBackground";
 import { FormData } from "@/app/criar/fazer-eu-mesmo/page";
 
-
-// Register Swiper modules
 SwiperCore.use([Autoplay, EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination, Navigation]);
 
-interface PagePreviewProps {
+interface PublicPageProps {
   data: Partial<FormData>;
 }
 
@@ -52,7 +49,7 @@ const Countdown = ({ startDate, displayType }: { startDate?: Date; displayType?:
     if(!startDate) return;
     const interval = setInterval(() => {
       const now = new Date();
-      if (startDate.getTime() > now.getTime()) {
+       if (startDate.getTime() > now.getTime()) {
          setDuration({ years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 });
          return;
       }
@@ -142,7 +139,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
       delay: 3000,
       disableOnInteraction: false,
     },
-    navigation: false, // Ensure arrows are disabled
+    navigation: false,
     pagination: { clickable: true }
   };
   
@@ -331,9 +328,10 @@ const CustomAudioPlayer = ({ onTogglePlay, isPlaying, audioSrc }: { onTogglePlay
         }
     }, [isPlaying]);
 
-    React.useEffect(() => {
+     React.useEffect(() => {
       if (audioRef.current) {
           audioRef.current.src = audioSrc;
+          audioRef.current.load();
       }
     }, [audioSrc]);
 
@@ -357,7 +355,7 @@ const CustomAudioPlayer = ({ onTogglePlay, isPlaying, audioSrc }: { onTogglePlay
     );
 }
 
-export function PagePreview({ data }: PagePreviewProps) {
+export function PublicPage({ data }: PublicPageProps) {
   const [isPlayingCustomAudio, setIsPlayingCustomAudio] = React.useState(false);
   
   const hasCustomAudio = data.musicChoice === 'custom' && data.customAudio;
@@ -371,7 +369,7 @@ export function PagePreview({ data }: PagePreviewProps) {
   }, [data.customAudio]);
 
   return (
-    <div className="w-full h-full flex flex-col relative overflow-hidden bg-black">
+    <div className="w-full h-screen flex flex-col relative overflow-hidden bg-black">
         <MusicPlayer data={data} />
         <DynamicBackground 
             key={`${data.backgroundAnimation}-${data.heartColor}`} 
@@ -387,14 +385,14 @@ export function PagePreview({ data }: PagePreviewProps) {
         )}
 
         <div
-            className="flex-grow p-4 flex flex-col items-center justify-start text-center relative overflow-y-auto"
+            className="flex-grow p-4 flex flex-col items-center justify-center text-center relative overflow-y-auto"
         >
-            <div className="relative z-10 w-full">
+            <div className="relative z-10 w-full max-w-4xl mx-auto">
                 
                 <PhotoGallery photos={data.photos} displayType={data.photoDisplayType} />
 
                 <h1 
-                    className="text-4xl font-handwriting"
+                    className="text-5xl md:text-6xl font-handwriting"
                     style={{ color: data.titleColor || '#FFFFFF' }}
                 >
                     {data.title || "Seu Título Aqui"}
