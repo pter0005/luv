@@ -213,6 +213,10 @@ export default function CreatorStudioPage() {
     setIsSubmitting(true);
     try {
         const pageId = await savePageData(data);
+        toast({
+          title: "Página salva com sucesso!",
+          description: "Você será redirecionado para a tela de pagamento.",
+        });
         router.push(`/criar/sucesso/${pageId}`);
     } catch (error) {
       console.error("Failed to process page:", error);
@@ -847,5 +851,3 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
-
-    
