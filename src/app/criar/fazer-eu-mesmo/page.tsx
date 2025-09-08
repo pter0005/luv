@@ -50,7 +50,6 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { HeartsBackground } from "@/components/app/HeartsBackground";
 import { StarsBackground } from "@/components/app/StarsBackground";
 import { ColoredStarsBackground } from "@/components/app/ColoredStarsBackground";
-import { LoveLightsBackground } from "@/components/app/LoveLightsBackground";
 
 
 const formSchema = z.object({
@@ -67,7 +66,6 @@ const formSchema = z.object({
   customAudio: z.string().optional(),
   backgroundAnimation: z.string().optional(),
   heartColor: z.string().optional(),
-  loveLightColor: z.string().optional(),
   contactName: z.string().optional(),
   contactEmail: z.string().email("Email inválido.").optional().or(z.literal('')),
   contactPhone: z.string().optional(),
@@ -108,7 +106,6 @@ export default function CreatorStudioPage() {
       customAudio: "",
       backgroundAnimation: "none",
       heartColor: "purple",
-      loveLightColor: "purple",
       contactName: "",
       contactEmail: "",
       contactPhone: "",
@@ -333,7 +330,7 @@ export default function CreatorStudioPage() {
     { value: 'hearts', label: 'Chuva de Corações'},
     { value: 'stars', label: 'Céu Estrelado'},
     { value: 'colored-stars', label: 'Pontos Coloridos'},
-    { value: 'love-lights', label: 'Luzes do Amor'},
+    { value: 'mystic-fog', label: 'Névoa Mística'},
   ];
 
 
@@ -665,7 +662,10 @@ export default function CreatorStudioPage() {
                                         {opt.value === 'stars' && <div className="w-full h-full bg-black relative overflow-hidden"><StarsBackground/></div>}
                                         {opt.value === 'hearts' && <div className="w-full h-full bg-black relative overflow-hidden"><HeartsBackground color={watchedData.heartColor as 'purple' | 'red'} /></div>}
                                         {opt.value === 'colored-stars' && <div className="w-full h-full bg-black relative overflow-hidden"><ColoredStarsBackground /></div>}
-                                        {opt.value === 'love-lights' && <div className="w-full h-full bg-black relative overflow-hidden"><LoveLightsBackground color={watchedData.loveLightColor as 'purple' | 'white'}/></div>}
+                                        {opt.value === 'mystic-fog' && <div className="w-full h-full bg-black relative overflow-hidden">
+                                            <div className="mystic-fog mystic-fog-1"></div>
+                                            <div className="mystic-fog mystic-fog-2"></div>
+                                        </div>}
                                         {opt.value === 'none' && <div className="w-full h-full bg-card"></div>}
                                   </div>
                                   <div className="absolute inset-0 bg-black/40 group-hover/item:bg-black/20 transition-colors"></div>
@@ -696,29 +696,6 @@ export default function CreatorStudioPage() {
                                   >
                                       <RadioGroupItem value="purple" id="heart-purple">Roxo</RadioGroupItem>
                                       <RadioGroupItem value="red" id="heart-red">Vermelho</RadioGroupItem>
-                                  </RadioGroup>
-                              </FormControl>
-                              <FormMessage />
-                              </FormItem>
-                          )}
-                      />
-                    )}
-
-                     {watchedData.backgroundAnimation === 'love-lights' && (
-                       <FormField
-                          control={form.control}
-                          name="loveLightColor"
-                          render={({ field }) => (
-                              <FormItem className="space-y-3">
-                              <FormLabel className="font-semibold">Cor das Luzes</FormLabel>
-                              <FormControl>
-                                  <RadioGroup
-                                      onValueChange={field.onChange}
-                                      defaultValue={field.value}
-                                      className="grid grid-cols-2 gap-4"
-                                  >
-                                      <RadioGroupItem value="purple" id="light-purple">Luzes Roxas</RadioGroupItem>
-                                      <RadioGroupItem value="white" id="light-white">Luzes Brancas</RadioGroupItem>
                                   </RadioGroup>
                               </FormControl>
                               <FormMessage />

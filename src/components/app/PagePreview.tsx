@@ -27,7 +27,6 @@ import { StarsBackground } from "./StarsBackground";
 import { ColoredStarsBackground } from "./ColoredStarsBackground";
 import { Button } from "../ui/button";
 import { Music, Pause, Play } from "lucide-react";
-import { LoveLightsBackground } from "./LoveLightsBackground";
 
 
 // Register Swiper modules
@@ -47,7 +46,6 @@ const formSchema = z.object({
   customAudio: z.string().optional(),
   backgroundAnimation: z.string().optional(),
   heartColor: z.string().optional(),
-  loveLightColor: z.string().optional(),
   contactName: z.string().optional(),
   contactEmail: z.string().email("Email inválido.").optional(),
   contactPhone: z.string().optional(),
@@ -301,7 +299,7 @@ const MusicPlayer = ({ data }: { data: Partial<PageData> }) => {
     }, [data.musicUrl]);
 
     if (data.musicChoice === 'youtube' && videoId) {
-        const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&showinfo=0&rel=0&loop=1&playlist=${videoId}`;
+        const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&showinfo=0&rel=0&loop=1&playlist=${videoId}&mute=1`;
         return (
             <div className="absolute top-0 left-0 w-0 h-0 overflow-hidden">
                 <iframe
@@ -320,7 +318,7 @@ const MusicPlayer = ({ data }: { data: Partial<PageData> }) => {
     return null;
 }
 
-const DynamicBackground = ({ animation, heartColor, loveLightColor }: { animation?: string, heartColor?: 'purple' | 'red', loveLightColor?: 'purple' | 'white' }) => {
+const DynamicBackground = ({ animation, heartColor }: { animation?: string, heartColor?: 'purple' | 'red' }) => {
     switch (animation) {
         case 'hearts':
             return <HeartsBackground color={heartColor} />;
@@ -328,8 +326,13 @@ const DynamicBackground = ({ animation, heartColor, loveLightColor }: { animatio
             return <StarsBackground />;
         case 'colored-stars':
             return <ColoredStarsBackground />;
-        case 'love-lights':
-            return <LoveLightsBackground color={loveLightColor} />;
+        case 'mystic-fog':
+             return (
+                <>
+                    <div className="mystic-fog mystic-fog-1"></div>
+                    <div className="mystic-fog mystic-fog-2"></div>
+                </>
+            );
         default:
             return null;
     }
@@ -390,10 +393,9 @@ export function PagePreview({ data }: PagePreviewProps) {
     <div className="w-full h-full flex flex-col relative overflow-hidden bg-black">
         <MusicPlayer data={data} />
         <DynamicBackground 
-            key={`${data.backgroundAnimation}-${data.heartColor}-${data.loveLightColor}`} 
+            key={`${data.backgroundAnimation}-${data.heartColor}`} 
             animation={data.backgroundAnimation} 
             heartColor={data.heartColor as 'purple' | 'red'} 
-            loveLightColor={data.loveLightColor as 'purple' | 'white'}
         />
         
         {hasCustomAudio && (
