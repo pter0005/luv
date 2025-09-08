@@ -45,7 +45,10 @@ import { findYoutubeVideo } from "@/ai/flows/find-youtube-video";
 import { useDebounce } from "@/hooks/use-debounce";
 import { HeartsBackground } from "@/components/app/HeartsBackground";
 import { StarsBackground } from "@/components/app/StarsBackground";
+import { VortexBackground } from "@/components/app/VortexBackground";
 import { AuroraBackground } from "@/components/app/AuroraBackground";
+import { CloudsBackground } from "@/components/app/CloudsBackground";
+import { ColoredStarsBackground } from "@/components/app/ColoredStarsBackground";
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
@@ -225,7 +228,7 @@ export default function CreatorStudioPage() {
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep + 1);
+      setCurrentStep(currentStep - 1);
     }
   };
 
@@ -264,13 +267,14 @@ export default function CreatorStudioPage() {
     form.setValue("photos", updatedPhotos);
   };
   
-  const animationOptions = [
-    { value: 'none', label: 'Nenhuma', video: null, pro: false },
-    { value: 'hearts', label: 'Chuva de Corações', video: 'https://i.imgur.com/3Yw1h2Z.mp4', pro: false },
-    { value: 'stars', label: 'Céu Estrelado', video: null, pro: false },
-    { value: 'vortex', label: 'Nebulosa Roxa', video: 'https://i.imgur.com/3Yw1h2Z.mp4', pro: true },
-    { value: 'aurora', label: 'Aurora Boreal', video: 'https://i.imgur.com/3Yw1h2Z.mp4', pro: true },
-    { value: 'clouds', label: 'Nuvens', video: 'https://i.imgur.com/3Yw1h2Z.mp4', pro: true },
+ const animationOptions = [
+    { value: 'none', label: 'Nenhuma', pro: false },
+    { value: 'hearts', label: 'Chuva de Corações', pro: false },
+    { value: 'stars', label: 'Céu Estrelado', pro: false },
+    { value: 'colored-stars', label: 'Pontos Coloridos', pro: true },
+    { value: 'aurora', label: 'Aurora Boreal', pro: true },
+    { value: 'vortex', label: 'Nebulosa Roxa', pro: true },
+    { value: 'clouds', label: 'Nuvens', pro: true },
   ];
 
 
@@ -559,28 +563,13 @@ export default function CreatorStudioPage() {
                               {animationOptions.map(opt => (
                                 <RadioGroupItem key={opt.value} value={opt.value} id={`bg-${opt.value}`} className="h-24 p-0 rounded-xl relative overflow-hidden group/item">
                                   <div className="absolute inset-0 w-full h-full">
-                                      {opt.value === 'stars' ? (
-                                          <div className="w-full h-full bg-black relative overflow-hidden"><StarsBackground/></div>
-                                      ) : opt.value === 'hearts' ? (
-                                          <div className="w-full h-full bg-black relative overflow-hidden"><HeartsBackground color={watchedData.heartColor as 'purple' | 'red'} /></div>
-                                      ) : opt.value === 'aurora' ? (
-                                          <div className="w-full h-full bg-black relative overflow-hidden"><AuroraBackground /></div>
-                                      ) : opt.video ? (
-                                          opt.video.endsWith('.mp4') ? (
-                                          <video
-                                              src={opt.video}
-                                              autoPlay
-                                              loop
-                                              muted
-                                              playsInline
-                                              className="w-full h-full object-cover"
-                                          />
-                                          ) : (
-                                          <Image src={opt.video} alt={opt.label} fill className="object-cover" />
-                                          )
-                                      ) : (
-                                          <div className="w-full h-full bg-card"></div>
-                                      )}
+                                        {opt.value === 'stars' && <div className="w-full h-full bg-black relative overflow-hidden"><StarsBackground/></div>}
+                                        {opt.value === 'hearts' && <div className="w-full h-full bg-black relative overflow-hidden"><HeartsBackground color={watchedData.heartColor as 'purple' | 'red'} /></div>}
+                                        {opt.value === 'aurora' && <div className="w-full h-full bg-black relative overflow-hidden"><AuroraBackground /></div>}
+                                        {opt.value === 'vortex' && <div className="w-full h-full bg-black relative overflow-hidden"><VortexBackground /></div>}
+                                        {opt.value === 'clouds' && <div className="w-full h-full bg-black relative overflow-hidden"><CloudsBackground /></div>}
+                                        {opt.value === 'colored-stars' && <div className="w-full h-full bg-black relative overflow-hidden"><ColoredStarsBackground /></div>}
+                                        {opt.value === 'none' && <div className="w-full h-full bg-card"></div>}
                                   </div>
                                   <div className="absolute inset-0 bg-black/40 group-hover/item:bg-black/20 transition-colors"></div>
                                   <div className="relative z-10 p-2 text-left w-full">

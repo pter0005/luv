@@ -26,6 +26,8 @@ import { HeartsBackground } from "./HeartsBackground";
 import { AuroraBackground } from "./AuroraBackground";
 import { CloudsBackground } from "./CloudsBackground";
 import { StarsBackground } from "./StarsBackground";
+import { VortexBackground } from "./VortexBackground";
+import { ColoredStarsBackground } from "./ColoredStarsBackground";
 
 
 // Register Swiper modules
@@ -329,6 +331,10 @@ const DynamicBackground = ({ animation, heartColor }: { animation?: string, hear
             return <AuroraBackground />;
         case 'clouds':
             return <CloudsBackground />;
+        case 'vortex':
+            return <VortexBackground />;
+        case 'colored-stars':
+            return <ColoredStarsBackground />;
         default:
             return null;
     }
