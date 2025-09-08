@@ -8,7 +8,14 @@ interface Star {
   style: React.CSSProperties;
 }
 
-const colors = ['#FFC0CB', '#FFFF00', '#FF0000', '#DA70D6', '#800080'];
+const colors = [
+    'hsl(350, 100%, 92%)', // Light Pink
+    'hsl(60, 100%, 90%)',  // Light Yellow
+    'hsl(0, 100%, 90%)',   // Light Red
+    'hsl(308, 100%, 92%)', // Light Orchid
+    'hsl(300, 100%, 90%)'  // Light Purple
+];
+
 
 export function ColoredStarsBackground() {
   const [stars, setStars] = useState<Star[]>([]);
