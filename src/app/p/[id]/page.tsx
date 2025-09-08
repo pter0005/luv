@@ -19,10 +19,6 @@ export default function Page({ params }: { params: { id: string } }) {
            if (data.status !== 'paid') {
             setError("Esta página ainda não foi ativada. Por favor, finalize o pagamento.");
           } else {
-            // Dates are stored as timestamps, so we need to convert them back to Date objects
-            if (data.startDate) {
-              data.startDate = data.startDate.toDate();
-            }
             setPageData(data);
           }
         } else {
