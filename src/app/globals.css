@@ -93,11 +93,11 @@
 
 @keyframes rise {
   0% {
-    transform: translateY(0) scale(0.5);
+    transform: translateY(0) scale(var(--start-scale, 0.5));
     opacity: 1;
   }
   100% {
-    transform: translateY(-110vh) scale(1.2);
+    transform: translateY(-110vh) scale(var(--end-scale, 1.2));
     opacity: 0;
   }
 }
@@ -131,33 +131,60 @@
 }
 
 
-/* Starry Night Animation */
-@keyframes move-twink-back {
-    from {background-position:0 0;}
-    to {background-position:-10000px 5000px;}
+/* Starry Night Animation - CSS Only */
+@keyframes animStar {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(-2000px);
+  }
 }
 
-.stars, .twinkling {
-	position:absolute;
-	top:0;
-	left:0;
-	right:0;
-	bottom:0;
-	width:100%;
-	height:100%;
-	display:block;
+.stars-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
-.stars {
-	background:#000 url(https://i.imgur.com/gKSPQjU.png) repeat top center;
-	z-index:0;
+.stars1, .stars2, .stars3 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
-.twinkling{
-	background:transparent url(https://i.imgur.com/r33b2P4.png) repeat top center;
-	z-index:1;
-	animation:move-twink-back 200s linear infinite;
+.stars1 {
+  background: transparent;
+  box-shadow: 
+    10vw 20vh 1px #fff, 25vw 80vh 1px #fff, 70vw 30vh 1px #fff, 90vw 60vh 1px #fff,
+    5vw 90vh 1px #fff, 40vw 10vh 1px #fff, 80vw 5vh 1px #fff, 50vw 50vh 1px #fff;
+  animation: animStar 200s linear infinite;
 }
+
+.stars2 {
+  background: transparent;
+  box-shadow: 
+    15vw 40vh 2px #fff, 30vw 90vh 2px #fff, 60vw 15vh 2px #fff, 85vw 70vh 2px #fff,
+    2vw 60vh 2px #fff, 50vw 25vh 2px #fff, 95vw 10vh 2px #fff, 75vw 75vh 2px #fff;
+  animation: animStar 150s linear infinite;
+}
+
+.stars3 {
+  background: transparent;
+  box-shadow: 
+    5vw 5vh 3px #fff, 45vw 60vh 3px #fff, 80vw 20vh 3px #fff, 95vw 90vh 3px #fff,
+    10vw 70vh 3px #fff, 60vw 5vw 3px #fff, 20vw 45vh 3px #fff, 88vw 80vh 3px #fff;
+  animation: animStar 100s linear infinite;
+}
+
 
 @keyframes meteor-fall {
     0% {
@@ -281,4 +308,5 @@
     opacity: 0.2;
     z-index: 1;
 }
+
 

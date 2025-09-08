@@ -43,7 +43,7 @@ import {
 import Image from "next/image";
 import { findYoutubeVideo } from "@/ai/flows/find-youtube-video";
 import { useDebounce } from "@/hooks/use-debounce";
-import { AnimatedBackground } from "@/components/app/AnimatedBackground";
+import { StarsBackground } from "@/components/app/StarsBackground";
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
@@ -265,7 +265,7 @@ export default function CreatorStudioPage() {
   const animationOptions = [
     { value: 'none', label: 'Nenhuma', video: null, pro: false },
     { value: 'hearts', label: 'Chuva de Corações', video: 'https://i.imgur.com/3Yw1h2Z.mp4', pro: false },
-    { value: 'stars', label: 'Céu Estrelado', video: 'https://i.imgur.com/kE4e2s9.mp4', pro: false },
+    { value: 'stars', label: 'Céu Estrelado', video: null, pro: false },
     { value: 'vortex', label: 'Nebulosa Roxa', video: 'https://i.imgur.com/3Yw1h2Z.mp4', pro: true },
     { value: 'aurora', label: 'Aurora Boreal', video: 'https://i.imgur.com/3Yw1h2Z.mp4', pro: true },
     { value: 'clouds', label: 'Nuvens', video: 'https://i.imgur.com/3Yw1h2Z.mp4', pro: true },
@@ -557,7 +557,9 @@ export default function CreatorStudioPage() {
                               {animationOptions.map(opt => (
                                 <RadioGroupItem key={opt.value} value={opt.value} id={`bg-${opt.value}`} className="h-24 p-0 rounded-xl relative overflow-hidden group/item">
                                   <div className="absolute inset-0 w-full h-full">
-                                      {opt.video ? (
+                                      {opt.value === 'stars' ? (
+                                          <div className="w-full h-full bg-black relative overflow-hidden"><StarsBackground/></div>
+                                      ) : opt.video ? (
                                           opt.video.endsWith('.mp4') ? (
                                           <video
                                               src={opt.video}
