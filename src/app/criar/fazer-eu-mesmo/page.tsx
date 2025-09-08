@@ -29,6 +29,10 @@ import {
   Check,
   Loader,
   Sparkles,
+  Mic,
+  MicOff,
+  Play,
+  Pause,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Editor } from "@/components/ui/editor";
@@ -46,6 +50,8 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { HeartsBackground } from "@/components/app/HeartsBackground";
 import { StarsBackground } from "@/components/app/StarsBackground";
 import { ColoredStarsBackground } from "@/components/app/ColoredStarsBackground";
+import { AuroraBackground } from "@/components/app/AuroraBackground";
+
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
@@ -56,7 +62,9 @@ const formSchema = z.object({
   dateDisplayType: z.string().optional(),
   photos: z.array(z.string()).optional(),
   photoDisplayType: z.string().optional(),
+  musicChoice: z.string().optional(),
   musicUrl: z.string().url("URL inválida.").optional().or(z.literal('')),
+  customAudio: z.string().optional(),
   backgroundAnimation: z.string().optional(),
   heartColor: z.string().optional(),
   contactName: z.string().optional(),
@@ -78,6 +86,11 @@ export default function CreatorStudioPage() {
   const [musicSearchResult, setMusicSearchResult] = React.useState<{ title: string; videoId: string } | null>(null);
   const [isSearchingMusic, setIsSearchingMusic] = React.useState(false);
 
+  // Audio recording state
+  const [isRecording, setIsRecording] = React.useState(false);
+  const [audioUrl, setAudioUrl] = React.useState<string | null>(null);
+  const mediaRecorderRef = React.useRef<MediaRecorder | null>(null);
+  const audioChunksRef = React.useRef<Blob[]>([]);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -89,7 +102,9 @@ export default function CreatorStudioPage() {
       titleColor: "#FFFFFF",
       messageFontSize: "text-base",
       dateDisplayType: "padrão",
+      musicChoice: "none",
       musicUrl: "",
+      customAudio: "",
       backgroundAnimation: "none",
       heartColor: "purple",
       contactName: "",
@@ -100,6 +115,45 @@ export default function CreatorStudioPage() {
   });
 
   const watchedData = form.watch();
+
+    const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorderRef.current = new MediaRecorder(stream);
+      audioChunksRef.current = [];
+
+      mediaRecorderRef.current.ondataavailable = (event) => {
+        audioChunksRef.current.push(event.data);
+      };
+
+      mediaRecorderRef.current.onstop = () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+        const reader = new FileReader();
+        reader.readAsDataURL(audioBlob);
+        reader.onloadend = () => {
+          const base64Audio = reader.result as string;
+          form.setValue('customAudio', base64Audio);
+          setAudioUrl(base64Audio);
+        };
+      };
+
+      mediaRecorderRef.current.start();
+      setIsRecording(true);
+      toast({ title: "Gravação iniciada!" });
+    } catch (err) {
+      toast({ variant: 'destructive', title: "Erro ao gravar", description: "Não foi possível acessar o microfone." });
+      console.error("Error starting recording:", err);
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      toast({ title: "Gravação finalizada!", description: "Sua mensagem foi salva."});
+    }
+  };
+
 
   React.useEffect(() => {
     const handleMusicSearch = async () => {
@@ -131,8 +185,10 @@ export default function CreatorStudioPage() {
         }
     };
 
-    handleMusicSearch();
-  }, [debouncedMusicSearchQuery, toast]);
+    if (watchedData.musicChoice === 'youtube') {
+      handleMusicSearch();
+    }
+  }, [debouncedMusicSearchQuery, toast, watchedData.musicChoice]);
 
 
   const selectMusic = () => {
@@ -177,9 +233,9 @@ export default function CreatorStudioPage() {
       description: "Anexe até 8 fotos e escolha o modo de exibição para personalizar a galeria.",
     },
     {
-      name: "musicUrl" as const,
+      name: "musicChoice" as const,
       title: "Música Dedicada",
-      description: "Dedique uma música especial. Digite o nome da música e do artista.",
+      description: "Escolha uma trilha sonora para sua página ou grave uma mensagem de voz.",
     },
     {
       name: "backgroundAnimation" as const,
@@ -206,12 +262,18 @@ export default function CreatorStudioPage() {
         fieldsToValidate = ['contactName', 'contactEmail', 'contactPhone'];
     }
 
-    if (currentField === 'musicUrl') {
-        const musicUrl = form.getValues('musicUrl');
-        if (musicUrl === '') {
-             if (currentStep < totalSteps) setCurrentStep(currentStep + 1);
-             return;
-        }
+    if (currentField === 'musicChoice') {
+      const choice = form.getValues('musicChoice');
+      if (choice === 'none') {
+        if (currentStep < totalSteps) setCurrentStep(currentStep + 1);
+        return;
+      }
+      if (choice === 'youtube') {
+         fieldsToValidate.push('musicUrl');
+      }
+       if (choice === 'custom') {
+         fieldsToValidate.push('customAudio');
+      }
     }
 
     const isValid = await form.trigger(fieldsToValidate);
@@ -499,46 +561,86 @@ export default function CreatorStudioPage() {
                   </div>
                 )}
                 {currentStep === 5 && (
-                  <div className="space-y-4">
-                    <FormLabel>Busque pela música</FormLabel>
-                    <div className="relative">
-                      <Input
-                        placeholder="Ex: Coldplay - A Sky Full of Stars"
-                        value={musicSearchQuery}
-                        onChange={(e) => setMusicSearchQuery(e.target.value)}
-                      />
-                      {isSearchingMusic && <Loader className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 animate-spin" />}
-                    </div>
-
-                    {musicSearchResult && (
-                      <div className="p-4 border rounded-md bg-secondary/50">
-                        <p className="font-semibold truncate">{musicSearchResult.title}</p>
-                        <div className="flex items-center gap-4 mt-2">
-                           <Button type="button" size="sm" onClick={selectMusic} className="w-full">
-                              <Check className="mr-2 h-4 w-4"/>
-                              Selecionar esta
-                           </Button>
-                           <Button type="button" size="sm" variant="outline" className="w-full" onClick={() => setMusicSearchResult(null)}>
-                              <XIcon className="mr-2 h-4 w-4"/>
-                              Cancelar
-                           </Button>
-                        </div>
-                      </div>
-                    )}
-                    
-                     <FormField
+                   <FormField
                       control={form.control}
-                      name="musicUrl"
+                      name="musicChoice"
                       render={({ field }) => (
-                          <FormItem>
-                          {field.value && (
-                              <p className="text-sm text-green-400 p-2 bg-green-950/50 rounded-md">Música selecionada! Prossiga para a próxima etapa.</p>
+                        <FormItem className="space-y-4">
+                          <FormLabel>Escolha a trilha sonora</FormLabel>
+                          <RadioGroup
+                            onValueChange={(value) => {
+                              field.onChange(value);
+                              form.setValue('musicUrl', '');
+                              form.setValue('customAudio', '');
+                            }}
+                            defaultValue={field.value}
+                            className="grid grid-cols-1 gap-4"
+                          >
+                            <RadioGroupItem value="none" id="music-none">Nenhum Som</RadioGroupItem>
+                            <RadioGroupItem value="custom" id="music-custom">Gravar Mensagem de Voz</RadioGroupItem>
+                            <RadioGroupItem value="youtube" id="music-youtube">Usar Música do YouTube</RadioGroupItem>
+                          </RadioGroup>
+                          <FormMessage />
+
+                           {watchedData.musicChoice === 'custom' && (
+                            <div className="p-4 border rounded-md space-y-4">
+                               <p className="text-sm text-muted-foreground">Grave uma mensagem de até 1 minuto.</p>
+                                <div className="flex items-center justify-center gap-4">
+                                    <Button type="button" onClick={startRecording} disabled={isRecording} size="lg">
+                                        <Mic className="mr-2 h-5 w-5"/>
+                                        Gravar
+                                    </Button>
+                                    <Button type="button" onClick={stopRecording} disabled={!isRecording} size="lg" variant="destructive">
+                                        <MicOff className="mr-2 h-5 w-5"/>
+                                        Parar
+                                    </Button>
+                                </div>
+                                {isRecording && <p className="text-center text-primary animate-pulse">Gravando...</p>}
+                                {watchedData.customAudio && !isRecording && (
+                                    <div className="flex flex-col items-center gap-2">
+                                        <p className="text-sm text-green-400">Áudio gravado!</p>
+                                        <audio src={watchedData.customAudio} controls className="w-full h-10"/>
+                                    </div>
+                                )}
+                            </div>
+                           )}
+
+                          {watchedData.musicChoice === 'youtube' && (
+                            <div className="p-4 border rounded-md space-y-4">
+                              <FormLabel>Busque pela música</FormLabel>
+                              <div className="relative">
+                                <Input
+                                  placeholder="Ex: Coldplay - A Sky Full of Stars"
+                                  value={musicSearchQuery}
+                                  onChange={(e) => setMusicSearchQuery(e.target.value)}
+                                />
+                                {isSearchingMusic && <Loader className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 animate-spin" />}
+                              </div>
+
+                              {musicSearchResult && (
+                                <div className="p-4 border rounded-md bg-secondary/50">
+                                  <p className="font-semibold truncate">{musicSearchResult.title}</p>
+                                  <div className="flex items-center gap-4 mt-2">
+                                    <Button type="button" size="sm" onClick={selectMusic} className="w-full">
+                                      <Check className="mr-2 h-4 w-4"/>
+                                      Selecionar esta
+                                    </Button>
+                                    <Button type="button" size="sm" variant="outline" className="w-full" onClick={() => setMusicSearchResult(null)}>
+                                      <XIcon className="mr-2 h-4 w-4"/>
+                                      Cancelar
+                                    </Button>
+                                  </div>
+                                </div>
+                              )}
+                              
+                              {watchedData.musicUrl && (
+                                  <p className="text-sm text-green-400 p-2 bg-green-950/50 rounded-md">Música selecionada! Prossiga.</p>
+                              )}
+                            </div>
                           )}
-                           <FormMessage />
-                          </FormItem>
+                        </FormItem>
                       )}
-                      />
-                  </div>
+                    />
                 )}
                 {currentStep === 6 && (
                    <div className="space-y-6">
@@ -718,7 +820,3 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
-
-    
-
-    

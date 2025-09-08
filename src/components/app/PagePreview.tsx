@@ -23,10 +23,11 @@ import 'swiper/css/effect-cards';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { HeartsBackground } from "./HeartsBackground";
-import { PurpleCloudsBackground } from "./PurpleCloudsBackground";
 import { StarsBackground } from "./StarsBackground";
-import { VortexBackground } from "./VortexBackground";
 import { ColoredStarsBackground } from "./ColoredStarsBackground";
+import { AuroraBackground } from "./AuroraBackground";
+import { Button } from "../ui/button";
+import { Pause, Play } from "lucide-react";
 
 
 // Register Swiper modules
@@ -41,7 +42,9 @@ const formSchema = z.object({
   dateDisplayType: z.string().optional(),
   photos: z.array(z.string()).optional(),
   photoDisplayType: z.string().optional(),
+  musicChoice: z.string().optional(),
   musicUrl: z.string().optional(),
+  customAudio: z.string().optional(),
   backgroundAnimation: z.string().optional(),
   heartColor: z.string().optional(),
   contactName: z.string().optional(),
@@ -283,41 +286,43 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
 };
 
 
-const MusicPlayer = ({ musicUrl }: { musicUrl?: string }) => {
+const MusicPlayer = ({ data, isPlaying }: { data: Partial<PageData>, isPlaying: boolean }) => {
     const videoId = React.useMemo(() => {
-        if (!musicUrl) return null;
+        if (!data.musicUrl) return null;
         try {
-            const url = new URL(musicUrl);
-            if (url.hostname === 'youtu.be') {
-                return url.pathname.slice(1);
-            }
+            const url = new URL(data.musicUrl);
+            if (url.hostname === 'youtu.be') return url.pathname.slice(1);
             if (url.hostname === 'www.youtube.com' || url.hostname === 'youtube.com') {
                 return url.searchParams.get('v');
             }
             return null;
-        } catch (error) {
-            return null;
-        }
+        } catch (error) { return null; }
+    }, [data.musicUrl]);
 
-    }, [musicUrl]);
+    if (!isPlaying) return null;
+
+    if (data.musicChoice === 'youtube' && videoId) {
+        const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&showinfo=0&rel=0&loop=1&playlist=${videoId}`;
+        return (
+            <div className="absolute top-0 left-0 w-0 h-0 overflow-hidden">
+                <iframe
+                    width="1"
+                    height="1"
+                    src={embedUrl}
+                    title="YouTube video player"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                ></iframe>
+            </div>
+        );
+    }
     
-    if (!videoId) return null;
+    if (data.musicChoice === 'custom' && data.customAudio) {
+       return <audio src={data.customAudio} autoPlay />;
+    }
 
-    const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&showinfo=0&rel=0&loop=1&playlist=${videoId}`;
-
-    return (
-        <div className="absolute top-0 left-0 w-0 h-0 overflow-hidden">
-            <iframe
-                width="1"
-                height="1"
-                src={embedUrl}
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-            ></iframe>
-        </div>
-    )
+    return null;
 }
 
 const DynamicBackground = ({ animation, heartColor }: { animation?: string, heartColor?: 'purple' | 'red' }) => {
@@ -326,10 +331,6 @@ const DynamicBackground = ({ animation, heartColor }: { animation?: string, hear
             return <HeartsBackground color={heartColor} />;
         case 'stars':
             return <StarsBackground />;
-        case 'clouds':
-            return <PurpleCloudsBackground />;
-        case 'vortex':
-            return <VortexBackground />;
         case 'colored-stars':
             return <ColoredStarsBackground />;
         default:
@@ -338,15 +339,31 @@ const DynamicBackground = ({ animation, heartColor }: { animation?: string, hear
 }
 
 export function PagePreview({ data }: PagePreviewProps) {
+  const [isPlaying, setIsPlaying] = React.useState(false);
+  const hasSound = data.musicChoice !== 'none' && (data.musicUrl || data.customAudio);
+
+  const togglePlay = () => {
+    setIsPlaying(prev => !prev);
+  }
+
   return (
     <div className="w-full h-full flex flex-col relative overflow-hidden bg-black">
-        <MusicPlayer musicUrl={data.musicUrl} />
+        <MusicPlayer data={data} isPlaying={isPlaying} />
         <DynamicBackground 
             key={`${data.backgroundAnimation}-${data.heartColor}`} 
             animation={data.backgroundAnimation} 
             heartColor={data.heartColor as 'purple' | 'red'} 
         />
         
+        {/* Play Button */}
+        {hasSound && (
+          <div className="absolute bottom-4 right-4 z-20">
+              <Button onClick={togglePlay} size="icon" variant="secondary" className="rounded-full h-12 w-12 bg-background/30 backdrop-blur-sm hover:bg-background/50">
+                  {isPlaying ? <Pause className="h-6 w-6"/> : <Play className="h-6 w-6"/>}
+              </Button>
+          </div>
+        )}
+
         {/* Page Content */}
         <div
             className="flex-grow p-4 flex flex-col items-center justify-start text-center relative overflow-y-auto"
