@@ -96,7 +96,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   };
 
 
-  const pageUrl = `${window.location.origin}/p/${params.id}`;
+  const pageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/p/${params.id}`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(pageUrl);
@@ -221,7 +221,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                         Plano selecionado: <span className="font-bold text-primary">{pageData?.plan}</span>
                     </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="text-center">
                     <Button 
                         size="lg" 
                         className="w-full" 
@@ -235,7 +235,12 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                             </>
                         )}
                     </Button>
-                     <p className="text-xs text-muted-foreground mt-4 text-center">Você será redirecionado para a página de pagamento segura do Mercado Pago.</p>
+                     <p className="text-xs text-muted-foreground mt-4">
+                        Você será redirecionado para a página de pagamento segura do Mercado Pago.
+                     </p>
+                     <p className="text-xs text-muted-foreground mt-1">
+                        Pague com Cartão de Crédito, Débito ou Pix. Não é necessário ter conta.
+                     </p>
                 </CardContent>
             </Card>
         </>
@@ -256,5 +261,3 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
-
-    
