@@ -709,9 +709,6 @@ export default function CreatorStudioPage() {
 
       {/* Preview Section */}
       <div className="hidden lg:flex sticky top-0 items-center justify-center w-full h-screen p-8 bg-background">
-         <div className="absolute inset-0 w-full h-full -z-10 overflow-hidden pointer-events-none">
-            <div className="purple-fog"></div>
-         </div>
           <div className="relative w-full max-w-lg h-full group/preview">
               <div className="relative z-10 w-full h-full bg-zinc-950 rounded-2xl flex flex-col shadow-2xl">
                   <div className="bg-zinc-800 rounded-t-lg p-2 flex items-center gap-1.5 border-b border-zinc-700">
@@ -733,3 +730,5 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
+
+    
