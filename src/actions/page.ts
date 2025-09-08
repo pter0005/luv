@@ -56,7 +56,12 @@ export async function confirmPaymentAndSendEmail(pageId: string) {
             return { success: false, message: 'Page not found.' };
         }
         
-        const pageData = docSnap.data() as FormData;
+        const pageData = docSnap.data();
+
+        if (pageData.status === 'paid') {
+            console.log(`Payment for page ${pageId} has already been confirmed.`);
+            return { success: true, message: 'Already paid.' };
+        }
         
         // Update status to 'paid'
         await updateDoc(pageDocRef, { status: 'paid' });
