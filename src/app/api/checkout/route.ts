@@ -16,10 +16,6 @@ const client = new MercadoPagoConfig({
     options: { timeout: 5000, idempotencyKey: 'abc' }
 });
 
-const isTestUser = (token: string | undefined): boolean => {
-    return !!token && (token.startsWith('TEST-') || token.startsWith('APP_USR-'));
-}
-
 export async function POST(req: NextRequest) {
     if (!MERCADO_PAGO_ACCESS_TOKEN) {
         return NextResponse.json({ error: 'Mercado Pago credentials not configured.' }, { status: 500 });
@@ -35,10 +31,6 @@ export async function POST(req: NextRequest) {
         
         const preference = new Preference(client);
 
-        const payerEmail = isTestUser(MERCADO_PAGO_ACCESS_TOKEN) 
-            ? 'test_user_12345678@testuser.com' 
-            : email;
-
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `https://${req.headers.get('host')}`;
 
         const result = await preference.create({
@@ -53,7 +45,7 @@ export async function POST(req: NextRequest) {
                     },
                 ],
                 payer: {
-                    email: payerEmail,
+                    email: email, // Sempre usar o e-mail real do cliente
                 },
                 back_urls: {
                     success: `${baseUrl}/criar/sucesso/${pageId}?status=approved`,
