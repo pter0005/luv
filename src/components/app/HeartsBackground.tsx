@@ -6,9 +6,10 @@ import { cn } from '@/lib/utils';
 
 interface HeartsBackgroundProps {
   color?: 'purple' | 'red';
+  direction?: 'rise' | 'fall';
 }
 
-export function HeartsBackground({ color = 'purple' }: HeartsBackgroundProps) {
+export function HeartsBackground({ color = 'purple', direction = 'rise' }: HeartsBackgroundProps) {
     const [hearts, setHearts] = useState<any[]>([]);
 
     useEffect(() => {
@@ -31,6 +32,7 @@ export function HeartsBackground({ color = 'purple' }: HeartsBackgroundProps) {
     }, []); 
 
   const heartColorClass = color === 'red' ? 'text-red-500' : 'text-primary';
+  const directionClass = direction === 'fall' ? 'heart-fall' : 'heart-rise';
 
   return (
     <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
@@ -38,7 +40,7 @@ export function HeartsBackground({ color = 'purple' }: HeartsBackgroundProps) {
         {hearts.map(heart => (
           <div
             key={heart.id}
-            className="heart"
+            className={cn("heart", directionClass)}
             style={heart.style}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={cn("w-full h-full", heartColorClass)}>
