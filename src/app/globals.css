@@ -63,30 +63,27 @@
   @apply bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent;
 }
 
-@keyframes purple-fog {
+@keyframes background-pan {
   0% {
-    transform: scale(1.2) translate(0, 0);
-    opacity: 0.4;
+    background-position: 0% 50%;
   }
   50% {
-    transform: scale(1.8) translate(30px, -30px);
-    opacity: 0.6;
+    background-position: 100% 50%;
   }
   100% {
-    transform: scale(1.2) translate(0, 0);
-    opacity: 0.4;
+    background-position: 0% 50%;
   }
 }
 
-.purple-fog {
+.mystic-fog {
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle at center, hsl(var(--primary) / 0.15), transparent 70%);
-  animation: purple-fog 25s ease-in-out infinite;
-  will-change: transform, opacity;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(125% 125% at 50% 10%, hsl(var(--foreground)) 40%, hsl(var(--primary)) 100%);
+  background-size: 200% 200%;
+  animation: background-pan 30s ease-in-out infinite;
+  z-index: -10;
 }
 
 
@@ -148,4 +145,3 @@
     animation-iteration-count: infinite;
     will-change: opacity;
 }
-

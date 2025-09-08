@@ -327,7 +327,7 @@ const DynamicBackground = ({ animation, heartColor }: { animation?: string, hear
         case 'colored-stars':
             return <ColoredStarsBackground />;
         case 'mystic-fog':
-             return <div className="purple-fog"></div>;
+             return <div className="mystic-fog"></div>;
         default:
             return null;
     }
