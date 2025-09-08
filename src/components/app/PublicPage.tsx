@@ -440,6 +440,8 @@ export function PublicPage({ data }: PublicPageProps) {
                     <JigsawPuzzle 
                         imageSrc={data.puzzleImage} 
                         onSolved={handlePuzzleSolved} 
+                        title={data.puzzleTitle}
+                        description={data.puzzleDescription}
                     />
                 </motion.div>
             )}
@@ -460,5 +462,3 @@ export function PublicPage({ data }: PublicPageProps) {
     </div>
   );
 }
-
-    

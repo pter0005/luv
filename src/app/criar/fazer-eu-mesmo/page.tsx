@@ -56,7 +56,16 @@ import { savePageData } from "@/actions/page";
 import { useRouter } from "next/navigation";
 import { PagePreview } from "@/components/app/PagePreview";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { JigsawPuzzle } from "@/components/app/JigsawPuzzle";
+import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
@@ -75,6 +84,8 @@ const formSchema = z.object({
   loveLightColor: z.string().optional(),
   unlockType: z.string().optional(),
   puzzleImage: z.string().optional(),
+  puzzleTitle: z.string().optional(),
+  puzzleDescription: z.string().optional(),
   contactName: z.string().min(1, "O nome é obrigatório."),
   contactEmail: z.string().email("Email inválido.").min(1, "O e-mail é obrigatório."),
   contactPhone: z.string().min(1, "O telefone é obrigatório."),
@@ -142,6 +153,8 @@ export default function CreatorStudioPage() {
       loveLightColor: "purple",
       unlockType: "instant",
       puzzleImage: "",
+      puzzleTitle: "Um Quebra-Cabeça Especial",
+      puzzleDescription: "Resolva o enigma para revelar a surpresa!",
       contactName: "",
       contactEmail: "",
       contactPhone: "",
@@ -332,6 +345,8 @@ export default function CreatorStudioPage() {
       const choice = form.getValues('unlockType');
       if (choice === 'puzzle') {
         fieldsToValidate.push('puzzleImage');
+        fieldsToValidate.push('puzzleTitle');
+        fieldsToValidate.push('puzzleDescription');
       }
     }
 
@@ -346,7 +361,7 @@ export default function CreatorStudioPage() {
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep + 1);
+      setCurrentStep(currentStep - 1);
     }
   };
 
@@ -797,48 +812,95 @@ export default function CreatorStudioPage() {
                             defaultValue={field.value}
                             className="grid grid-cols-1 gap-4"
                           >
-                            <RadioGroupItem value="instant" id="unlock-instant">
-                                <h3 className="font-semibold">Revelação Instantânea</h3>
-                                <p className="text-xs text-muted-foreground">O conteúdo aparece assim que a pessoa abre a página.</p>
+                             <RadioGroupItem value="instant" id="unlock-instant">
+                                <div className="flex flex-col gap-1">
+                                    <h3 className="font-semibold">Revelação Instantânea</h3>
+                                    <p className="text-xs text-muted-foreground">O conteúdo aparece assim que a pessoa abre a página.</p>
+                                </div>
                             </RadioGroupItem>
                             <RadioGroupItem value="puzzle" id="unlock-puzzle">
-                                <h3 className="font-semibold">Quebra-Cabeça Interativo</h3>
-                                <p className="text-xs text-muted-foreground">A pessoa resolve um quebra-cabeça com uma imagem escolhida por você para revelar o conteúdo. Uma surpresa emocionante!</p>
+                                <div className="flex flex-col gap-1">
+                                    <h3 className="font-semibold">Quebra-Cabeça Interativo</h3>
+                                    <p className="text-xs text-muted-foreground">A pessoa resolve um quebra-cabeça para revelar o conteúdo.</p>
+                                </div>
                             </RadioGroupItem>
                           </RadioGroup>
                           <FormMessage />
 
                           {watchedData.unlockType === 'puzzle' && (
-                             <FormField
-                                control={form.control}
-                                name="puzzleImage"
-                                render={({ field }) => (
-                                    <FormItem className="p-4 border rounded-md space-y-4">
-                                        <FormLabel>Imagem do Quebra-Cabeça</FormLabel>
-                                        <FormControl>
-                                            <div className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors"
-                                            onClick={() => puzzleFileInputRef.current?.click()}>
-                                            <Puzzle className="mx-auto h-10 w-10 text-muted-foreground mb-2" />
-                                            <p className="font-semibold">Clique para escolher a imagem</p>
-                                            <p className="text-xs text-muted-foreground">PNG ou JPG</p>
-                                            <input
-                                                type="file"
-                                                ref={puzzleFileInputRef}
-                                                accept="image/png, image/jpeg"
-                                                onChange={handlePuzzleFileChange}
-                                                className="hidden"
+                             <div className="p-4 border rounded-md space-y-4">
+                                <FormField
+                                    control={form.control}
+                                    name="puzzleTitle"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Título do Quebra-Cabeça</FormLabel>
+                                            <FormControl><Input {...field} /></FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="puzzleDescription"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Descrição do Quebra-Cabeça</FormLabel>
+                                            <FormControl><Textarea {...field} /></FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="puzzleImage"
+                                    render={({ field: imageField }) => (
+                                        <FormItem>
+                                            <FormLabel>Imagem do Quebra-Cabeça</FormLabel>
+                                            <FormControl>
+                                                <div className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors"
+                                                onClick={() => puzzleFileInputRef.current?.click()}>
+                                                <Puzzle className="mx-auto h-10 w-10 text-muted-foreground mb-2" />
+                                                <p className="font-semibold">Clique para escolher a imagem</p>
+                                                <p className="text-xs text-muted-foreground">PNG ou JPG</p>
+                                                <input
+                                                    type="file"
+                                                    ref={puzzleFileInputRef}
+                                                    accept="image/png, image/jpeg"
+                                                    onChange={handlePuzzleFileChange}
+                                                    className="hidden"
+                                                />
+                                                </div>
+                                            </FormControl>
+                                            {imageField.value && (
+                                                <div className="relative w-48 h-48 mx-auto">
+                                                    <Image src={imageField.value} alt="Prévia do quebra-cabeça" layout="fill" objectFit="contain" className="rounded-md" />
+                                                </div>
+                                            )}
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button variant="outline" className="w-full" disabled={!watchedData.puzzleImage}>
+                                            <Eye className="mr-2 h-4 w-4" />
+                                            Ver Prévia do Quebra-Cabeça
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="max-w-4xl h-[80vh] p-0">
+                                        {watchedData.puzzleImage && (
+                                            <JigsawPuzzle 
+                                                imageSrc={watchedData.puzzleImage} 
+                                                onSolved={() => {}}
+                                                title={watchedData.puzzleTitle}
+                                                description={watchedData.puzzleDescription}
+                                                isPreview
                                             />
-                                            </div>
-                                        </FormControl>
-                                        {field.value && (
-                                            <div className="relative w-48 h-48 mx-auto">
-                                                <Image src={field.value} alt="Prévia do quebra-cabeça" layout="fill" objectFit="contain" className="rounded-md" />
-                                            </div>
                                         )}
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                              />
+                                    </DialogContent>
+                                </Dialog>
+                             </div>
                           )}
                         </FormItem>
                       )}
@@ -970,7 +1032,3 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
-
-    
-
-    

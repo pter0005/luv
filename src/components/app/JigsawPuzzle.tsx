@@ -4,13 +4,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../ui/button';
-import { Puzzle, RefreshCw } from 'lucide-react';
+import { Puzzle, RefreshCw, X } from 'lucide-react';
 import Image from 'next/image';
 
 interface JigsawPuzzleProps {
     imageSrc: string;
     onSolved: () => void;
     gridSize?: number;
+    title?: string;
+    description?: string;
+    isPreview?: boolean;
 }
 
 interface Piece {
@@ -23,7 +26,14 @@ interface Piece {
     imgY: number;
 }
 
-export const JigsawPuzzle: React.FC<JigsawPuzzleProps> = ({ imageSrc, onSolved, gridSize = 3 }) => {
+export const JigsawPuzzle: React.FC<JigsawPuzzleProps> = ({ 
+    imageSrc, 
+    onSolved, 
+    gridSize = 3,
+    title = "Um Quebra-Cabeça Especial",
+    description = "Resolva o enigma para revelar a surpresa!",
+    isPreview = false,
+}) => {
     const [pieces, setPieces] = useState<Piece[]>([]);
     const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
     const [puzzleSize, setPuzzleSize] = useState(0);
@@ -77,7 +87,9 @@ export const JigsawPuzzle: React.FC<JigsawPuzzleProps> = ({ imageSrc, onSolved, 
     const checkCompletion = (currentPieces: Piece[]) => {
         if (currentPieces.every(p => p.correctIndex === p.currentIndex)) {
             setIsComplete(true);
-            setTimeout(() => onSolved(), 1500);
+            if (!isPreview) {
+              setTimeout(() => onSolved(), 1500);
+            }
         }
     };
     
@@ -124,8 +136,8 @@ export const JigsawPuzzle: React.FC<JigsawPuzzleProps> = ({ imageSrc, onSolved, 
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center mb-4 text-white"
              >
-                <h2 className="text-3xl font-bold font-display">Um Quebra-Cabeça Especial</h2>
-                <p className="text-muted-foreground">Resolva o enigma para revelar a surpresa!</p>
+                <h2 className="text-3xl font-bold font-display">{title}</h2>
+                <p className="text-muted-foreground">{description}</p>
              </motion.div>
              <div 
                 className="relative grid gap-1 bg-card/10 p-1 rounded-lg shadow-2xl" 
@@ -171,6 +183,7 @@ export const JigsawPuzzle: React.FC<JigsawPuzzleProps> = ({ imageSrc, onSolved, 
                         <Puzzle className="w-24 h-24 text-green-500 animate-bounce" />
                         <h3 className="text-4xl font-bold text-white mt-4 font-display">Parabéns!</h3>
                         <p className="text-xl text-muted-foreground">Você conseguiu!</p>
+                        {isPreview && <Button variant="outline" className="mt-4" onClick={resetPuzzle}>Jogar novamente</Button>}
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -186,12 +199,13 @@ export const JigsawPuzzle: React.FC<JigsawPuzzleProps> = ({ imageSrc, onSolved, 
             </div>
              
              {showHint && (
-                <motion.div initial={{opacity: 0, scale: 0.9}} animate={{opacity: 1, scale: 1}} className="mt-4">
+                <motion.div initial={{opacity: 0, scale: 0.9}} animate={{opacity: 1, scale: 1}} className="mt-4 relative">
                     <Image src={imageSrc} width={150} height={150} alt="Dica" className="rounded-lg border-4 border-primary/50 opacity-80" />
+                     <Button variant="destructive" size="icon" className="absolute -top-3 -right-3 h-7 w-7 rounded-full" onClick={() => setShowHint(false)}>
+                        <X className="w-4 h-4"/>
+                    </Button>
                 </motion.div>
              )}
         </div>
     );
 };
-
-    

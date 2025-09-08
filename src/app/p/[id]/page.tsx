@@ -9,22 +9,28 @@ import { Skeleton } from '@/components/ui/skeleton';
 export default function Page({ params }: { params: { id: string } }) {
   const [pageData, setPageData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getPageData(params.id);
         if (data) {
-          // Dates are stored as timestamps, so we need to convert them back to Date objects
-          if (data.startDate) {
-            data.startDate = data.startDate.toDate();
+           if (data.status !== 'paid') {
+            setError("Esta página ainda não foi ativada. Por favor, finalize o pagamento.");
+          } else {
+            // Dates are stored as timestamps, so we need to convert them back to Date objects
+            if (data.startDate) {
+              data.startDate = data.startDate.toDate();
+            }
+            setPageData(data);
           }
-          setPageData(data);
         } else {
-          console.error("Page not found");
+          setError("Página não encontrada. O link pode estar quebrado ou a página pode ter sido removida.");
         }
       } catch (error) {
         console.error("Failed to fetch page data:", error);
+        setError("Ocorreu um erro ao carregar a página. Tente novamente mais tarde.");
       } finally {
         setLoading(false);
       }
@@ -46,15 +52,14 @@ export default function Page({ params }: { params: { id: string } }) {
     );
   }
 
-  if (!pageData) {
+  if (error) {
     return (
       <div className="w-full h-screen bg-black flex flex-col items-center justify-center text-center p-4">
-        <h1 className="text-4xl font-bold text-white mb-4">Página Não Encontrada</h1>
-        <p className="text-muted-foreground">O link que você acessou pode estar quebrado ou a página pode ter sido removida.</p>
+        <h1 className="text-4xl font-bold text-white mb-4">Acesso Negado</h1>
+        <p className="text-muted-foreground">{error}</p>
       </div>
     );
   }
 
   return <PublicPage data={pageData} />;
 }
-
