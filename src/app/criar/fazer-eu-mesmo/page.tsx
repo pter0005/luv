@@ -45,7 +45,7 @@ import { findYoutubeVideo } from "@/ai/flows/find-youtube-video";
 import { useDebounce } from "@/hooks/use-debounce";
 import { HeartsBackground } from "@/components/app/HeartsBackground";
 import { StarsBackground } from "@/components/app/StarsBackground";
-import { VortexBackground } from "@/components/app/VortexBackground";
+import { AuroraBackground } from "@/components/app/AuroraBackground";
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
@@ -225,7 +225,7 @@ export default function CreatorStudioPage() {
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+      setCurrentStep(currentStep + 1);
     }
   };
 
@@ -563,8 +563,8 @@ export default function CreatorStudioPage() {
                                           <div className="w-full h-full bg-black relative overflow-hidden"><StarsBackground/></div>
                                       ) : opt.value === 'hearts' ? (
                                           <div className="w-full h-full bg-black relative overflow-hidden"><HeartsBackground color={watchedData.heartColor as 'purple' | 'red'} /></div>
-                                      ) : opt.value === 'vortex' ? (
-                                          <div className="w-full h-full bg-black relative overflow-hidden"><VortexBackground /></div>
+                                      ) : opt.value === 'aurora' ? (
+                                          <div className="w-full h-full bg-black relative overflow-hidden"><AuroraBackground /></div>
                                       ) : opt.video ? (
                                           opt.video.endsWith('.mp4') ? (
                                           <video
@@ -747,5 +747,3 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
-
-    

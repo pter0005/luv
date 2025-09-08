@@ -151,31 +151,6 @@
 }
 
 
-/* Vortex animation */
-@keyframes vortex-spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-.vortex {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-}
-.vortex-item {
-    position: absolute;
-    width: 2px;
-    height: 250px;
-    background: linear-gradient(to top, transparent, hsl(var(--primary) / 0.8));
-    animation: vortex-spin 10s linear infinite, vortex-fade 2s ease-in-out infinite alternate;
-    transform-origin: 0 0;
-    transform: translate(var(--tx), var(--ty));
-}
-@keyframes vortex-fade {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-
 /* Aurora animation */
 @keyframes aurora-glow {
     0% {
@@ -249,9 +224,3 @@
     opacity: 0.2;
     z-index: 1;
 }
-
-
-
-
-
-    

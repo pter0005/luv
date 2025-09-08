@@ -25,7 +25,6 @@ import 'swiper/css/navigation';
 import { HeartsBackground } from "./HeartsBackground";
 import { AuroraBackground } from "./AuroraBackground";
 import { CloudsBackground } from "./CloudsBackground";
-import { VortexBackground } from "./VortexBackground";
 import { StarsBackground } from "./StarsBackground";
 
 
@@ -326,8 +325,6 @@ const DynamicBackground = ({ animation, heartColor }: { animation?: string, hear
             return <HeartsBackground color={heartColor} />;
         case 'stars':
             return <StarsBackground />;
-        case 'vortex':
-            return <VortexBackground />;
         case 'aurora':
             return <AuroraBackground />;
         case 'clouds':
@@ -382,5 +379,3 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
-
-    
