@@ -25,9 +25,8 @@ import 'swiper/css/navigation';
 import { HeartsBackground } from "./HeartsBackground";
 import { StarsBackground } from "./StarsBackground";
 import { ColoredStarsBackground } from "./ColoredStarsBackground";
-import { AuroraBackground } from "./AuroraBackground";
 import { Button } from "../ui/button";
-import { Pause, Play } from "lucide-react";
+import { Music, Pause, Play } from "lucide-react";
 
 
 // Register Swiper modules
@@ -286,7 +285,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
 };
 
 
-const MusicPlayer = ({ data, isPlaying }: { data: Partial<PageData>, isPlaying: boolean }) => {
+const MusicPlayer = ({ data, isPlaying, audioRef }: { data: Partial<PageData>, isPlaying: boolean, audioRef: React.RefObject<HTMLAudioElement> }) => {
     const videoId = React.useMemo(() => {
         if (!data.musicUrl) return null;
         try {
@@ -299,9 +298,17 @@ const MusicPlayer = ({ data, isPlaying }: { data: Partial<PageData>, isPlaying: 
         } catch (error) { return null; }
     }, [data.musicUrl]);
 
-    if (!isPlaying) return null;
-
-    if (data.musicChoice === 'youtube' && videoId) {
+    React.useEffect(() => {
+      if (audioRef.current) {
+        if (isPlaying) {
+          audioRef.current.play().catch(e => console.error("Audio play failed", e));
+        } else {
+          audioRef.current.pause();
+        }
+      }
+    }, [isPlaying, audioRef]);
+    
+    if (data.musicChoice === 'youtube' && videoId && isPlaying) {
         const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&showinfo=0&rel=0&loop=1&playlist=${videoId}`;
         return (
             <div className="absolute top-0 left-0 w-0 h-0 overflow-hidden">
@@ -319,7 +326,7 @@ const MusicPlayer = ({ data, isPlaying }: { data: Partial<PageData>, isPlaying: 
     }
     
     if (data.musicChoice === 'custom' && data.customAudio) {
-       return <audio src={data.customAudio} autoPlay />;
+       return <audio ref={audioRef} src={data.customAudio} />;
     }
 
     return null;
@@ -338,30 +345,60 @@ const DynamicBackground = ({ animation, heartColor }: { animation?: string, hear
     }
 }
 
+const CustomAudioPlayer = ({ onTogglePlay, isPlaying }: { onTogglePlay: () => void, isPlaying: boolean }) => (
+    <div className="absolute bottom-4 left-4 right-4 z-20">
+        <div className="bg-card/40 backdrop-blur-sm border border-border/50 rounded-lg p-3 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+                <div className="p-2 bg-primary/10 rounded-md">
+                    <Music className="w-5 h-5 text-primary" />
+                </div>
+                <p className="text-sm font-semibold text-foreground">Uma mensagem para você</p>
+            </div>
+            <Button onClick={onTogglePlay} size="icon" variant="secondary" className="rounded-full h-10 w-10 bg-background/50 hover:bg-background/80">
+                {isPlaying ? <Pause className="h-5 w-5"/> : <Play className="h-5 w-5"/>}
+            </Button>
+        </div>
+    </div>
+);
+
+
 export function PagePreview({ data }: PagePreviewProps) {
   const [isPlaying, setIsPlaying] = React.useState(false);
+  const audioRef = React.useRef<HTMLAudioElement>(null);
+  
   const hasSound = data.musicChoice !== 'none' && (data.musicUrl || data.customAudio);
 
   const togglePlay = () => {
     setIsPlaying(prev => !prev);
   }
 
+  // Reset isPlaying when music choice changes
+  React.useEffect(() => {
+    setIsPlaying(false);
+  }, [data.musicChoice, data.musicUrl, data.customAudio]);
+
   return (
     <div className="w-full h-full flex flex-col relative overflow-hidden bg-black">
-        <MusicPlayer data={data} isPlaying={isPlaying} />
+        <MusicPlayer data={data} isPlaying={isPlaying} audioRef={audioRef} />
         <DynamicBackground 
             key={`${data.backgroundAnimation}-${data.heartColor}`} 
             animation={data.backgroundAnimation} 
             heartColor={data.heartColor as 'purple' | 'red'} 
         />
         
-        {/* Play Button */}
+        {/* Player UI */}
         {hasSound && (
-          <div className="absolute bottom-4 right-4 z-20">
-              <Button onClick={togglePlay} size="icon" variant="secondary" className="rounded-full h-12 w-12 bg-background/30 backdrop-blur-sm hover:bg-background/50">
-                  {isPlaying ? <Pause className="h-6 w-6"/> : <Play className="h-6 w-6"/>}
-              </Button>
-          </div>
+            <>
+                {data.musicChoice === 'custom' ? (
+                    <CustomAudioPlayer onTogglePlay={togglePlay} isPlaying={isPlaying} />
+                ) : (
+                    <div className="absolute bottom-4 right-4 z-20">
+                        <Button onClick={togglePlay} size="icon" variant="secondary" className="rounded-full h-12 w-12 bg-background/30 backdrop-blur-sm hover:bg-background/50">
+                            {isPlaying ? <Pause className="h-6 w-6"/> : <Play className="h-6 w-6"/>}
+                        </Button>
+                    </div>
+                )}
+            </>
         )}
 
         {/* Page Content */}
