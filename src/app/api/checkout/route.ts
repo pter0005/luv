@@ -39,6 +39,8 @@ export async function POST(req: NextRequest) {
             ? 'test_user_12345678@testuser.com' 
             : email;
 
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `https://${req.headers.get('host')}`;
+
         const result = await preference.create({
             body: {
                 items: [
@@ -54,12 +56,12 @@ export async function POST(req: NextRequest) {
                     email: payerEmail,
                 },
                 back_urls: {
-                    success: `${process.env.NEXT_PUBLIC_BASE_URL}/criar/sucesso/${pageId}?status=approved`,
-                    failure: `${process.env.NEXT_PUBLIC_BASE_URL}/criar/sucesso/${pageId}?status=failure`,
-                    pending: `${process.env.NEXT_PUBLIC_BASE_URL}/criar/sucesso/${pageId}?status=pending`,
+                    success: `${baseUrl}/criar/sucesso/${pageId}?status=approved`,
+                    failure: `${baseUrl}/criar/sucesso/${pageId}?status=failure`,
+                    pending: `${baseUrl}/criar/sucesso/${pageId}?status=pending`,
                 },
                 auto_return: 'approved',
-                notification_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/webhook/mercado-pago`,
+                notification_url: `${baseUrl}/api/webhook/mercado-pago`,
                 metadata: {
                     page_id: pageId,
                 },
