@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, Globe, QrCode, Gamepad2, PlayCircle } from "lucide-react";
+import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, Globe, QrCode, PlayCircle, Puzzle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -34,11 +34,11 @@ export default function CreatorPage() {
 
   const features = [
     {
-      icon: Gamepad2,
-      title: "Jogo Enigmático 2D",
-      description: "Uma revelação inesquecível através de um enigma personalizado.",
+      icon: Puzzle,
+      title: "Quebra-Cabeça Interativo",
+      description: "Uma revelação emocionante através de um quebra-cabeça com uma foto especial.",
       image: "https://picsum.photos/800/600?random=20",
-      imageHint: "pixel art game"
+      imageHint: "jigsaw puzzle"
     },
     {
       icon: Calendar,
@@ -143,7 +143,7 @@ export default function CreatorPage() {
                 <div className="p-3 bg-background rounded-full mb-3">
                     <PlayCircle className="w-8 h-8 md:w-10 md:h-10 text-primary" />
                 </div>
-                <CardTitle className="text-2xl md:text-3xl">Veja o Jogo em Ação</CardTitle>
+                <CardTitle className="text-2xl md:text-3xl">Veja a Revelação em Ação</CardTitle>
                 <CardDescription className="text-base md:text-lg text-foreground/80 mt-2">Descubra como funciona a experiência interativa que torna sua declaração inesquecível.</CardDescription>
             </CardHeader>
             <CardContent className="p-0">
@@ -205,5 +205,3 @@ export default function CreatorPage() {
     </>
   );
 }
-
-    
