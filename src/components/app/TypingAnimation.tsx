@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 
 const phrases = [
   "de forma única!",
-  "para alguem especial!",
+  "para alguém especial!",
   "pra quem merece!",
 ];
 
@@ -55,6 +55,3 @@ export function TypingAnimation() {
     </span>
   );
 }
-
-    
-    
