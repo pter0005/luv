@@ -26,8 +26,10 @@ import { StarsBackground } from "./StarsBackground";
 import { ColoredStarsBackground } from "./ColoredStarsBackground";
 import { VortexBackground } from "./VortexBackground";
 import { Button } from "../ui/button";
-import { Music, Pause, Play } from "lucide-react";
+import { Music, Pause, Play, Puzzle } from "lucide-react";
 import { FormData } from "@/app/criar/fazer-eu-mesmo/page";
+import { JigsawPuzzle } from "./JigsawPuzzle";
+import { AnimatePresence, motion } from "framer-motion";
 
 SwiperCore.use([Autoplay, EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination, Navigation]);
 
@@ -355,7 +357,7 @@ const CustomAudioPlayer = ({ onTogglePlay, isPlaying, audioSrc }: { onTogglePlay
     );
 }
 
-export function PublicPage({ data }: PublicPageProps) {
+const PageContent = ({ data }: { data: Partial<FormData> }) => {
   const [isPlayingCustomAudio, setIsPlayingCustomAudio] = React.useState(false);
   
   const hasCustomAudio = data.musicChoice === 'custom' && data.customAudio;
@@ -367,15 +369,9 @@ export function PublicPage({ data }: PublicPageProps) {
   React.useEffect(() => {
     setIsPlayingCustomAudio(false);
   }, [data.customAudio]);
-
+  
   return (
-    <div className="w-full h-screen flex flex-col relative overflow-hidden bg-black">
-        <MusicPlayer data={data} />
-        <DynamicBackground 
-            key={`${data.backgroundAnimation}-${data.heartColor}`} 
-            data={data}
-        />
-        
+    <div className="w-full h-full flex flex-col relative overflow-hidden">
         {hasCustomAudio && (
             <CustomAudioPlayer 
                 onTogglePlay={toggleCustomAudio} 
@@ -383,7 +379,6 @@ export function PublicPage({ data }: PublicPageProps) {
                 audioSrc={data.customAudio!} 
             />
         )}
-
         <div
             className="flex-grow p-4 flex flex-col items-center justify-center text-center relative overflow-y-auto"
         >
@@ -416,5 +411,54 @@ export function PublicPage({ data }: PublicPageProps) {
             </div>
         </div>
     </div>
+  )
+}
+
+export function PublicPage({ data }: PublicPageProps) {
+  const [isUnlocked, setIsUnlocked] = React.useState(data.unlockType !== 'puzzle');
+  
+  const handlePuzzleSolved = () => {
+    setIsUnlocked(true);
+  };
+
+  return (
+    <div className="w-full h-screen flex flex-col relative overflow-hidden bg-black">
+        <MusicPlayer data={data} />
+        <DynamicBackground 
+            key={`${data.backgroundAnimation}-${data.heartColor}`} 
+            data={data}
+        />
+        
+        <AnimatePresence>
+            {!isUnlocked && data.puzzleImage && (
+                <motion.div
+                    initial={{ opacity: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.5 }}
+                    className="absolute inset-0 z-20 w-full h-full"
+                >
+                    <JigsawPuzzle 
+                        imageSrc={data.puzzleImage} 
+                        onSolved={handlePuzzleSolved} 
+                    />
+                </motion.div>
+            )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+            {isUnlocked && (
+                 <motion.div
+                    initial={{ opacity: 0, scale: 1.05 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.8, delay: 0.3 }}
+                    className="w-full h-full"
+                >
+                    <PageContent data={data} />
+                </motion.div>
+            )}
+        </AnimatePresence>
+    </div>
   );
 }
+
+    

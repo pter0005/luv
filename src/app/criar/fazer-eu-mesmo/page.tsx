@@ -33,6 +33,7 @@ import {
   Play,
   Pause,
   Eye,
+  Puzzle,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Editor } from "@/components/ui/editor";
@@ -72,6 +73,8 @@ const formSchema = z.object({
   backgroundAnimation: z.string().optional(),
   heartColor: z.string().optional(),
   loveLightColor: z.string().optional(),
+  unlockType: z.string().optional(),
+  puzzleImage: z.string().optional(),
   contactName: z.string().min(1, "O nome é obrigatório."),
   contactEmail: z.string().email("Email inválido.").min(1, "O e-mail é obrigatório."),
   contactPhone: z.string().min(1, "O telefone é obrigatório."),
@@ -105,8 +108,9 @@ export default function CreatorStudioPage() {
   const { toast } = useToast();
   const router = useRouter();
   const [currentStep, setCurrentStep] = React.useState(1);
-  const totalSteps = 8;
+  const totalSteps = 9;
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const puzzleFileInputRef = React.useRef<HTMLInputElement>(null);
 
   const [musicSearchQuery, setMusicSearchQuery] = React.useState("");
   const debouncedMusicSearchQuery = useDebounce(musicSearchQuery, 500);
@@ -136,6 +140,8 @@ export default function CreatorStudioPage() {
       backgroundAnimation: "none",
       heartColor: "purple",
       loveLightColor: "purple",
+      unlockType: "instant",
+      puzzleImage: "",
       contactName: "",
       contactEmail: "",
       contactPhone: "",
@@ -284,6 +290,11 @@ export default function CreatorStudioPage() {
       description: "Escolha uma animação para o fundo da página para um toque especial.",
     },
     {
+      name: "unlockType" as const,
+      title: "Modo de Revelação",
+      description: "Escolha como a pessoa irá descobrir o conteúdo da página.",
+    },
+    {
       name: "contactName" as const, // Combined contact fields into one step
       title: "Informações de Contato",
       description: "Preencha para receber o link e QR code da sua página personalizada.",
@@ -316,6 +327,13 @@ export default function CreatorStudioPage() {
          fieldsToValidate.push('customAudio');
       }
     }
+    
+    if (currentField === 'unlockType') {
+      const choice = form.getValues('unlockType');
+      if (choice === 'puzzle') {
+        fieldsToValidate.push('puzzleImage');
+      }
+    }
 
     const isValid = await form.trigger(fieldsToValidate);
 
@@ -328,7 +346,7 @@ export default function CreatorStudioPage() {
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+      setCurrentStep(currentStep + 1);
     }
   };
 
@@ -358,6 +376,19 @@ export default function CreatorStudioPage() {
         };
         reader.readAsDataURL(file);
       });
+    }
+  };
+  
+  const handlePuzzleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (typeof e.target?.result === 'string') {
+          form.setValue("puzzleImage", e.target.result);
+        }
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -750,6 +781,70 @@ export default function CreatorStudioPage() {
                   </div>
                 )}
                 {currentStep === 7 && (
+                  <FormField
+                      control={form.control}
+                      name="unlockType"
+                      render={({ field }) => (
+                        <FormItem className="space-y-4">
+                          <FormLabel>Escolha o modo de revelação</FormLabel>
+                          <RadioGroup
+                            onValueChange={(value) => {
+                              field.onChange(value);
+                              if (value === 'instant') {
+                                form.setValue('puzzleImage', '');
+                              }
+                            }}
+                            defaultValue={field.value}
+                            className="grid grid-cols-1 gap-4"
+                          >
+                            <RadioGroupItem value="instant" id="unlock-instant">
+                                <h3 className="font-semibold">Revelação Instantânea</h3>
+                                <p className="text-xs text-muted-foreground">O conteúdo aparece assim que a pessoa abre a página.</p>
+                            </RadioGroupItem>
+                            <RadioGroupItem value="puzzle" id="unlock-puzzle">
+                                <h3 className="font-semibold">Quebra-Cabeça Interativo</h3>
+                                <p className="text-xs text-muted-foreground">A pessoa resolve um quebra-cabeça com uma imagem escolhida por você para revelar o conteúdo. Uma surpresa emocionante!</p>
+                            </RadioGroupItem>
+                          </RadioGroup>
+                          <FormMessage />
+
+                          {watchedData.unlockType === 'puzzle' && (
+                             <FormField
+                                control={form.control}
+                                name="puzzleImage"
+                                render={({ field }) => (
+                                    <FormItem className="p-4 border rounded-md space-y-4">
+                                        <FormLabel>Imagem do Quebra-Cabeça</FormLabel>
+                                        <FormControl>
+                                            <div className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors"
+                                            onClick={() => puzzleFileInputRef.current?.click()}>
+                                            <Puzzle className="mx-auto h-10 w-10 text-muted-foreground mb-2" />
+                                            <p className="font-semibold">Clique para escolher a imagem</p>
+                                            <p className="text-xs text-muted-foreground">PNG ou JPG</p>
+                                            <input
+                                                type="file"
+                                                ref={puzzleFileInputRef}
+                                                accept="image/png, image/jpeg"
+                                                onChange={handlePuzzleFileChange}
+                                                className="hidden"
+                                            />
+                                            </div>
+                                        </FormControl>
+                                        {field.value && (
+                                            <div className="relative w-48 h-48 mx-auto">
+                                                <Image src={field.value} alt="Prévia do quebra-cabeça" layout="fill" objectFit="contain" className="rounded-md" />
+                                            </div>
+                                        )}
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                              />
+                          )}
+                        </FormItem>
+                      )}
+                    />
+                )}
+                {currentStep === 8 && (
                   <div className="space-y-4">
                       <FormField
                           control={form.control}
@@ -792,7 +887,7 @@ export default function CreatorStudioPage() {
                       />
                   </div>
                 )}
-                {currentStep === 8 && (
+                {currentStep === 9 && (
                   <FormField
                     control={form.control}
                     name="plan"
@@ -875,5 +970,7 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
+
+    
 
     
