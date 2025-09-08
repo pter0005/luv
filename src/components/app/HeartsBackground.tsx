@@ -1,26 +1,32 @@
 
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 export function HeartsBackground() {
-  // Use um array simples e Math.random() diretamente no JSX.
-  // Isso é mais simples e menos propenso a erros de ciclo de vida do React.
-  const hearts = Array.from({ length: 40 }).map((_, i) => {
-    const size = Math.random() * 4 + 2; // 2rem to 6rem (maiores)
-    const rotation = Math.random() * 50 - 25; // -25deg to 25deg
-    return {
-      id: i,
-      style: {
-        left: `${Math.random() * 100}%`,
-        animationDuration: `${Math.random() * 15 + 15}s`, // 15s to 30s (mais devagar)
-        animationDelay: `${Math.random() * 5}s`,
-        width: `${size}rem`,
-        height: `${size}rem`,
-        transform: `rotate(${rotation}deg)`,
-      },
-    };
-  });
+  const [hearts, setHearts] = useState<any[]>([]);
+
+  useEffect(() => {
+    // This logic now runs only on the client side, after the component has mounted.
+    // This prevents the server and client from generating different random values.
+    const generatedHearts = Array.from({ length: 40 }).map((_, i) => {
+        const size = Math.random() * 4 + 2; // 2rem to 6rem
+        const rotation = Math.random() * 50 - 25; // -25deg to 25deg
+        return {
+        id: i,
+        style: {
+            left: `${Math.random() * 100}%`,
+            animationDuration: `${Math.random() * 15 + 15}s`, // 15s to 30s
+            animationDelay: `${Math.random() * 5}s`,
+            width: `${size}rem`,
+            height: `${size}rem`,
+            transform: `rotate(${rotation}deg)`,
+        },
+        };
+    });
+    setHearts(generatedHearts);
+  }, []); // Empty dependency array ensures this runs only once on mount.
+
 
   return (
     <div className="fixed top-0 left-0 w-full h-full pointer-events-none overflow-hidden -z-10">
