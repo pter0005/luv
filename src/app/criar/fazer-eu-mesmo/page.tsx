@@ -116,6 +116,48 @@ const PreviewContent = ({ data }: { data: Partial<FormData> }) => (
   </div>
 );
 
+// Helper function to compress and resize images
+const processImage = (file: File, maxSize = 1280): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+            const img = document.createElement('img');
+            img.src = event.target?.result as string;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                let { width, height } = img;
+
+                if (width > height) {
+                    if (width > maxSize) {
+                        height = Math.round((height * maxSize) / width);
+                        width = maxSize;
+                    }
+                } else {
+                    if (height > maxSize) {
+                        width = Math.round((width * maxSize) / height);
+                        height = maxSize;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                ctx?.drawImage(img, 0, 0, width, height);
+
+                resolve(canvas.toDataURL('image/jpeg', 0.8)); // Compress to JPEG with 80% quality
+            };
+            img.onerror = (error) => {
+                reject(error);
+            };
+        };
+        reader.onerror = (error) => {
+            reject(error);
+        };
+    });
+};
+
 
 export default function CreatorStudioPage() {
   const { toast } = useToast();
@@ -367,11 +409,11 @@ export default function CreatorStudioPage() {
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep + 1);
+      setCurrentStep(currentStep - 1);
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files) {
       const currentPhotos = form.getValues("photos") || [];
@@ -384,32 +426,31 @@ export default function CreatorStudioPage() {
         return;
       }
 
-      const newPhotos: string[] = [];
-      Array.from(files).forEach(file => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          if (typeof e.target?.result === 'string') {
-            newPhotos.push(e.target.result);
-            if (newPhotos.length === files.length) {
-              form.setValue("photos", [...currentPhotos, ...newPhotos]);
-            }
-          }
-        };
-        reader.readAsDataURL(file);
-      });
+      toast({ title: 'Processando imagens...', description: 'Aguarde um momento.'});
+      const newPhotosPromises = Array.from(files).map(file => processImage(file));
+      try {
+        const newPhotos = await Promise.all(newPhotosPromises);
+        form.setValue("photos", [...currentPhotos, ...newPhotos]);
+        toast({ title: 'Imagens adicionadas com sucesso!' });
+      } catch (error) {
+        console.error("Error processing images:", error);
+        toast({ variant: "destructive", title: "Erro ao processar imagem", description: "Houve um problema ao otimizar uma das imagens." });
+      }
     }
   };
   
-  const handlePuzzleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePuzzleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (typeof e.target?.result === 'string') {
-          form.setValue("puzzleImage", e.target.result);
-        }
-      };
-      reader.readAsDataURL(file);
+      toast({ title: 'Processando imagem...', description: 'Aguarde um momento.'});
+      try {
+        const processedImage = await processImage(file);
+        form.setValue("puzzleImage", processedImage);
+        toast({ title: 'Imagem do quebra-cabeça adicionada!' });
+      } catch (error) {
+         console.error("Error processing puzzle image:", error);
+         toast({ variant: "destructive", title: "Erro ao processar imagem", description: "Houve um problema ao otimizar a imagem." });
+      }
     }
   };
 
@@ -1041,3 +1082,5 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
+
+    
