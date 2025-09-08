@@ -2,7 +2,7 @@
 'use server';
 
 import { db } from '@/lib/firebase';
-import { collection, addDoc, getDoc, doc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, getDoc, doc, updateDoc, getDocs, query, where } from 'firebase/firestore';
 import { z } from 'zod';
 import { sendLinkEmail } from '@/ai/flows/send-link-email';
 
@@ -48,32 +48,37 @@ export async function savePageData(data: Omit<FormData, 'status'>): Promise<stri
 
 export async function confirmPaymentAndSendEmail(pageId: string) {
     try {
-        const docRef = doc(db, 'pages', pageId);
-        const docSnap = await getDoc(docRef);
+        const pagesRef = collection(db, "pages");
+        const q = query(pagesRef, where("id", "==", pageId));
+        const querySnapshot = await getDocs(q);
 
-        if (docSnap.exists()) {
-            const pageData = docSnap.data() as FormData;
-            
-            // Update status to 'paid'
-            await updateDoc(docRef, { status: 'paid' });
-            console.log(`Page ${pageId} status updated to paid.`);
-
-            // Send the email if an email address is provided
-            if (pageData.contactEmail) {
-                await sendLinkEmail({
-                    name: pageData.contactName || 'Criador(a)',
-                    email: pageData.contactEmail,
-                    pageId: docRef.id,
-                    pageTitle: pageData.title!,
-                });
-                console.log('Confirmation email queued for sending to:', pageData.contactEmail);
-                 return { success: true };
-            }
-             return { success: false, message: 'No contact email found.' };
-        } else {
+        if (querySnapshot.empty) {
             console.error(`Page with ID ${pageId} not found.`);
-             return { success: false, message: 'Page not found.' };
+            return { success: false, message: 'Page not found.' };
         }
+        
+        const docSnap = querySnapshot.docs[0];
+        const docRef = docSnap.ref;
+        const pageData = docSnap.data() as FormData;
+        
+        // Update status to 'paid'
+        await updateDoc(docRef, { status: 'paid' });
+        console.log(`Page ${pageId} status updated to paid.`);
+
+        // Send the email if an email address is provided
+        if (pageData.contactEmail) {
+            console.log(`Attempting to send email for page ${pageId} to ${pageData.contactEmail}`);
+            await sendLinkEmail({
+                name: pageData.contactName || 'Criador(a)',
+                email: pageData.contactEmail,
+                pageId: docRef.id,
+                pageTitle: pageData.title!,
+            });
+            console.log('Confirmation email queued for sending to:', pageData.contactEmail);
+             return { success: true };
+        }
+         return { success: false, message: 'No contact email found.' };
+
     } catch (error) {
         console.error('Error confirming payment and sending email:', error);
         throw new Error('Failed to confirm payment.');
@@ -97,5 +102,3 @@ export async function getPageData(id: string) {
         throw new Error("Failed to retrieve page data.");
     }
 }
-
-    

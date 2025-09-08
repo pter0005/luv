@@ -11,7 +11,7 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
-// import { Resend } from 'resend';
+import { Resend } from 'resend';
 
 const SendLinkEmailInputSchema = z.object({
   name: z.string().describe('The name of the user to address in the email.'),
@@ -28,11 +28,9 @@ export async function sendLinkEmail(
 }
 
 // NOTE: To enable email sending, you need to:
-// 1. Uncomment the `resend` import above.
-// 2. Get an API key from https://resend.com
-// 3. Add the key to your environment variables (e.g., in a .env.local file) as `RESEND_API_KEY`.
-// 4. Uncomment the `resend.emails.send` block inside the flow.
-// 5. Make sure your domain is verified on Resend to send emails from it.
+// 1. Get an API key from https://resend.com
+// 2. Add the key to your environment variables as `RESEND_API_KEY`.
+// 3. Make sure your domain is verified on Resend to send emails from it.
 
 const sendLinkEmailFlow = ai.defineFlow(
   {
@@ -42,35 +40,40 @@ const sendLinkEmailFlow = ai.defineFlow(
   },
   async (input) => {
     const { name, email, pageId, pageTitle } = input;
+    
+    if (!process.env.RESEND_API_KEY) {
+        console.warn("RESEND_API_KEY is not set. Skipping real email sending.");
+        return { success: false };
+    }
 
-    // const resend = new Resend(process.env.RESEND_API_KEY);
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
-    const pageUrl = `https://forever-yours-rbprw.web.app/p/${pageId}`;
+    const pageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/p/${pageId}`;
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(pageUrl)}`;
 
-    console.log(`Simulating email send to ${email} for page ${pageId}`);
+    console.log(`Sending real email to ${email} for page ${pageId}`);
 
-    /*
-    // ** UNCOMMENT THIS BLOCK TO ENABLE REAL EMAIL SENDING **
     try {
       await resend.emails.send({
-        from: 'Luv <nao-responda@sua-domain.com>', // Replace with your verified sending domain
+        from: 'Luv <nao-responda@luv-project.com>', // Replace with your verified sending domain
         to: [email],
         subject: `Sua página especial "${pageTitle}" está pronta!`,
         html: `
-          <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-            <h2>Olá, ${name}!</h2>
-            <p>Sua página personalizada, "<strong>${pageTitle}</strong>", foi criada com sucesso e está pronta para encantar!</p>
-            <p>Você pode acessá-la e compartilhá-la usando o link exclusivo abaixo:</p>
-            <p style="text-align: center;">
-              <a href="${pageUrl}" style="background-color: #6d28d9; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">Ver minha página</a>
-            </p>
-            <p>Para uma surpresa ainda mais criativa, use o QR Code. Perfeito para imprimir em um cartão ou presente:</p>
-            <div style="text-align: center; margin-top: 20px;">
-              <img src="${qrCodeUrl}" alt="QR Code da sua página" />
+          <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+              <h2 style="color: #6d28d9;">Olá, ${name}!</h2>
+              <p>Sua página personalizada, "<strong>${pageTitle}</strong>", foi criada com sucesso e está pronta para encantar!</p>
+              <p>Você pode acessá-la e compartilhá-la usando o link exclusivo abaixo:</p>
+              <p style="text-align: center; margin: 25px 0;">
+                <a href="${pageUrl}" style="background-color: #6d28d9; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">Ver minha página</a>
+              </p>
+              <p>Para uma surpresa ainda mais criativa, use o QR Code. Perfeito para imprimir em um cartão ou presente:</p>
+              <div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
+                <img src="${qrCodeUrl}" alt="QR Code da sua página" style="border: 1px solid #eee; padding: 5px; border-radius: 8px;"/>
+              </div>
+              <hr style="margin: 30px 0; border: none; border-top: 1px solid #e2e8f0;" />
+              <p style="font-size: 0.9em; color: #64748b;">Atenciosamente,<br>Equipe Luv</p>
             </div>
-            <hr style="margin: 30px 0; border: none; border-top: 1px solid #e2e8f0;" />
-            <p style="font-size: 0.9em; color: #64748b;">Atenciosamente,<br>Equipe Luv</p>
           </div>
         `,
       });
@@ -82,9 +85,5 @@ const sendLinkEmailFlow = ai.defineFlow(
       // but we return success: false so it can be handled if needed.
       return { success: false };
     }
-    */
-
-    // Returning success: true in simulation mode
-    return { success: true };
   }
 );
