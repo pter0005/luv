@@ -46,7 +46,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { HeartsBackground } from "@/components/app/HeartsBackground";
 import { StarsBackground } from "@/components/app/StarsBackground";
 import { VortexBackground } from "@/components/app/VortexBackground";
-import { CloudsBackground } from "@/components/app/CloudsBackground";
+import { PurpleCloudsBackground } from "@/components/app/PurpleCloudsBackground";
 import { ColoredStarsBackground } from "@/components/app/ColoredStarsBackground";
 
 const formSchema = z.object({
@@ -564,7 +564,7 @@ export default function CreatorStudioPage() {
                                         {opt.value === 'stars' && <div className="w-full h-full bg-black relative overflow-hidden"><StarsBackground/></div>}
                                         {opt.value === 'hearts' && <div className="w-full h-full bg-black relative overflow-hidden"><HeartsBackground color={watchedData.heartColor as 'purple' | 'red'} /></div>}
                                         {opt.value === 'vortex' && <div className="w-full h-full bg-black relative overflow-hidden"><VortexBackground /></div>}
-                                        {opt.value === 'clouds' && <div className="w-full h-full bg-black relative overflow-hidden"><CloudsBackground /></div>}
+                                        {opt.value === 'clouds' && <div className="w-full h-full bg-black relative overflow-hidden"><PurpleCloudsBackground /></div>}
                                         {opt.value === 'colored-stars' && <div className="w-full h-full bg-black relative overflow-hidden"><ColoredStarsBackground /></div>}
                                         {opt.value === 'none' && <div className="w-full h-full bg-card"></div>}
                                   </div>

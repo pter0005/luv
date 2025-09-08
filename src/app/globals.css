@@ -151,23 +151,24 @@
 }
 
 /* Clouds Animation */
-@keyframes move-clouds {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
+@keyframes move-clouds-rtl {
+    0% { transform: translateX(-100vw); }
+    100% { transform: translateX(100vw); }
 }
 
-.clouds {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 200%;
-    height: 100%;
-    background: url('https://i.imgur.com/eB3t5O5.png') repeat-x;
-    background-size: contain;
-    animation: move-clouds 60s linear infinite;
-    opacity: 0.2;
-    z-index: 1;
+.purple-cloud {
+  position: absolute;
+  width: var(--cloud-size);
+  height: var(--cloud-size);
+  background-color: hsl(var(--primary) / 0.15);
+  border-radius: 50%;
+  mask-image: radial-gradient(circle at 60% 40%, white 20%, transparent 70%),
+               radial-gradient(circle at 30% 30%, white 15%, transparent 60%),
+               radial-gradient(circle at 70% 60%, white 25%, transparent 80%),
+               radial-gradient(circle at 40% 80%, white 20%, transparent 70%);
+  mask-composite: add;
 }
+
 
 /* Vortex/Nebula Animation */
 @keyframes vortex-spin {
