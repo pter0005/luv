@@ -7,13 +7,13 @@ export function HeartsBackground() {
   // Use um array simples e Math.random() diretamente no JSX.
   // Isso é mais simples e menos propenso a erros de ciclo de vida do React.
   const hearts = Array.from({ length: 40 }).map((_, i) => {
-    const size = Math.random() * 2 + 1; // 1rem to 3rem
+    const size = Math.random() * 4 + 2; // 2rem to 6rem (maiores)
     const rotation = Math.random() * 50 - 25; // -25deg to 25deg
     return {
       id: i,
       style: {
         left: `${Math.random() * 100}%`,
-        animationDuration: `${Math.random() * 5 + 5}s`, // 5s to 10s
+        animationDuration: `${Math.random() * 15 + 15}s`, // 15s to 30s (mais devagar)
         animationDelay: `${Math.random() * 5}s`,
         width: `${size}rem`,
         height: `${size}rem`,
