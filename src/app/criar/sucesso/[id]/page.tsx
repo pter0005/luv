@@ -20,7 +20,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   const [pageData, setPageData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
-  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
   const { Canvas } = useQRCode();
 
@@ -34,20 +34,23 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
             const data = await getPageData(params.id);
             if (data) {
                 setPageData(data);
+                // If the webhook has already processed, the status will be 'paid'.
                 if (data.status === 'paid') {
                     setPaymentStatus('approved');
-                } else if (status === 'approved' || (data.status !== 'paid' && paymentId)) {
-                    // This handles cases where the webhook is slow or fails, by confirming on redirect.
+                } 
+                // If the user is redirected with a success status, confirm payment here as a fallback.
+                else if (status === 'approved' && paymentId) {
                     const result = await confirmPaymentAndSendEmail(params.id);
                     if (result.success) {
                         setPaymentStatus('approved');
                         const updatedData = await getPageData(params.id); // Refetch data
                         setPageData(updatedData);
                     } else {
-                        setPaymentStatus(status);
-                        toast({ variant: "destructive", title: "Erro de Confirmação", description: "O pagamento foi aprovado, mas houve um erro ao ativar a página. Tente recarregar ou contate o suporte."});
+                        setPaymentStatus('failure'); // Set to failure if confirmation fails
+                        toast({ variant: "destructive", title: "Erro de Confirmação", description: result.message || "Ocorreu um erro ao ativar a página. Tente recarregar ou contate o suporte."});
                     }
                 } else {
+                  // For any other status (pending, failure, or null)
                   setPaymentStatus(status);
                 }
             } else {
@@ -65,7 +68,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
 
   const handleCheckout = async () => {
     if (!pageData) return;
-    setIsProcessingPayment(true);
+    setIsProcessingCheckout(true);
 
     try {
       const response = await fetch('/api/checkout', {
@@ -98,7 +101,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
         title: "Erro no Checkout",
         description: error.message || "Não foi possível redirecionar para o pagamento.",
       });
-      setIsProcessingPayment(false);
+      setIsProcessingCheckout(false);
     }
   };
 
@@ -129,7 +132,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   }
 
 
-  const pageUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/p/${params.id}`;
+  const pageUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002'}/p/${params.id}`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(pageUrl);
@@ -234,7 +237,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
        )
     }
     
-    if (paymentStatus === 'failure') {
+    if (paymentStatus === 'failure' || searchParams.get('collection_status') === 'failure') {
         return (
             <>
                 <div className="p-4 bg-red-500/10 rounded-full mb-6 ring-4 ring-red-500/20">
@@ -249,9 +252,9 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                 <Button 
                     size="lg" 
                     onClick={handleCheckout}
-                    disabled={isProcessingPayment || !pageData}
+                    disabled={isProcessingCheckout || !pageData}
                 >
-                    {isProcessingPayment ? 'Processando...' : (
+                    {isProcessingCheckout ? 'Processando...' : (
                         <>
                             <Wallet className="mr-2 h-5 w-5" />
                             Tentar Novamente - R$ {FIXED_PRICE.toFixed(2).replace('.', ',')}
@@ -303,20 +306,17 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                         size="lg" 
                         className="w-full" 
                         onClick={handleCheckout}
-                        disabled={isProcessingPayment || !pageData}
+                        disabled={isProcessingCheckout || !pageData}
                     >
-                        {isProcessingPayment ? 'Processando...' : (
+                        {isProcessingCheckout ? 'Processando...' : (
                             <>
                                 <Wallet className="mr-2 h-5 w-5" />
                                 Pagar com Mercado Pago - R$ {FIXED_PRICE.toFixed(2).replace('.', ',')}
                             </>
                         )}
                     </Button>
-                     <p className="text-xs text-muted-foreground mt-4">
-                        Você será redirecionado para a página de pagamento segura do Mercado Pago.
-                     </p>
-                     <p className="text-xs text-muted-foreground mt-1">
-                        Pague com Cartão de Crédito, Débito ou Pix. Não é necessário ter conta.
+                     <p className="text-xs text-muted-foreground mt-4 text-center">
+                        Você será redirecionado para a página de pagamento segura do Mercado Pago. Pague com Cartão ou Pix, sem precisar de conta.
                      </p>
                      <div className="relative flex py-5 items-center">
                         <div className="flex-grow border-t border-border"></div>

@@ -82,16 +82,6 @@ export async function confirmPaymentAndSendEmail(pageId: string) {
 
         if (pageData.status === 'paid') {
             console.log(`Payment for page ${pageId} has already been confirmed.`);
-            // Still try to send email in case it failed before
-            if (pageData.contactEmail) {
-                 await prepareAndSendEmail({
-                    name: pageData.contactName || 'Criador(a)',
-                    email: pageData.contactEmail,
-                    pageId: pageId,
-                    pageTitle: pageData.title!,
-                });
-                return { success: true, message: 'Already paid, email sent again.' };
-            }
             return { success: true, message: 'Already paid.' };
         }
         
@@ -153,7 +143,12 @@ export async function getPagesByUserId(userId: string) {
     const querySnapshot = await getDocs(q);
     const pages: any[] = [];
     querySnapshot.forEach((doc) => {
-      pages.push({ id: doc.id, ...doc.data() });
+      const pageData = doc.data();
+      pages.push({ 
+        id: doc.id, 
+        ...pageData,
+        createdAt: pageData.createdAt?.toDate ? pageData.createdAt.toDate() : pageData.createdAt,
+      });
     });
     return pages;
   } catch (error) {

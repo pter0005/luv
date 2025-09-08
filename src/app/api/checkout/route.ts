@@ -32,9 +32,7 @@ export async function POST(req: NextRequest) {
         
         const preference = new Preference(client);
         
-        const host = req.headers.get('host');
-        const protocol = host?.startsWith('localhost') ? 'http' : 'https';
-        const baseUrl = `${protocol}://${host}`;
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `http://${req.headers.get('host')}`;
 
         const result = await preference.create({
             body: {
@@ -52,8 +50,10 @@ export async function POST(req: NextRequest) {
                 },
                 payment_methods: {
                     excluded_payment_methods: [],
-                    excluded_payment_types: [],
-                    installments: 1, // Apenas 1 parcela (pagamento à vista)
+                    excluded_payment_types: [
+                        { id: "ticket" }, // Exclui boletos
+                    ],
+                    installments: 1,
                 },
                 back_urls: {
                     success: `${baseUrl}/criar/sucesso/${pageId}`,

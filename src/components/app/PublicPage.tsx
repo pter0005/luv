@@ -2,14 +2,7 @@
 "use client";
 
 import * as React from "react";
-import { format, intervalToDuration } from "date-fns";
-import { ptBR } from 'date-fns/locale';
-import * as z from "zod";
-import { cn } from "@/lib/utils";
-import Image from "next/image";
-
 import SwiperCore from 'swiper';
-import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, EffectCoverflow, EffectFlip, EffectCards, EffectCube, Pagination, Navigation } from 'swiper/modules';
 
 import 'swiper/css';
@@ -25,8 +18,6 @@ import { HeartsBackground } from "./HeartsBackground";
 import { StarsBackground } from "./StarsBackground";
 import { ColoredStarsBackground } from "./ColoredStarsBackground";
 import { VortexBackground } from "./VortexBackground";
-import { Button } from "../ui/button";
-import { Music, Pause, Play, Puzzle } from "lucide-react";
 import { FormData } from "@/app/criar/fazer-eu-mesmo/page";
 import { JigsawPuzzle } from "./JigsawPuzzle";
 import { AnimatePresence, motion } from "framer-motion";
@@ -52,10 +43,8 @@ const MusicPlayer = ({ data }: { data: Partial<FormData> }) => {
         } catch (error) { return null; }
     }, [data.musicUrl]);
 
-    const audioRef = React.useRef<HTMLIFrameElement>(null);
     const [isInteracted, setIsInteracted] = React.useState(false);
 
-    // Mute on load, unmute on first interaction
     React.useEffect(() => {
         const handleInteraction = () => {
             setIsInteracted(true);
@@ -77,7 +66,6 @@ const MusicPlayer = ({ data }: { data: Partial<FormData> }) => {
         return (
             <div className="absolute top-0 left-0 w-0 h-0 overflow-hidden">
                 <iframe
-                    ref={audioRef}
                     width="1"
                     height="1"
                     src={embedUrl}

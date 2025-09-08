@@ -194,37 +194,65 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
   );
 };
 
-const CustomAudioPlayer = ({ onTogglePlay, isPlaying, audioSrc }: { onTogglePlay: () => void, isPlaying: boolean, audioSrc: string }) => {
+const CustomAudioPlayer = ({ audioSrc }: { audioSrc: string }) => {
     const audioRef = React.useRef<HTMLAudioElement>(null);
-
-    React.useEffect(() => {
-        if (!audioRef.current) return;
-        if (isPlaying) {
-            audioRef.current.play().catch(e => console.error("Audio play failed", e));
-        } else {
-            audioRef.current.pause();
-        }
-    }, [isPlaying]);
+    const [isPlaying, setIsPlaying] = React.useState(false);
 
      React.useEffect(() => {
-      if (audioRef.current) {
-          audioRef.current.src = audioSrc;
-          audioRef.current.load();
-      }
+        if (audioRef.current) {
+            audioRef.current.src = audioSrc;
+            const playPromise = audioRef.current.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    setIsPlaying(true);
+                }).catch(error => {
+                    // Autoplay was prevented.
+                    console.log("Audio autoplay was prevented. Waiting for user interaction.");
+                    setIsPlaying(false);
+                });
+            }
+        }
+
+        const handleInteraction = () => {
+            if (audioRef.current && audioRef.current.paused) {
+                audioRef.current.play().then(() => setIsPlaying(true));
+            }
+             window.removeEventListener('click', handleInteraction);
+             window.removeEventListener('touchstart', handleInteraction);
+        }
+        window.addEventListener('click', handleInteraction);
+        window.addEventListener('touchstart', handleInteraction);
+
+        return () => {
+            window.removeEventListener('click', handleInteraction);
+            window.removeEventListener('touchstart', handleInteraction);
+            audioRef.current?.pause();
+        }
     }, [audioSrc]);
+
+    const togglePlayPause = () => {
+        if (audioRef.current) {
+            if (audioRef.current.paused) {
+                audioRef.current.play().then(() => setIsPlaying(true));
+            } else {
+                audioRef.current.pause();
+                setIsPlaying(false);
+            }
+        }
+    }
 
     return (
         <>
-            <audio ref={audioRef} src={audioSrc} loop/>
-            <div className="absolute bottom-4 left-4 right-4 z-20">
-                <div className="bg-card/40 backdrop-blur-sm border border-border/50 rounded-lg p-3 flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-primary/10 rounded-md">
+            <audio ref={audioRef} src={audioSrc} loop />
+            <div className="fixed bottom-4 left-4 right-4 z-20">
+                <div className="bg-card/40 backdrop-blur-sm border border-border/50 rounded-lg p-3 flex items-center justify-between gap-4 max-w-sm mx-auto">
+                    <div className="flex items-center gap-3 overflow-hidden">
+                        <div className="p-2 bg-primary/10 rounded-md flex-shrink-0">
                             <Music className="w-5 h-5 text-primary" />
                         </div>
-                        <p className="text-sm font-semibold text-foreground">Uma mensagem para você</p>
+                        <p className="text-sm font-semibold text-foreground truncate">Uma mensagem para você</p>
                     </div>
-                    <Button onClick={onTogglePlay} size="icon" variant="secondary" className="rounded-full h-10 w-10 bg-background/50 hover:bg-background/80">
+                    <Button onClick={togglePlayPause} size="icon" variant="secondary" className="rounded-full h-10 w-10 flex-shrink-0 bg-background/50 hover:bg-background/80">
                         {isPlaying ? <Pause className="h-5 w-5"/> : <Play className="h-5 w-5"/>}
                     </Button>
                 </div>
@@ -233,80 +261,17 @@ const CustomAudioPlayer = ({ onTogglePlay, isPlaying, audioSrc }: { onTogglePlay
     );
 }
 
-export function PageContent({ data, isPreview = false }: PageContentProps) {
-  const [isPlayingCustomAudio, setIsPlayingCustomAudio] = React.useState(false);
-  
+export function PageContent({ data }: PageContentProps) {
   const hasCustomAudio = data.musicChoice === 'custom' && data.customAudio;
 
-  const toggleCustomAudio = () => {
-    if (isPreview) {
-        setIsPlayingCustomAudio(prev => !prev);
-    } else {
-         // On public page, only allow play after user interaction
-        const audio = document.querySelector('audio');
-        if (audio) {
-            if (audio.paused) {
-                audio.play().then(() => setIsPlayingCustomAudio(true)).catch(console.error);
-            } else {
-                audio.pause();
-                setIsPlayingCustomAudio(false);
-            }
-        }
-    }
-  }
-
-  // Auto-play logic for public page after interaction
-  React.useEffect(() => {
-    if (!isPreview && hasCustomAudio) {
-      const audio = document.createElement('audio');
-      audio.src = data.customAudio!;
-      audio.loop = true;
-
-      const playAudio = () => {
-        audio.play().then(() => {
-          setIsPlayingCustomAudio(true);
-        }).catch(e => {
-          // Play was likely blocked, waiting for another interaction
-          console.log("Autoplay blocked, waiting for user interaction.");
-        });
-        window.removeEventListener('click', playAudio);
-        window.removeEventListener('touchstart', playAudio);
-      };
-
-      window.addEventListener('click', playAudio);
-      window.addEventListener('touchstart', playAudio);
-
-      return () => {
-        window.removeEventListener('click', playAudio);
-        window.removeEventListener('touchstart', playAudio);
-        audio.pause();
-      };
-    }
-  }, [isPreview, hasCustomAudio, data.customAudio]);
-
-  // Sync player state with preview state
-   React.useEffect(() => {
-    if (isPreview) {
-        setIsPlayingCustomAudio(false);
-    }
-  }, [data.customAudio, isPreview]);
-  
   return (
     <div className="w-full h-full flex flex-col relative overflow-hidden">
-        {hasCustomAudio && (
-            <CustomAudioPlayer 
-                onTogglePlay={toggleCustomAudio} 
-                isPlaying={isPlayingCustomAudio} 
-                audioSrc={data.customAudio!} 
-            />
-        )}
-        <div
-            className="flex-grow p-4 flex flex-col items-center justify-center text-center relative overflow-y-auto"
-        >
+        {hasCustomAudio && <CustomAudioPlayer audioSrc={data.customAudio!} />}
+        <div className="flex-grow p-4 flex flex-col items-center justify-center text-center relative overflow-y-auto">
             <div className="relative z-10 w-full max-w-4xl mx-auto">
 
                 <h1 
-                    className="text-5xl md:text-6xl font-handwriting"
+                    className="text-5xl md:text-6xl font-handwriting break-words"
                     style={{ color: data.titleColor || '#FFFFFF' }}
                 >
                     {data.title || "Seu Título Aqui"}
@@ -316,7 +281,7 @@ export function PageContent({ data, isPreview = false }: PageContentProps) {
                     <div 
                         className={cn(
                           "mt-4 text-zinc-300 whitespace-pre-wrap break-words prose dark:prose-invert max-w-full text-center mx-auto",
-                          data.messageFontSize || "text-sm"
+                          data.messageFontSize || "text-base"
                         )}
                         dangerouslySetInnerHTML={{ __html: data.message || "Sua mensagem especial..." }} 
                     />
@@ -327,7 +292,7 @@ export function PageContent({ data, isPreview = false }: PageContentProps) {
 
                 {data.startDate && (
                      <div className="mt-6">
-                        <Countdown startDate={data.startDate} displayType={data.dateDisplayType} />
+                        <Countdown startDate={new Date(data.startDate)} displayType={data.dateDisplayType} />
                      </div>
                 )}
             </div>
@@ -335,5 +300,3 @@ export function PageContent({ data, isPreview = false }: PageContentProps) {
     </div>
   )
 }
-
-    
