@@ -129,3 +129,56 @@
     color: hsl(var(--primary));
   }
 }
+
+
+/* Starry Night Animation */
+@keyframes move-twink-back {
+    from {background-position:0 0;}
+    to {background-position:-10000px 5000px;}
+}
+
+.stars, .twinkling {
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	width:100%;
+	height:100%;
+	display:block;
+}
+
+.stars {
+	background:#000 url(https://i.imgur.com/gKSPQjU.png) repeat top center;
+	z-index:0;
+}
+
+.twinkling{
+	background:transparent url(https://i.imgur.com/r33b2P4.png) repeat top center;
+	z-index:1;
+	animation:move-twink-back 200s linear infinite;
+}
+
+@keyframes meteor-fall {
+    0% {
+        transform: translateX(0) translateY(0);
+        opacity: 1;
+    }
+    70% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(-500px) translateY(500px);
+        opacity: 0;
+    }
+}
+
+.meteor {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background-color: white;
+    border-radius: 50%;
+    box-shadow: 0 0 5px 0.5px #fff;
+    animation: meteor-fall 5s linear infinite;
+}

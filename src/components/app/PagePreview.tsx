@@ -23,6 +23,7 @@ import 'swiper/css/effect-cards';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { HeartsBackground } from "./HeartsBackground";
+import { MeteorsBackground } from "./MeteorsBackground";
 
 // Register Swiper modules
 SwiperCore.use([Autoplay, EffectCoverflow, EffectCube, EffectFlip, EffectCards, Pagination, Navigation]);
@@ -319,6 +320,8 @@ const DynamicBackground = ({ animation, heartColor }: { animation?: string, hear
     switch (animation) {
         case 'hearts':
             return <HeartsBackground color={heartColor} />;
+        case 'stars':
+            return <MeteorsBackground />;
         default:
             return null;
     }
@@ -369,5 +372,3 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
-
-    

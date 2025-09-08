@@ -223,7 +223,7 @@ export default function CreatorStudioPage() {
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+      setCurrentStep(currentStep + 1);
     }
   };
 
@@ -265,6 +265,7 @@ export default function CreatorStudioPage() {
   const animationOptions = [
     { value: 'none', label: 'Nenhuma', video: null, pro: false },
     { value: 'hearts', label: 'Chuva de corações', video: 'https://i.imgur.com/3Yw1h2Z.mp4', pro: false },
+    { value: 'stars', label: 'Céu Estrelado', video: 'https://i.imgur.com/kE4e2s9.mp4', pro: false },
   ];
 
 
@@ -710,9 +711,9 @@ export default function CreatorStudioPage() {
       </div>
 
       {/* Preview Section */}
-      <div className="hidden lg:flex sticky top-0 items-center justify-center w-full h-screen p-8 bg-black/10">
+      <div className="hidden lg:flex sticky top-0 items-center justify-center w-full h-screen p-8">
+         <div className="absolute inset-0 w-full h-full -z-10 overflow-hidden pointer-events-none purple-fog"></div>
           <div className="relative w-full max-w-lg h-full group/preview">
-             <div className="absolute inset-0 w-full h-full -z-10 overflow-hidden pointer-events-none purple-fog"></div>
               <div className="relative z-10 w-full h-full bg-zinc-950 rounded-2xl flex flex-col shadow-2xl">
                   <div className="bg-zinc-800 rounded-t-lg p-2 flex items-center gap-1.5 border-b border-zinc-700">
                       <div className="flex items-center gap-1.5">
@@ -724,7 +725,7 @@ export default function CreatorStudioPage() {
                           https://luv.com/p/{watchedData.title?.toLowerCase().replace(/\s/g, '-') || 'pagina'}
                       </div>
                   </div>
-                  <div className="flex-grow bg-black rounded-b-lg overflow-hidden">
+                  <div className="flex-grow bg-black rounded-b-lg overflow-hidden relative">
                       <PagePreview data={watchedData} />
                   </div>
               </div>
@@ -733,5 +734,3 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
-
-    
