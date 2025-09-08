@@ -4,7 +4,7 @@
 import { db } from '@/lib/firebase';
 import { collection, addDoc, getDoc, doc, updateDoc, getDocs, query, where } from 'firebase/firestore';
 import { z } from 'zod';
-import { sendFirebaseEmail } from '@/ai/flows/send-link-email';
+import { prepareAndSendEmail } from '@/ai/flows/send-link-email';
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
@@ -70,7 +70,7 @@ export async function confirmPaymentAndSendEmail(pageId: string) {
         // Send the email if an email address is provided
         if (pageData.contactEmail) {
             console.log(`Attempting to send email for page ${pageId} to ${pageData.contactEmail}`);
-            await sendFirebaseEmail({
+            await prepareAndSendEmail({
                 name: pageData.contactName || 'Criador(a)',
                 email: pageData.contactEmail,
                 pageId: pageId,

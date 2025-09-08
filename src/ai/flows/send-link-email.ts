@@ -6,8 +6,8 @@
  * by adding the email details to a Firestore collection, which is
  * monitored by the "Trigger Email" Firebase Extension.
  *
- * - sendFirebaseEmail - A function that handles adding the email to the queue.
- * - SendLinkEmailInput - The input type for the sendFirebaseEmail function.
+ * - prepareAndSendEmail - A function that handles adding the email to the queue.
+ * - SendLinkEmailInput - The input type for the prepareAndSendEmail function.
  */
 
 import { ai } from '@/ai/genkit';
@@ -23,7 +23,7 @@ const SendLinkEmailInputSchema = z.object({
 });
 export type SendLinkEmailInput = z.infer<typeof SendLinkEmailInputSchema>;
 
-export async function sendFirebaseEmail(
+export async function prepareAndSendEmail(
   input: SendLinkEmailInput
 ): Promise<{ success: boolean }> {
   return sendFirebaseEmailFlow(input);
