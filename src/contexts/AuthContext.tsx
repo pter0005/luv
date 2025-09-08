@@ -5,6 +5,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
   user: User | null;
@@ -38,7 +39,7 @@ export const useAuth = () => useContext(AuthContext);
 export function withAuth<P extends object>(Component: React.ComponentType<P>) {
   return function WithAuth(props: P) {
     const { user, loading } = useAuth();
-    const router = require('next/navigation').useRouter();
+    const router = useRouter();
 
     useEffect(() => {
       if (!loading && !user) {
@@ -47,16 +48,9 @@ export function withAuth<P extends object>(Component: React.ComponentType<P>) {
     }, [user, loading, router]);
 
     if (loading || !user) {
-       return (
-        <div className="w-full h-screen flex items-center justify-center">
-            <div className="w-full max-w-md space-y-4">
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-40 w-full" />
-                <Skeleton className="h-10 w-1/2 mx-auto" />
-            </div>
-        </div>
-       )
+      // Return null or a loading spinner, but do not render the component
+      // This prevents the protected content from ever being displayed to unauthenticated users.
+      return null;
     }
 
     return <Component {...props} />;
