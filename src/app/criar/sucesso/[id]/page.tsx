@@ -6,26 +6,28 @@ import { getPageData } from '@/actions/page';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, CheckCircle, Clock, Copy, Download, Mail, Share2 } from 'lucide-react';
-import Image from 'next/image';
+import { ArrowLeft, CheckCircle, Clock, Copy, Download, Mail, Share2, Wallet } from 'lucide-react';
 import Link from 'next/link';
 import { useQRCode } from 'next-qrcode';
 import { useToast } from '@/hooks/use-toast';
-import { useSearchParams } from 'next/navigation';
+
+const planPrices: { [key: string]: number } = {
+    monthly: 20.00,
+    forever: 34.99,
+    custom: 0, 
+};
 
 export default function SucessoPage({ params }: { params: { id: string } }) {
   const { toast } = useToast();
-  const searchParams = useSearchParams();
   const [pageData, setPageData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const { Canvas } = useQRCode();
   const [isPaid, setIsPaid] = useState(false);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const { Canvas } = useQRCode();
 
-  // This is a simplified check. In a real-world scenario,
-  // you'd rely on the webhook to update the status.
-  // This client-side check provides a better UX if the user returns to this page.
   useEffect(() => {
     const checkPaymentStatus = async () => {
+        setLoading(true);
         try {
             const data = await getPageData(params.id);
             if (data) {
@@ -34,17 +36,64 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                     setIsPaid(true);
                 }
             } else {
-                console.error("Page not found");
+                toast({ variant: "destructive", title: "Página não encontrada" });
             }
         } catch (error) {
-            console.error("Failed to fetch page data:", error);
+            toast({ variant: "destructive", title: "Erro ao buscar dados" });
         } finally {
             setLoading(false);
         }
     };
     
     checkPaymentStatus();
-  }, [params.id]);
+  }, [params.id, toast]);
+
+  const handleCheckout = async () => {
+    if (!pageData) return;
+    setIsProcessingPayment(true);
+
+    const price = planPrices[pageData.plan];
+    if (!price || price <= 0) {
+        toast({ variant: "destructive", title: "Plano inválido para pagamento." });
+        setIsProcessingPayment(false);
+        return;
+    }
+
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          pageId: params.id,
+          title: pageData.title,
+          price: price,
+          email: pageData.contactEmail,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Falha ao iniciar pagamento.');
+      }
+      
+      const { init_point } = await response.json();
+
+      if (init_point) {
+        window.location.href = init_point;
+      } else {
+        throw new Error('Link de pagamento não foi retornado.');
+      }
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Erro no Checkout",
+        description: error.message || "Não foi possível redirecionar para o pagamento.",
+      });
+      setIsProcessingPayment(false);
+    }
+  };
 
 
   const pageUrl = `${window.location.origin}/p/${params.id}`;
@@ -158,18 +207,36 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                 <Clock className="w-10 h-10 md:w-12 md:h-12 text-primary" />
             </div>
             <h1 className="text-4xl md:text-5xl font-bold tracking-tighter mb-4 text-foreground font-display">
-             Quase lá!
+             Quase lá! Sua página foi criada.
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-              Recebemos seu pedido e estamos aguardando a confirmação do pagamento. Assim que for aprovado, enviaremos o link e o QR Code da sua página para o seu e-mail.
+              Sua página foi criada e está salva. Para ativá-la e receber o link compartilhável, basta finalizar o pagamento.
             </p>
             <Card className="w-full max-w-lg bg-card/80">
                  <CardHeader>
-                    <CardTitle className="flex items-center gap-3 justify-center"><Mail className="w-6 h-6"/> Verifique seu E-mail</CardTitle>
-                    <CardDescription>
-                        Fique de olho na sua caixa de entrada (e na de spam!). A entrega do link é feita por lá.
+                    <CardTitle className="flex items-center gap-3 justify-center text-center">
+                        Finalize o Pagamento
+                    </CardTitle>
+                    <CardDescription className="text-center">
+                        Plano selecionado: <span className="font-bold text-primary">{pageData?.plan}</span>
                     </CardDescription>
                 </CardHeader>
+                <CardContent>
+                    <Button 
+                        size="lg" 
+                        className="w-full" 
+                        onClick={handleCheckout}
+                        disabled={isProcessingPayment}
+                    >
+                        {isProcessingPayment ? 'Processando...' : (
+                            <>
+                                <Wallet className="mr-2 h-5 w-5" />
+                                Pagar com Mercado Pago - R$ {planPrices[pageData?.plan]?.toFixed(2)}
+                            </>
+                        )}
+                    </Button>
+                     <p className="text-xs text-muted-foreground mt-4 text-center">Você será redirecionado para a página de pagamento segura do Mercado Pago.</p>
+                </CardContent>
             </Card>
         </>
     )
