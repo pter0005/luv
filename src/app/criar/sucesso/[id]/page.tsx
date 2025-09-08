@@ -6,15 +6,12 @@ import { getPageData } from '@/actions/page';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, CheckCircle, Clock, Copy, Download, Mail, Share2, Wallet } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Clock, Copy, Download, Share2, Wallet } from 'lucide-react';
 import Link from 'next/link';
 import { useQRCode } from 'next-qrcode';
 import { useToast } from '@/hooks/use-toast';
 
-const planPrices: { [key: string]: number } = {
-    custom: 14.99,
-    forever: 34.99,
-};
+const FIXED_PRICE = 14.99;
 
 export default function SucessoPage({ params }: { params: { id: string } }) {
   const { toast } = useToast();
@@ -48,15 +45,8 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   }, [params.id, toast]);
 
   const handleCheckout = async () => {
-    if (!pageData || !pageData.plan) return;
+    if (!pageData) return;
     setIsProcessingPayment(true);
-
-    const price = planPrices[pageData.plan];
-    if (!price || price <= 0) {
-        toast({ variant: "destructive", title: "Plano inválido para pagamento." });
-        setIsProcessingPayment(false);
-        return;
-    }
 
     try {
       const response = await fetch('/api/checkout', {
@@ -67,7 +57,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
         body: JSON.stringify({
           pageId: params.id,
           title: pageData.title,
-          price: price,
+          price: FIXED_PRICE,
           email: pageData.contactEmail,
         }),
       });
@@ -217,7 +207,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                         Finalize o Pagamento
                     </CardTitle>
                     <CardDescription className="text-center">
-                        Plano selecionado: <span className="font-bold text-primary capitalize">{pageData?.plan}</span>
+                        Acesso vitalício à sua página personalizada.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="text-center">
@@ -225,12 +215,12 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                         size="lg" 
                         className="w-full" 
                         onClick={handleCheckout}
-                        disabled={isProcessingPayment || !pageData?.plan}
+                        disabled={isProcessingPayment || !pageData}
                     >
                         {isProcessingPayment ? 'Processando...' : (
                             <>
                                 <Wallet className="mr-2 h-5 w-5" />
-                                Pagar com Mercado Pago - R$ {planPrices[pageData?.plan]?.toFixed(2).replace('.', ',') ?? '0,00'}
+                                Pagar com Mercado Pago - R$ {FIXED_PRICE.toFixed(2).replace('.', ',')}
                             </>
                         )}
                     </Button>
@@ -260,3 +250,5 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
+
+    

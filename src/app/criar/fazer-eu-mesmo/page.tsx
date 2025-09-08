@@ -119,7 +119,7 @@ export default function CreatorStudioPage() {
   const { toast } = useToast();
   const router = useRouter();
   const [currentStep, setCurrentStep] = React.useState(1);
-  const totalSteps = 9;
+  const totalSteps = 8; // Reduced from 9 to 8
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const puzzleFileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -158,7 +158,7 @@ export default function CreatorStudioPage() {
       contactName: "",
       contactEmail: "",
       contactPhone: "",
-      plan: "forever",
+      plan: "essencial", // Default plan
     },
   });
 
@@ -254,7 +254,8 @@ export default function CreatorStudioPage() {
   async function onSubmit(data: FormData) {
     setIsSubmitting(true);
     try {
-        const pageId = await savePageData(data);
+        const finalData = { ...data, plan: 'essencial' }; // Ensure plan is set
+        const pageId = await savePageData(finalData);
         toast({
           title: "Página salva com sucesso!",
           description: "Você será redirecionado para a tela de pagamento.",
@@ -309,13 +310,8 @@ export default function CreatorStudioPage() {
     },
     {
       name: "contactName" as const, // Combined contact fields into one step
-      title: "Informações de Contato",
-      description: "Preencha para receber o link e QR code da sua página personalizada.",
-    },
-    {
-      name: "plan" as const,
-      title: "Escolha seu Plano",
-      description: "Selecione o plano ideal para sua página e finalize a criação.",
+      title: "Informações de Contato e Finalização",
+      description: "Preencha para receber o link e finalize a criação para ir ao pagamento.",
     },
   ];
 
@@ -949,35 +945,6 @@ export default function CreatorStudioPage() {
                       />
                   </div>
                 )}
-                {currentStep === 9 && (
-                  <FormField
-                    control={form.control}
-                    name="plan"
-                    render={({ field }) => (
-                      <FormItem className="space-y-3">
-                          <FormLabel className="font-semibold">Selecione seu Plano</FormLabel>
-                        <FormControl>
-                          <RadioGroup
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            className="space-y-4"
-                          >
-                              <RadioGroupItem value="custom" id="plan-custom">
-                                  <div className="font-bold">Plano Essencial - R$14,99</div>
-                                  <div className="text-sm text-muted-foreground">Pague uma vez, acesso por um ano.</div>
-                              </RadioGroupItem>
-                              <RadioGroupItem value="forever" id="plan-forever">
-                                  <div className="font-bold">Plano Para Sempre - R$34,99</div>
-                                  <div className="text-sm text-muted-foreground">Acesso vitalício à sua obra de arte digital.</div>
-                              </RadioGroupItem>
-                          </RadioGroup>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
-
               </div>
               <div className="flex items-center gap-4 mt-8">
                 <Button type="button" variant="secondary" onClick={handlePrevStep} disabled={currentStep === 1}>
@@ -994,7 +961,7 @@ export default function CreatorStudioPage() {
                     {isSubmitting ? (
                         <Loader className="mr-2 h-4 w-4 animate-spin"/>
                     ) : (
-                        "Criar minha Página"
+                        "Finalizar e Pagar"
                     )}
                   </Button>
                 )}
@@ -1028,3 +995,5 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
+
+    
