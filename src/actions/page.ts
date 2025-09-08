@@ -38,12 +38,23 @@ export async function savePageData(data: FormData): Promise<string> {
   try {
     const status = data.plan === 'essencial' ? 'pending_payment' : 'pending_quote';
     
-    const pageData = {
+    const pageDataForDb: { [key: string]: any } = {
       ...data,
       status: status,
       createdAt: new Date(),
     };
-    const docRef = await addDoc(collection(db, 'pages'), pageData);
+
+    // Sanitize data for Firestore: convert undefined to null
+    Object.keys(pageDataForDb).forEach(key => {
+      if (pageDataForDb[key] === undefined) {
+        pageDataForDb[key] = null;
+      }
+      if (pageDataForDb[key] === '') {
+        pageDataForDb[key] = null;
+      }
+    });
+
+    const docRef = await addDoc(collection(db, 'pages'), pageDataForDb);
     console.log('Document written with ID: ', docRef.id);
     return docRef.id;
   } catch (e) {
@@ -127,4 +138,3 @@ export async function getPageData(id: string) {
         throw new Error("Failed to retrieve page data.");
     }
 }
-

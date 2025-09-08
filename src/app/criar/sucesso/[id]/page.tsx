@@ -106,7 +106,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   }
 
 
-  const pageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/p/${params.id}`;
+  const pageUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/p/${params.id}`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(pageUrl);
