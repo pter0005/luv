@@ -11,5 +11,3 @@ export function VortexBackground() {
     </div>
   );
 }
-
-    

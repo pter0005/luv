@@ -50,6 +50,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { HeartsBackground } from "@/components/app/HeartsBackground";
 import { StarsBackground } from "@/components/app/StarsBackground";
 import { ColoredStarsBackground } from "@/components/app/ColoredStarsBackground";
+import { VortexBackground } from "@/components/app/VortexBackground";
 
 
 const formSchema = z.object({
@@ -333,6 +334,7 @@ export default function CreatorStudioPage() {
     { value: 'stars', label: 'Céu Estrelado'},
     { value: 'colored-stars', label: 'Pontos Coloridos'},
     { value: 'mystic-fog', label: 'Névoa Mística'},
+    { value: 'vortex', label: 'Vórtice Púrpura'},
   ];
 
 
@@ -668,6 +670,7 @@ export default function CreatorStudioPage() {
                                             <div className="mystic-fog-1"></div>
                                             <div className="mystic-fog-2"></div>
                                         </div>}
+                                        {opt.value === 'vortex' && <div className="w-full h-full bg-black relative overflow-hidden"><VortexBackground /></div>}
                                         {opt.value === 'none' && <div className="w-full h-full bg-card"></div>}
                                   </div>
                                   <div className="absolute inset-0 bg-black/40 group-hover/item:bg-black/20 transition-colors"></div>

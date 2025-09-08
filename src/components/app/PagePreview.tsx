@@ -27,6 +27,7 @@ import { StarsBackground } from "./StarsBackground";
 import { ColoredStarsBackground } from "./ColoredStarsBackground";
 import { Button } from "../ui/button";
 import { Music, Pause, Play } from "lucide-react";
+import { VortexBackground } from "./VortexBackground";
 
 
 // Register Swiper modules
@@ -334,6 +335,8 @@ const DynamicBackground = ({ data }: { data: Partial<PageData> }) => {
                     <div className="mystic-fog-2"></div>
                 </>
              );
+        case 'vortex':
+            return <VortexBackground />;
         default:
             return null;
     }
