@@ -17,15 +17,16 @@ export function LoveLightsBackground({ color = 'purple' }: LoveLightsBackgroundP
     const [lights, setLights] = useState<Light[]>([]);
 
     useEffect(() => {
-        const generatedLights: Light[] = Array.from({ length: 8 }).map((_, i) => {
+        const generatedLights: Light[] = Array.from({ length: 25 }).map((_, i) => {
             const lightColor = color === 'purple' ? 'hsl(257 80% 60% / 0.5)' : 'hsl(0 0% 100% / 0.5)';
             return {
                 id: i,
                 style: {
-                    '--light-left': `${Math.random() * 100}%`,
-                    '--light-width': `${Math.random() * 200 + 100}px`,
+                    '--light-top': `${Math.random() * -50}%`,
+                    '--light-left': `${Math.random() * 150}%`,
+                    '--light-width': `${Math.random() * 4 + 2}px`,
                     '--light-delay': `${Math.random() * 10}s`,
-                    '--light-opacity': Math.random() * 0.3 + 0.1,
+                    '--light-opacity': Math.random() * 0.15 + 0.05,
                     '--light-color': lightColor,
                 } as React.CSSProperties,
             };

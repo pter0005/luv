@@ -154,37 +154,39 @@
 @keyframes love-light-animation {
   0% {
     opacity: 0;
-    transform: scaleY(0.95) scaleX(0.95);
+    transform: scaleY(0.95);
   }
   25% {
-    opacity: var(--light-opacity, 0.3);
+    opacity: var(--light-opacity, 0.2);
   }
   50% {
-    opacity: 0.1;
-    transform: scaleY(1) scaleX(1);
+    opacity: 0.05;
+    transform: scaleY(1);
   }
   75% {
-    opacity: var(--light-opacity, 0.3);
+    opacity: var(--light-opacity, 0.2);
   }
   100% {
     opacity: 0;
-    transform: scaleY(0.95) scaleX(0.95);
+    transform: scaleY(0.95);
   }
 }
 
 .love-light {
   position: absolute;
-  top: 0;
+  top: var(--light-top);
   left: var(--light-left);
   width: var(--light-width);
-  height: 100%;
-  background-image: radial-gradient(
-    farthest-side at 50% 0,
-    var(--light-color) 0%,
+  height: 200%;
+  background-image: linear-gradient(
+    0deg,
+    transparent 0%,
+    var(--light-color) 50%,
     transparent 100%
   );
-  transform-origin: top center;
+  transform-origin: top left;
   animation: love-light-animation 10s ease-in-out infinite;
   animation-delay: var(--light-delay);
   will-change: opacity, transform;
+  transform: rotate(-45deg);
 }
