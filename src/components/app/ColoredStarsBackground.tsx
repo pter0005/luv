@@ -22,7 +22,7 @@ export function ColoredStarsBackground() {
 
   useEffect(() => {
     const generateStars = () => {
-      const newStars: Star[] = Array.from({ length: 300 }).map((_, i) => {
+      const newStars: Star[] = Array.from({ length: 500 }).map((_, i) => {
         const size = Math.random() * 0.5 + 0.5; // 0.5px to 1px
         const color = colors[Math.floor(Math.random() * colors.length)];
         return {
