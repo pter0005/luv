@@ -23,7 +23,6 @@ import 'swiper/css/effect-cards';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { HeartsBackground } from "./HeartsBackground";
-import { MeteorsBackground } from "./MeteorsBackground";
 import { AuroraBackground } from "./AuroraBackground";
 import { CloudsBackground } from "./CloudsBackground";
 import { VortexBackground } from "./VortexBackground";

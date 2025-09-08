@@ -1,31 +1,50 @@
 
 "use client";
-import React, { useEffect, useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
+import { cn } from '@/lib/utils';
+
+interface Star {
+  id: number;
+  style: React.CSSProperties;
+}
 
 export function StarsBackground() {
-  const [meteors, setMeteors] = useState<React.CSSProperties[]>([]);
+  const [stars, setStars] = useState<Star[]>([]);
 
   useEffect(() => {
-    const newMeteors: React.CSSProperties[] = [];
-    for (let i = 0; i < 10; i++) {
-      newMeteors.push({
-        top: `${Math.random() * 100}%`,
-        left: `${Math.random() * 100}%`,
-        animationDelay: `${Math.random() * 10}s`,
-        animationDuration: `${Math.random() * 5 + 5}s`,
+    const generateStars = () => {
+      const newStars: Star[] = Array.from({ length: 50 }).map((_, i) => {
+        const size = Math.random() * 2 + 1; // 1px to 3px
+        return {
+          id: i,
+          style: {
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            width: `${size}px`,
+            height: `${size}px`,
+            animationDuration: `${Math.random() * 3 + 2}s`, // 2s to 5s
+            animationDelay: `${Math.random() * 3}s`,
+          },
+        };
       });
-    }
-    setMeteors(newMeteors);
+      setStars(newStars);
+    };
+
+    generateStars();
   }, []);
 
   return (
-    <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 stars-bg">
-      <div className="stars1"></div>
-      <div className="stars2"></div>
-      <div className="stars3"></div>
-      {meteors.map((style, i) => (
-        <div key={i} className="meteor" style={style}></div>
-      ))}
+    <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
+      <div className="relative w-full h-full">
+        {stars.map(star => (
+          <div
+            key={star.id}
+            className="star"
+            style={star.style}
+          />
+        ))}
+      </div>
     </div>
   );
 }
