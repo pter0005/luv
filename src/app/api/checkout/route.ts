@@ -32,7 +32,10 @@ export async function POST(req: NextRequest) {
         
         const preference = new Preference(client);
         
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `http://localhost:9002`;
+        // Use the request headers to build the base URL dynamically and reliably.
+        const host = req.headers.get('host');
+        const protocol = host?.startsWith('localhost') ? 'http' : 'https';
+        const baseUrl = `${protocol}://${host}`;
 
         const result = await preference.create({
             body: {
