@@ -199,3 +199,51 @@
   background: radial-gradient(circle at center, hsl(var(--primary) / 0.2) 0%, hsl(var(--primary) / 0.05) 40%, transparent 70%);
   animation: vortex-spin 40s linear infinite;
 }
+
+/* Swiper Styles */
+.swiper-container-coverflow .swiper-slide {
+  width: 80%;
+  max-width: 250px;
+}
+.swiper-container-cube {
+  width: 200px;
+  height: 200px;
+}
+.swiper-container-cards {
+  height: 320px;
+  width: 240px;
+}
+.mySwiper {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.swiper-slide {
+  background-position: center;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+}
+.mySwiper .swiper-slide {
+    border-radius: 18px;
+    overflow: hidden;
+}
+.swiper-pagination-bullet-active {
+  background: hsl(var(--primary)) !important;
+}
+.swiper-wrapper {
+  align-items: center; 
+}
+.slide-image-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.slide-image-wrapper img {
+    object-fit: cover;
+}
