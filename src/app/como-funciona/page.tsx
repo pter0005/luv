@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Gift, Puzzle, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { JigsawPuzzle } from "@/components/app/JigsawPuzzle";
 
 export default function ComoFuncionaPage() {
   return (
@@ -60,20 +61,16 @@ export default function ComoFuncionaPage() {
 
             <h2 className="text-3xl lg:text-4xl font-bold mb-8 font-display">Veja em Ação</h2>
             
-            <Card className="max-w-4xl mx-auto bg-card/50 border-2 border-primary/20 shadow-2xl shadow-primary/10 overflow-hidden">
-                <CardContent className="p-2">
-                    <div className="aspect-video bg-black/50 rounded-lg flex items-center justify-center relative">
-                         <Image 
-                            src="https://picsum.photos/1280/720"
-                            alt="Demonstração do quebra-cabeça"
-                            width={1280}
-                            height={720}
-                            className="w-full h-full object-cover opacity-30"
-                            data-ai-hint="jigsaw puzzle game"
+            <Card className="max-w-4xl mx-auto bg-transparent border-none shadow-none overflow-hidden h-[600px]">
+                <CardContent className="p-0 h-full">
+                   <div className="w-full h-full rounded-lg flex items-center justify-center relative">
+                        <JigsawPuzzle
+                          imageSrc="https://i.imgur.com/EMwsRdt.png"
+                          onSolved={() => {}}
+                          title="Experimente montar!"
+                          description="Arraste as peças para revelar a imagem."
+                          isPreview={true}
                         />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                             <p className="text-muted-foreground">Vídeo de demonstração em breve.</p>
-                        </div>
                     </div>
                 </CardContent>
             </Card>
