@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
         console.log("Webhook received:", body);
 
-        if (body.type === 'payment' && body.action === 'payment.updated') {
+        if (body.type === 'payment' && body.data?.id) {
             const paymentId = body.data.id;
             
             const payment = new Payment(client);

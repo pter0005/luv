@@ -4,7 +4,7 @@
 import { db } from '@/lib/firebase';
 import { collection, addDoc, getDoc, doc, updateDoc, getDocs, query, where } from 'firebase/firestore';
 import { z } from 'zod';
-import { sendLinkEmail } from '@/ai/flows/send-link-email';
+import { sendFirebaseEmail } from '@/ai/flows/send-link-email';
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
@@ -48,33 +48,30 @@ export async function savePageData(data: Omit<FormData, 'status'>): Promise<stri
 
 export async function confirmPaymentAndSendEmail(pageId: string) {
     try {
-        const pagesRef = collection(db, "pages");
-        const q = query(pagesRef, where("id", "==", pageId));
-        const querySnapshot = await getDocs(q);
+        const pageDocRef = doc(db, 'pages', pageId);
+        const docSnap = await getDoc(pageDocRef);
 
-        if (querySnapshot.empty) {
+        if (!docSnap.exists()) {
             console.error(`Page with ID ${pageId} not found.`);
             return { success: false, message: 'Page not found.' };
         }
         
-        const docSnap = querySnapshot.docs[0];
-        const docRef = docSnap.ref;
         const pageData = docSnap.data() as FormData;
         
         // Update status to 'paid'
-        await updateDoc(docRef, { status: 'paid' });
+        await updateDoc(pageDocRef, { status: 'paid' });
         console.log(`Page ${pageId} status updated to paid.`);
 
         // Send the email if an email address is provided
         if (pageData.contactEmail) {
             console.log(`Attempting to send email for page ${pageId} to ${pageData.contactEmail}`);
-            await sendLinkEmail({
+            await sendFirebaseEmail({
                 name: pageData.contactName || 'Criador(a)',
                 email: pageData.contactEmail,
-                pageId: docRef.id,
+                pageId: pageId,
                 pageTitle: pageData.title!,
             });
-            console.log('Confirmation email queued for sending to:', pageData.contactEmail);
+            console.log('Email data added to Firestore queue for sending to:', pageData.contactEmail);
              return { success: true };
         }
          return { success: false, message: 'No contact email found.' };
@@ -92,7 +89,15 @@ export async function getPageData(id: string) {
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-            return docSnap.data();
+            const data = docSnap.data();
+            // Firestore Timestamps need to be converted to JS Date objects
+            if (data.startDate && typeof data.startDate.toDate === 'function') {
+                data.startDate = data.startDate.toDate();
+            }
+             if (data.createdAt && typeof data.createdAt.toDate === 'function') {
+                data.createdAt = data.createdAt.toDate();
+            }
+            return data;
         } else {
             console.log("No such document!");
             return null;

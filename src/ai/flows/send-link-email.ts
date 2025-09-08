@@ -2,16 +2,18 @@
 'use server';
 
 /**
- * @fileOverview An AI agent that sends a confirmation email to the user
- * with the link and QR code to their newly created page.
+ * @fileOverview An agent that sends a confirmation email to the user
+ * by adding the email details to a Firestore collection, which is
+ * monitored by the "Trigger Email" Firebase Extension.
  *
- * - sendLinkEmail - A function that handles sending the email.
- * - SendLinkEmailInput - The input type for the sendLinkEmail function.
+ * - sendFirebaseEmail - A function that handles adding the email to the queue.
+ * - SendLinkEmailInput - The input type for the sendFirebaseEmail function.
  */
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
-import { Resend } from 'resend';
+import { db } from '@/lib/firebase';
+import { collection, addDoc } from 'firebase/firestore';
 
 const SendLinkEmailInputSchema = z.object({
   name: z.string().describe('The name of the user to address in the email.'),
@@ -21,68 +23,61 @@ const SendLinkEmailInputSchema = z.object({
 });
 export type SendLinkEmailInput = z.infer<typeof SendLinkEmailInputSchema>;
 
-export async function sendLinkEmail(
+export async function sendFirebaseEmail(
   input: SendLinkEmailInput
 ): Promise<{ success: boolean }> {
-  return sendLinkEmailFlow(input);
+  return sendFirebaseEmailFlow(input);
 }
 
-// NOTE: To enable email sending, you need to:
-// 1. Get an API key from https://resend.com
-// 2. Add the key to your environment variables as `RESEND_API_KEY`.
-// 3. For production, purchase a custom domain and verify it on Resend.
-//    Then, update the `from` field below to use your verified domain.
+// This flow adds an email document to the `mail` collection in Firestore.
+// The "Trigger Email" Firebase extension will be listening to this collection.
+// When a new document is added, the extension will automatically send the email.
 
-const sendLinkEmailFlow = ai.defineFlow(
+const sendFirebaseEmailFlow = ai.defineFlow(
   {
-    name: 'sendLinkEmailFlow',
+    name: 'sendFirebaseEmailFlow',
     inputSchema: SendLinkEmailInputSchema,
     outputSchema: z.object({ success: z.boolean() }),
   },
   async (input) => {
     const { name, email, pageId, pageTitle } = input;
     
-    if (!process.env.RESEND_API_KEY) {
-        console.warn("RESEND_API_KEY is not set. Skipping real email sending.");
-        return { success: false };
-    }
-
-    const resend = new Resend(process.env.RESEND_API_KEY);
-
-    const pageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/p/${pageId}`;
+    // The NEXT_PUBLIC_BASE_URL should be set in your environment variables.
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const pageUrl = `${baseUrl}/p/${pageId}`;
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(pageUrl)}`;
 
-    console.log(`Sending real email to ${email} for page ${pageId}`);
-
     try {
-      await resend.emails.send({
-        // For production, use your own verified domain, e.g., 'Luv <contato@seu-dominio.com>'
-        from: 'Luv <contato@criarcomluv.site>',
+      // Add a new document to the `mail` collection.
+      // The Trigger Email extension will pick this up and send the email.
+      await addDoc(collection(db, 'mail'), {
         to: [email],
-        subject: `Sua página especial "${pageTitle}" está pronta!`,
-        html: `
-          <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-            <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
-              <h2 style="color: #6d28d9;">Olá, ${name}!</h2>
-              <p>Sua página personalizada, "<strong>${pageTitle}</strong>", foi criada com sucesso e está pronta para encantar!</p>
-              <p>Você pode acessá-la e compartilhá-la usando o link exclusivo abaixo:</p>
-              <p style="text-align: center; margin: 25px 0;">
-                <a href="${pageUrl}" style="background-color: #6d28d9; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">Ver minha página</a>
-              </p>
-              <p>Para uma surpresa ainda mais criativa, use o QR Code. Perfeito para imprimir em um cartão ou presente:</p>
-              <div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
-                <img src="${qrCodeUrl}" alt="QR Code da sua página" style="border: 1px solid #eee; padding: 5px; border-radius: 8px;"/>
+        message: {
+          subject: `Sua página especial "${pageTitle}" está pronta!`,
+          html: `
+            <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+              <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+                <h2 style="color: #6d28d9;">Olá, ${name}!</h2>
+                <p>Sua página personalizada, "<strong>${pageTitle}</strong>", foi criada com sucesso e está pronta para encantar!</p>
+                <p>Você pode acessá-la e compartilhá-la usando o link exclusivo abaixo:</p>
+                <p style="text-align: center; margin: 25px 0;">
+                  <a href="${pageUrl}" style="background-color: #6d28d9; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">Ver minha página</a>
+                </p>
+                <p>Para uma surpresa ainda mais criativa, use o QR Code. Perfeito para imprimir em um cartão ou presente:</p>
+                <div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
+                  <img src="${qrCodeUrl}" alt="QR Code da sua página" style="border: 1px solid #eee; padding: 5px; border-radius: 8px;"/>
+                </div>
+                <hr style="margin: 30px 0; border: none; border-top: 1px solid #e2e8f0;" />
+                <p style="font-size: 0.9em; color: #64748b;">Atenciosamente,<br>Equipe Luv</p>
               </div>
-              <hr style="margin: 30px 0; border: none; border-top: 1px solid #e2e8f0;" />
-              <p style="font-size: 0.9em; color: #64748b;">Atenciosamente,<br>Equipe Luv</p>
             </div>
-          </div>
-        `,
+          `,
+        },
       });
-      console.log('Successfully sent email to:', email);
+      console.log('Email document added to Firestore `mail` collection for:', email);
       return { success: true };
     } catch (error) {
-      console.error('Resend API error:', error);
+      console.error('Error adding email document to Firestore:', error);
       // We don't throw an error here to avoid blocking the user flow,
       // but we return success: false so it can be handled if needed.
       return { success: false };
