@@ -174,7 +174,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
 
   return (
     <div className={cn(
-      "w-full mb-6 relative flex items-center justify-center h-[300px]",
+      "w-full my-6 relative flex items-center justify-center h-[300px]",
     )}>
       <Swiper {...getSwiperEffectProps()} key={displayType} className={cn("mySwiper", `swiper-container-${displayType?.toLowerCase()}`)}>
         {photos.map((photo, index) => (
@@ -304,8 +304,6 @@ export function PageContent({ data, isPreview = false }: PageContentProps) {
             className="flex-grow p-4 flex flex-col items-center justify-center text-center relative overflow-y-auto"
         >
             <div className="relative z-10 w-full max-w-4xl mx-auto">
-                
-                <PhotoGallery photos={data.photos} displayType={data.photoDisplayType} />
 
                 <h1 
                     className="text-5xl md:text-6xl font-handwriting"
@@ -323,6 +321,9 @@ export function PageContent({ data, isPreview = false }: PageContentProps) {
                         dangerouslySetInnerHTML={{ __html: data.message || "Sua mensagem especial..." }} 
                     />
                 )}
+                
+                <PhotoGallery photos={data.photos} displayType={data.photoDisplayType} />
+
 
                 {data.startDate && (
                      <div className="mt-6">
@@ -334,3 +335,5 @@ export function PageContent({ data, isPreview = false }: PageContentProps) {
     </div>
   )
 }
+
+    
