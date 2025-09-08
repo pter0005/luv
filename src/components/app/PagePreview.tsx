@@ -299,7 +299,7 @@ const MusicPlayer = ({ data }: { data: Partial<PageData> }) => {
     }, [data.musicUrl]);
 
     if (data.musicChoice === 'youtube' && videoId) {
-        const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&showinfo=0&rel=0&loop=1&playlist=${videoId}&mute=1`;
+        const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&showinfo=0&rel=0&loop=1&playlist=${videoId}`;
         return (
             <div className="absolute top-0 left-0 w-0 h-0 overflow-hidden">
                 <iframe
@@ -327,12 +327,7 @@ const DynamicBackground = ({ animation, heartColor }: { animation?: string, hear
         case 'colored-stars':
             return <ColoredStarsBackground />;
         case 'mystic-fog':
-             return (
-                <>
-                    <div className="mystic-fog mystic-fog-1"></div>
-                    <div className="mystic-fog mystic-fog-2"></div>
-                </>
-            );
+             return <div className="purple-fog"></div>;
         default:
             return null;
     }
