@@ -1,9 +1,10 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
+import { config } from 'dotenv';
 
-// Adicione seu Access Token do Mercado Pago abaixo
-// Lembre-se de usar uma variável de ambiente em produção!
+config(); // Carrega as variáveis de ambiente do arquivo .env
+
 const MERCADO_PAGO_ACCESS_TOKEN = process.env.MERCADO_PAGO_ACCESS_TOKEN;
 
 if (!MERCADO_PAGO_ACCESS_TOKEN) {
@@ -15,9 +16,7 @@ const client = new MercadoPagoConfig({
     options: { timeout: 5000, idempotencyKey: 'abc' }
 });
 
-// Helper function to check if the access token is for a test user
 const isTestUser = (token: string | undefined): boolean => {
-    // Both TEST- and APP_USR- prefixes are for test credentials
     return !!token && (token.startsWith('TEST-') || token.startsWith('APP_USR-'));
 }
 
@@ -36,7 +35,6 @@ export async function POST(req: NextRequest) {
         
         const preference = new Preference(client);
 
-        // For test users, Mercado Pago requires a specific test user email.
         const payerEmail = isTestUser(MERCADO_PAGO_ACCESS_TOKEN) 
             ? 'test_user_12345678@testuser.com' 
             : email;
@@ -72,7 +70,6 @@ export async function POST(req: NextRequest) {
 
     } catch (error: any) {
         console.error('Mercado Pago API error:', error);
-        // Return the actual error message from Mercado Pago API if available
         const errorMessage = error?.cause?.message || 'Failed to create payment preference';
         return NextResponse.json({ error: errorMessage }, { status: 500 });
     }

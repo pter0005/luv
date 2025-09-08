@@ -2,9 +2,10 @@
 import { confirmPaymentAndSendEmail } from '@/actions/page';
 import { NextRequest, NextResponse } from 'next/server';
 import { MercadoPagoConfig, Payment } from 'mercadopago';
+import { config } from 'dotenv';
 
-// Cole seu Access Token do Mercado Pago aqui.
-// É altamente recomendável usar variáveis de ambiente para isso.
+config(); 
+
 const MERCADO_PAGO_ACCESS_TOKEN = process.env.MERCADO_PAGO_ACCESS_TOKEN;
 
 if (!MERCADO_PAGO_ACCESS_TOKEN) {
@@ -49,5 +50,3 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Failed to process webhook' }, { status: 500 });
     }
 }
-
-    
