@@ -1,4 +1,3 @@
-
 {
   "name": "nextn",
   "version": "0.1.0",
@@ -52,13 +51,13 @@
     "mercadopago": "^2.0.9",
     "next": "15.3.3",
     "next-qrcode": "^2.5.1",
+    "nodemailer": "^6.9.14",
     "patch-package": "^8.0.0",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.54.2",
     "recharts": "^2.15.1",
-    "resend": "^3.5.0",
     "swiper": "^11.1.4",
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7",
@@ -68,6 +67,7 @@
     "@tailwindcss/typography": "^0.5.13",
     "@types/mercadopago": "^1.5.11",
     "@types/node": "^20",
+    "@types/nodemailer": "^6.4.15",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "genkit-cli": "^1.14.1",

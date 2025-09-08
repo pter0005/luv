@@ -3,15 +3,15 @@
 
 /**
  * @fileOverview An agent that sends a confirmation email to the user
- * using the Resend API.
+ * using Nodemailer with a Gmail account.
  *
  * - prepareAndSendEmail - A function that handles adding the email to the queue.
  * - SendLinkEmailInput - The input type for the prepareAndSendEmail function.
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
-import { Resend } from 'resend';
+import { z } from 'zod';
+import * as nodemailer from 'nodemailer';
 
 const SendLinkEmailInputSchema = z.object({
   name: z.string().describe('The name of the user to address in the email.'),
@@ -24,40 +24,48 @@ export type SendLinkEmailInput = z.infer<typeof SendLinkEmailInputSchema>;
 export async function prepareAndSendEmail(
   input: SendLinkEmailInput
 ): Promise<{ success: boolean }> {
-  return sendResendEmailFlow(input);
+  return sendNodemailerEmailFlow(input);
 }
 
-const sendResendEmailFlow = ai.defineFlow(
+const sendNodemailerEmailFlow = ai.defineFlow(
   {
-    name: 'sendResendEmailFlow',
+    name: 'sendNodemailerEmailFlow',
     inputSchema: SendLinkEmailInputSchema,
     outputSchema: z.object({ success: z.boolean() }),
   },
   async (input) => {
     const { name, email, pageId, pageTitle } = input;
     
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
-        console.error('Resend API key is not configured. Please set RESEND_API_KEY in your environment variables.');
+    const gmailUser = process.env.GMAIL_USER;
+    const gmailPass = process.env.GMAIL_PASS;
+
+    if (!gmailUser || !gmailPass) {
+        console.error('Gmail credentials are not configured. Please set GMAIL_USER and GMAIL_PASS in your environment variables.');
         return { success: false };
     }
 
-    const resend = new Resend(resendApiKey);
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: gmailUser,
+            pass: gmailPass, // This should be an App Password
+        },
+    });
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
     const pageUrl = `${baseUrl}/p/${pageId}`;
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(pageUrl)}`;
 
     try {
-      await resend.emails.send({
-        from: 'Luv <onboarding@resend.dev>', // You can customize this 'from' address in your Resend dashboard
-        to: [email],
+      await transporter.sendMail({
+        from: `"Luv" <${gmailUser}>`,
+        to: email,
         subject: `Sua página especial "${pageTitle}" está pronta!`,
         html: `
             <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
               <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
                 <h2 style="color: #6d28d9;">Olá, ${name}!</h2>
-                <p>Sua página personalizada, "<strong>${pageTitle}</strong>", foi criada com sucesso e está pronta para encantar!</p>
+                <p>Parabéns por adquirir sua página personalizada! "<strong>${pageTitle}</strong>" foi criada com sucesso e está pronta para encantar!</p>
                 <p>Você pode acessá-la e compartilhá-la usando o link exclusivo abaixo:</p>
                 <p style="text-align: center; margin: 25px 0;">
                   <a href="${pageUrl}" style="background-color: #6d28d9; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">Ver minha página</a>
@@ -72,10 +80,10 @@ const sendResendEmailFlow = ai.defineFlow(
             </div>
           `,
       });
-      console.log('Confirmation email sent successfully via Resend to:', email);
+      console.log('Confirmation email sent successfully via Nodemailer to:', email);
       return { success: true };
     } catch (error) {
-      console.error('Error sending email via Resend:', error);
+      console.error('Error sending email via Nodemailer:', error);
       return { success: false };
     }
   }
