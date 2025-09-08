@@ -22,8 +22,8 @@ export function ColoredStarsBackground() {
 
   useEffect(() => {
     const generateStars = () => {
-      const newStars: Star[] = Array.from({ length: 250 }).map((_, i) => {
-        const size = Math.random() * 1 + 0.5; // 0.5px to 1.5px
+      const newStars: Star[] = Array.from({ length: 300 }).map((_, i) => {
+        const size = Math.random() * 0.5 + 0.5; // 0.5px to 1px
         const color = colors[Math.floor(Math.random() * colors.length)];
         return {
           id: i,
@@ -33,7 +33,7 @@ export function ColoredStarsBackground() {
             width: `${size}px`,
             height: `${size}px`,
             backgroundColor: color,
-            boxShadow: `0 0 4px 1px ${color}`,
+            boxShadow: `0 0 2px 0.5px ${color}`,
             animationDuration: `${Math.random() * 3 + 2}s`, // 2s to 5s
             animationDelay: `${Math.random() * 3}s`,
           },
