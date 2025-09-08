@@ -3,8 +3,7 @@
 
 /**
  * @fileOverview An agent that sends a confirmation email to the user
- * by adding the email details to a Firestore collection, which is
- * monitored by the "Trigger Email" Firebase Extension.
+ * using the Resend API.
  *
  * - prepareAndSendEmail - A function that handles adding the email to the queue.
  * - SendLinkEmailInput - The input type for the prepareAndSendEmail function.
@@ -12,8 +11,7 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
-import { db } from '@/lib/firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import { Resend } from 'resend';
 
 const SendLinkEmailInputSchema = z.object({
   name: z.string().describe('The name of the user to address in the email.'),
@@ -26,35 +24,36 @@ export type SendLinkEmailInput = z.infer<typeof SendLinkEmailInputSchema>;
 export async function prepareAndSendEmail(
   input: SendLinkEmailInput
 ): Promise<{ success: boolean }> {
-  return sendFirebaseEmailFlow(input);
+  return sendResendEmailFlow(input);
 }
 
-// This flow adds an email document to the `mail` collection in Firestore.
-// The "Trigger Email" Firebase extension will be listening to this collection.
-// When a new document is added, the extension will automatically send the email.
-
-const sendFirebaseEmailFlow = ai.defineFlow(
+const sendResendEmailFlow = ai.defineFlow(
   {
-    name: 'sendFirebaseEmailFlow',
+    name: 'sendResendEmailFlow',
     inputSchema: SendLinkEmailInputSchema,
     outputSchema: z.object({ success: z.boolean() }),
   },
   async (input) => {
     const { name, email, pageId, pageTitle } = input;
     
-    // The NEXT_PUBLIC_BASE_URL should be set in your environment variables.
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+        console.error('Resend API key is not configured. Please set RESEND_API_KEY in your environment variables.');
+        return { success: false };
+    }
+
+    const resend = new Resend(resendApiKey);
+
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
     const pageUrl = `${baseUrl}/p/${pageId}`;
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(pageUrl)}`;
 
     try {
-      // Add a new document to the `mail` collection.
-      // The Trigger Email extension will pick this up and send the email.
-      await addDoc(collection(db, 'mail'), {
+      await resend.emails.send({
+        from: 'Luv <onboarding@resend.dev>', // You can customize this 'from' address in your Resend dashboard
         to: [email],
-        message: {
-          subject: `Sua página especial "${pageTitle}" está pronta!`,
-          html: `
+        subject: `Sua página especial "${pageTitle}" está pronta!`,
+        html: `
             <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
               <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
                 <h2 style="color: #6d28d9;">Olá, ${name}!</h2>
@@ -72,14 +71,11 @@ const sendFirebaseEmailFlow = ai.defineFlow(
               </div>
             </div>
           `,
-        },
       });
-      console.log('Email document added to Firestore `mail` collection for:', email);
+      console.log('Confirmation email sent successfully via Resend to:', email);
       return { success: true };
     } catch (error) {
-      console.error('Error adding email document to Firestore:', error);
-      // We don't throw an error here to avoid blocking the user flow,
-      // but we return success: false so it can be handled if needed.
+      console.error('Error sending email via Resend:', error);
       return { success: false };
     }
   }
