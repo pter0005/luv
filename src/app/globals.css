@@ -93,11 +93,11 @@
 
 @keyframes rise {
   0% {
-    transform: translateY(0);
+    transform: translateY(0) scale(0.5);
     opacity: 1;
   }
   100% {
-    transform: translateY(-110vh) scale(0.5);
+    transform: translateY(-110vh) scale(1.2);
     opacity: 0;
   }
 }

@@ -1,11 +1,7 @@
+
 "use client";
 
 import React from 'react';
-
-interface HeartStyle {
-  id: number;
-  style: React.CSSProperties;
-}
 
 export function HeartsBackground() {
   const heartCount = 40;
