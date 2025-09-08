@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Calendar } from "@/components/ui/calendar";
-import { PagePreview } from "@/components/app/PagePreview";
 import {
   ArrowLeft,
   ChevronRight,
@@ -33,6 +32,7 @@ import {
   MicOff,
   Play,
   Pause,
+  Eye,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Editor } from "@/components/ui/editor";
@@ -53,6 +53,8 @@ import { ColoredStarsBackground } from "@/components/app/ColoredStarsBackground"
 import { VortexBackground } from "@/components/app/VortexBackground";
 import { savePageData } from "@/actions/page";
 import { useRouter } from "next/navigation";
+import { PagePreview } from "@/components/app/PagePreview";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 
 const formSchema = z.object({
@@ -77,6 +79,27 @@ const formSchema = z.object({
 });
 
 export type FormData = z.infer<typeof formSchema>;
+
+const PreviewContent = ({ data }: { data: Partial<FormData> }) => (
+  <div className="relative w-full h-full group/preview">
+    <div className="relative z-10 w-full h-full bg-zinc-950 rounded-2xl flex flex-col shadow-2xl">
+      <div className="bg-zinc-800 rounded-t-lg p-2 flex items-center gap-1.5 border-b border-zinc-700">
+        <div className="flex items-center gap-1.5">
+          <div className="w-3 h-3 rounded-full bg-red-500"></div>
+          <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+          <div className="w-3 h-3 rounded-full bg-green-500"></div>
+        </div>
+        <div className="flex-grow bg-zinc-700 rounded-sm px-2 py-1 text-xs text-zinc-400 text-center truncate">
+            https://luv.com/p/{data.title?.toLowerCase().replace(/\s/g, '-') || 'pagina'}
+        </div>
+      </div>
+      <div className="flex-grow bg-black rounded-b-lg overflow-hidden relative">
+        <PagePreview data={data} />
+      </div>
+    </div>
+  </div>
+);
+
 
 export default function CreatorStudioPage() {
   const { toast } = useToast();
@@ -357,7 +380,7 @@ export default function CreatorStudioPage() {
   return (
     <div className="grid w-full min-h-screen grid-cols-1 lg:grid-cols-2">
       {/* Form Section */}
-      <div className="flex flex-col items-center justify-center p-4 md:p-8">
+      <div className="flex flex-col items-center justify-center p-4 md:p-8 relative">
         <div className="w-full max-w-md">
           <div className="mb-8">
             <Progress value={(currentStep / totalSteps) * 100} className="h-2" />
@@ -826,28 +849,31 @@ export default function CreatorStudioPage() {
             </form>
           </Form>
         </div>
+        
+        {/* Mobile Preview Button */}
+        <div className="lg:hidden fixed bottom-4 right-4 z-50">
+            <Sheet>
+                <SheetTrigger asChild>
+                    <Button size="lg" className="rounded-full shadow-lg h-16 w-16">
+                        <Eye className="w-8 h-8" />
+                    </Button>
+                </SheetTrigger>
+                <SheetContent side="bottom" className="h-screen bg-transparent border-none p-4">
+                     <PreviewContent data={watchedData} />
+                </SheetContent>
+            </Sheet>
+        </div>
+
       </div>
 
-      {/* Preview Section */}
+      {/* Preview Section - Desktop */}
       <div className="hidden lg:flex sticky top-0 items-center justify-center w-full h-screen p-8 bg-background">
-          <div className="relative w-full max-w-lg h-full group/preview">
-              <div className="relative z-10 w-full h-full bg-zinc-950 rounded-2xl flex flex-col shadow-2xl">
-                  <div className="bg-zinc-800 rounded-t-lg p-2 flex items-center gap-1.5 border-b border-zinc-700">
-                      <div className="flex items-center gap-1.5">
-                          <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                          <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                          <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                      </div>
-                      <div className="flex-grow bg-zinc-700 rounded-sm px-2 py-1 text-xs text-zinc-400 text-center truncate">
-                          https://luv.com/p/{watchedData.title?.toLowerCase().replace(/\s/g, '-') || 'pagina'}
-                      </div>
-                  </div>
-                  <div className="flex-grow bg-black rounded-b-lg overflow-hidden relative">
-                      <PagePreview data={watchedData} />
-                  </div>
-              </div>
+          <div className="w-full max-w-lg h-full">
+              <PreviewContent data={watchedData} />
           </div>
       </div>
     </div>
   );
 }
+
+    
