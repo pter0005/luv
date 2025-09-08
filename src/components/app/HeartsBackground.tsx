@@ -9,31 +9,31 @@ interface HeartsBackgroundProps {
 }
 
 export function HeartsBackground({ color = 'purple' }: HeartsBackgroundProps) {
-  const [hearts, setHearts] = useState<any[]>([]);
+    const [hearts, setHearts] = useState<any[]>([]);
+
+    useEffect(() => {
+        const generatedHearts = Array.from({ length: 20 }).map((_, i) => {
+            const size = Math.random() * 4 + 2; // 2rem to 6rem
+            const rotation = Math.random() * 90 - 45; // -45deg to 45deg
+            return {
+            id: i,
+            style: {
+                left: `${Math.random() * 100}%`,
+                animationDuration: `${Math.random() * 15 + 15}s`, // 15s to 30s
+                animationDelay: `${Math.random() * 5}s`,
+                width: `${size}rem`,
+                height: `${size}rem`,
+                transform: `rotate(${rotation}deg)`,
+            },
+            };
+        });
+        setHearts(generatedHearts);
+    }, []); 
 
   const heartColorClass = color === 'red' ? 'text-red-500' : 'text-primary';
 
-  useEffect(() => {
-    const generatedHearts = Array.from({ length: 20 }).map((_, i) => {
-        const size = Math.random() * 4 + 2; // 2rem to 6rem
-        const rotation = Math.random() * 90 - 45; // -45deg to 45deg
-        return {
-        id: i,
-        style: {
-            left: `${Math.random() * 100}%`,
-            animationDuration: `${Math.random() * 15 + 15}s`, // 15s to 30s
-            animationDelay: `${Math.random() * 5}s`,
-            width: `${size}rem`,
-            height: `${size}rem`,
-            transform: `rotate(${rotation}deg)`,
-        },
-        };
-    });
-    setHearts(generatedHearts);
-  }, []); 
-
   return (
-    <div className="fixed top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
+    <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
       <div className="relative w-full h-full">
         {hearts.map(heart => (
           <div
@@ -50,5 +50,3 @@ export function HeartsBackground({ color = 'purple' }: HeartsBackgroundProps) {
     </div>
   );
 }
-
-    
