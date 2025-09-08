@@ -43,8 +43,9 @@ import {
 import Image from "next/image";
 import { findYoutubeVideo } from "@/ai/flows/find-youtube-video";
 import { useDebounce } from "@/hooks/use-debounce";
-import { StarsBackground } from "@/components/app/StarsBackground";
 import { HeartsBackground } from "@/components/app/HeartsBackground";
+import { StarsBackground } from "@/components/app/StarsBackground";
+import { VortexBackground } from "@/components/app/VortexBackground";
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
@@ -562,6 +563,8 @@ export default function CreatorStudioPage() {
                                           <div className="w-full h-full bg-black relative overflow-hidden"><StarsBackground/></div>
                                       ) : opt.value === 'hearts' ? (
                                           <div className="w-full h-full bg-black relative overflow-hidden"><HeartsBackground color={watchedData.heartColor as 'purple' | 'red'} /></div>
+                                      ) : opt.value === 'vortex' ? (
+                                          <div className="w-full h-full bg-black relative overflow-hidden"><VortexBackground /></div>
                                       ) : opt.video ? (
                                           opt.video.endsWith('.mp4') ? (
                                           <video
@@ -744,3 +747,5 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
+
+    

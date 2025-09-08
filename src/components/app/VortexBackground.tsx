@@ -1,12 +1,13 @@
+
 "use client";
 import React, { useEffect, useState } from 'react';
 
-const VortexBackground = () => {
+export function VortexBackground() {
   const [items, setItems] = useState<React.CSSProperties[]>([]);
 
   useEffect(() => {
     const newItems: React.CSSProperties[] = [];
-    const center = { x: '50vw', y: '50vh' };
+    const center = { x: '50%', y: '50%' };
     for (let i = 0; i < 200; i++) {
         const angle = Math.random() * Math.PI * 2;
         const radius = Math.random() * 500;
@@ -30,4 +31,4 @@ const VortexBackground = () => {
   );
 };
 
-export { VortexBackground };
+    
