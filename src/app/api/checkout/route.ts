@@ -1,0 +1,68 @@
+
+import { NextRequest, NextResponse } from 'next/server';
+import { MercadoPagoConfig, Preference } from 'mercadopago';
+
+// Adicione seu Access Token do Mercado Pago abaixo
+// Lembre-se de usar uma variável de ambiente em produção!
+const MERCADO_PAGO_ACCESS_TOKEN = process.env.MERCADO_PAGO_ACCESS_TOKEN;
+
+if (!MERCADO_PAGO_ACCESS_TOKEN) {
+    console.warn("MERCADO_PAGO_ACCESS_TOKEN is not set in environment variables.");
+}
+
+const client = new MercadoPagoConfig({ 
+    accessToken: MERCADO_PAGO_ACCESS_TOKEN!,
+    options: { timeout: 5000, idempotencyKey: 'abc' }
+});
+
+export async function POST(req: NextRequest) {
+    if (!MERCADO_PAGO_ACCESS_TOKEN) {
+        return NextResponse.json({ error: 'Mercado Pago credentials not configured.' }, { status: 500 });
+    }
+
+    try {
+        const body = await req.json();
+        const { pageId, title, price, email } = body;
+
+        if (!pageId || !title || !price || !email) {
+            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+        }
+        
+        const preference = new Preference(client);
+
+        const result = await preference.create({
+            body: {
+                items: [
+                    {
+                        id: pageId,
+                        title: `Página Personalizada: ${title}`,
+                        quantity: 1,
+                        unit_price: price,
+                        description: 'Acesso à página personalizada Luv.',
+                    },
+                ],
+                payer: {
+                    email: email,
+                },
+                back_urls: {
+                    success: `${process.env.NEXT_PUBLIC_BASE_URL}/criar/sucesso/${pageId}?status=approved`,
+                    failure: `${process.env.NEXT_PUBLIC_BASE_URL}/criar/sucesso/${pageId}?status=failure`,
+                    pending: `${process.env.NEXT_PUBLIC_BASE_URL}/criar/sucesso/${pageId}?status=pending`,
+                },
+                auto_return: 'approved',
+                notification_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/webhook/mercado-pago`,
+                metadata: {
+                    page_id: pageId,
+                },
+            },
+        });
+
+        return NextResponse.json({ id: result.id, init_point: result.init_point });
+
+    } catch (error) {
+        console.error('Mercado Pago API error:', error);
+        return NextResponse.json({ error: 'Failed to create payment preference' }, { status: 500 });
+    }
+}
+
+    

@@ -48,6 +48,7 @@
     "firebase": "^10.12.2",
     "genkit": "^1.14.1",
     "lucide-react": "^0.475.0",
+    "mercadopago": "^2.0.9",
     "next": "15.3.3",
     "next-qrcode": "^2.5.1",
     "patch-package": "^8.0.0",
@@ -64,6 +65,7 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.13",
+    "@types/mercadopago": "^1.5.11",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -73,3 +75,5 @@
     "typescript": "^5"
   }
 }
+
+    

@@ -78,6 +78,12 @@ const formSchema = z.object({
 
 export type FormData = z.infer<typeof formSchema>;
 
+const planPrices: { [key: string]: number } = {
+    monthly: 20.00,
+    forever: 34.99,
+    custom: 0, // Requires consultation
+};
+
 export default function CreatorStudioPage() {
   const { toast } = useToast();
   const router = useRouter();
@@ -212,18 +218,43 @@ export default function CreatorStudioPage() {
   async function onSubmit(data: FormData) {
     setIsSubmitting(true);
     try {
-      const pageId = await savePageData(data);
-      toast({
-        title: "Página Salva com Sucesso!",
-        description: "Você será redirecionado em breve.",
-      });
-      router.push(`/criar/sucesso/${pageId}`);
+        const pageId = await savePageData(data);
+
+        if (data.plan && data.plan !== 'custom' && planPrices[data.plan] > 0) {
+            const response = await fetch('/api/checkout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    pageId: pageId,
+                    title: data.title,
+                    price: planPrices[data.plan],
+                    email: data.contactEmail,
+                }),
+            });
+
+            const { init_point } = await response.json();
+
+            if (init_point) {
+                router.push(init_point);
+            } else {
+                throw new Error('Falha ao criar link de pagamento.');
+            }
+        } else if (data.plan === 'custom') {
+            // Handle custom plan logic, e.g. show contact info
+            router.push(`/criar/sucesso/${pageId}?plan=custom`);
+        } else {
+             // For free plans or if payment fails to initiate
+            router.push(`/criar/sucesso/${pageId}`);
+        }
+
     } catch (error) {
-      console.error("Failed to save page data:", error);
+      console.error("Failed to process page:", error);
       toast({
         variant: "destructive",
-        title: "Erro ao salvar",
-        description: "Não foi possível salvar sua página. Tente novamente.",
+        title: "Erro ao processar",
+        description: "Não foi possível processar sua página. Tente novamente.",
       });
       setIsSubmitting(false);
     }
@@ -793,7 +824,8 @@ export default function CreatorStudioPage() {
                               <RadioGroupItem value="custom" id="plan-custom">
                                   <div className="font-bold">Sob Medida - Consulte</div>
                                   <div className="text-sm text-muted-foreground">Para ideias que transcendem. Crie algo único.</div>
-                              </RadioGrom up>
+                              </RadioGroupItem>
+                          </RadioGroup>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -817,7 +849,7 @@ export default function CreatorStudioPage() {
                     {isSubmitting ? (
                         <Loader className="mr-2 h-4 w-4 animate-spin"/>
                     ) : (
-                        "Salvar e Obter Link"
+                        "Finalizar e Pagar"
                     )}
                   </Button>
                 )}
@@ -850,3 +882,5 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
+
+    
