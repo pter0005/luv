@@ -37,7 +37,7 @@ export default function CreatorPage() {
       icon: Puzzle,
       title: "Quebra-Cabeça Interativo",
       description: "Uma revelação emocionante através de um quebra-cabeça com uma foto especial.",
-      image: "https://picsum.photos/800/600?random=20",
+      image: "https://i.imgur.com/BzGXfqj.png",
       imageHint: "jigsaw puzzle"
     },
     {
