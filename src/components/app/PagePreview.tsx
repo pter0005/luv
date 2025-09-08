@@ -287,7 +287,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
 };
 
 
-const MusicPlayer = ({ data, isPlaying, audioRef }: { data: Partial<PageData>, isPlaying: boolean, audioRef: React.RefObject<HTMLAudioElement> }) => {
+const MusicPlayer = ({ data }: { data: Partial<PageData> }) => {
     const videoId = React.useMemo(() => {
         if (!data.musicUrl) return null;
         try {
@@ -300,17 +300,7 @@ const MusicPlayer = ({ data, isPlaying, audioRef }: { data: Partial<PageData>, i
         } catch (error) { return null; }
     }, [data.musicUrl]);
 
-    React.useEffect(() => {
-      if (audioRef.current) {
-        if (isPlaying) {
-          audioRef.current.play().catch(e => console.error("Audio play failed", e));
-        } else {
-          audioRef.current.pause();
-        }
-      }
-    }, [isPlaying, audioRef]);
-    
-    if (data.musicChoice === 'youtube' && videoId && isPlaying) {
+    if (data.musicChoice === 'youtube' && videoId) {
         const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&showinfo=0&rel=0&loop=1&playlist=${videoId}`;
         return (
             <div className="absolute top-0 left-0 w-0 h-0 overflow-hidden">
@@ -327,10 +317,6 @@ const MusicPlayer = ({ data, isPlaying, audioRef }: { data: Partial<PageData>, i
         );
     }
     
-    if (data.musicChoice === 'custom' && data.customAudio) {
-       return <audio ref={audioRef} src={data.customAudio} />;
-    }
-
     return null;
 }
 
@@ -349,41 +335,60 @@ const DynamicBackground = ({ animation, heartColor, loveLightColor }: { animatio
     }
 }
 
-const CustomAudioPlayer = ({ onTogglePlay, isPlaying }: { onTogglePlay: () => void, isPlaying: boolean }) => (
-    <div className="absolute bottom-4 left-4 right-4 z-20">
-        <div className="bg-card/40 backdrop-blur-sm border border-border/50 rounded-lg p-3 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-                <div className="p-2 bg-primary/10 rounded-md">
-                    <Music className="w-5 h-5 text-primary" />
-                </div>
-                <p className="text-sm font-semibold text-foreground">Uma mensagem para você</p>
-            </div>
-            <Button onClick={onTogglePlay} size="icon" variant="secondary" className="rounded-full h-10 w-10 bg-background/50 hover:bg-background/80">
-                {isPlaying ? <Pause className="h-5 w-5"/> : <Play className="h-5 w-5"/>}
-            </Button>
-        </div>
-    </div>
-);
+const CustomAudioPlayer = ({ onTogglePlay, isPlaying, audioSrc }: { onTogglePlay: () => void, isPlaying: boolean, audioSrc: string }) => {
+    const audioRef = React.useRef<HTMLAudioElement>(null);
 
+    React.useEffect(() => {
+        if (!audioRef.current) return;
+        if (isPlaying) {
+            audioRef.current.play().catch(e => console.error("Audio play failed", e));
+        } else {
+            audioRef.current.pause();
+        }
+    }, [isPlaying]);
+
+    React.useEffect(() => {
+      if (audioRef.current) {
+          audioRef.current.src = audioSrc;
+      }
+    }, [audioSrc]);
+
+    return (
+        <>
+            <audio ref={audioRef} src={audioSrc} />
+            <div className="absolute bottom-4 left-4 right-4 z-20">
+                <div className="bg-card/40 backdrop-blur-sm border border-border/50 rounded-lg p-3 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-primary/10 rounded-md">
+                            <Music className="w-5 h-5 text-primary" />
+                        </div>
+                        <p className="text-sm font-semibold text-foreground">Uma mensagem para você</p>
+                    </div>
+                    <Button onClick={onTogglePlay} size="icon" variant="secondary" className="rounded-full h-10 w-10 bg-background/50 hover:bg-background/80">
+                        {isPlaying ? <Pause className="h-5 w-5"/> : <Play className="h-5 w-5"/>}
+                    </Button>
+                </div>
+            </div>
+        </>
+    );
+}
 
 export function PagePreview({ data }: PagePreviewProps) {
-  const [isPlaying, setIsPlaying] = React.useState(false);
-  const audioRef = React.useRef<HTMLAudioElement>(null);
+  const [isPlayingCustomAudio, setIsPlayingCustomAudio] = React.useState(false);
   
-  const hasSound = data.musicChoice !== 'none' && (data.musicUrl || data.customAudio);
+  const hasCustomAudio = data.musicChoice === 'custom' && data.customAudio;
 
-  const togglePlay = () => {
-    setIsPlaying(prev => !prev);
+  const toggleCustomAudio = () => {
+    setIsPlayingCustomAudio(prev => !prev);
   }
 
-  // Reset isPlaying when music choice changes
   React.useEffect(() => {
-    setIsPlaying(false);
-  }, [data.musicChoice, data.musicUrl, data.customAudio]);
+    setIsPlayingCustomAudio(false);
+  }, [data.customAudio]);
 
   return (
     <div className="w-full h-full flex flex-col relative overflow-hidden bg-black">
-        <MusicPlayer data={data} isPlaying={isPlaying} audioRef={audioRef} />
+        <MusicPlayer data={data} />
         <DynamicBackground 
             key={`${data.backgroundAnimation}-${data.heartColor}-${data.loveLightColor}`} 
             animation={data.backgroundAnimation} 
@@ -391,22 +396,14 @@ export function PagePreview({ data }: PagePreviewProps) {
             loveLightColor={data.loveLightColor as 'purple' | 'white'}
         />
         
-        {/* Player UI */}
-        {hasSound && (
-            <>
-                {data.musicChoice === 'custom' ? (
-                    <CustomAudioPlayer onTogglePlay={togglePlay} isPlaying={isPlaying} />
-                ) : (
-                    <div className="absolute bottom-4 right-4 z-20">
-                        <Button onClick={togglePlay} size="icon" variant="secondary" className="rounded-full h-12 w-12 bg-background/30 backdrop-blur-sm hover:bg-background/50">
-                            {isPlaying ? <Pause className="h-6 w-6"/> : <Play className="h-6 w-6"/>}
-                        </Button>
-                    </div>
-                )}
-            </>
+        {hasCustomAudio && (
+            <CustomAudioPlayer 
+                onTogglePlay={toggleCustomAudio} 
+                isPlaying={isPlayingCustomAudio} 
+                audioSrc={data.customAudio!} 
+            />
         )}
 
-        {/* Page Content */}
         <div
             className="flex-grow p-4 flex flex-col items-center justify-start text-center relative overflow-y-auto"
         >
