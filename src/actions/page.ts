@@ -34,12 +34,17 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-export async function savePageData(data: FormData): Promise<string> {
+export async function savePageData(data: FormData, userId: string): Promise<string> {
+  if (!userId) {
+    throw new Error('User is not authenticated.');
+  }
+
   try {
     const status = data.plan === 'essencial' ? 'pending_payment' : 'pending_quote';
     
     const pageDataForDb: { [key: string]: any } = {
       ...data,
+      userId,
       status: status,
       createdAt: new Date(),
     };
@@ -137,4 +142,22 @@ export async function getPageData(id: string) {
         console.error("Error getting document:", error);
         throw new Error("Failed to retrieve page data.");
     }
+}
+
+export async function getPagesByUserId(userId: string) {
+  if (!userId) {
+    return [];
+  }
+  try {
+    const q = query(collection(db, 'pages'), where('userId', '==', userId));
+    const querySnapshot = await getDocs(q);
+    const pages: any[] = [];
+    querySnapshot.forEach((doc) => {
+      pages.push({ id: doc.id, ...doc.data() });
+    });
+    return pages;
+  } catch (error) {
+    console.error("Error getting user pages:", error);
+    return [];
+  }
 }

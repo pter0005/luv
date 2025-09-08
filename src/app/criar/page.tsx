@@ -7,8 +7,9 @@ import { ArrowLeft, Brush, Files } from "lucide-react";
 import Link from "next/link";
 import { HeartsBackground } from "@/components/app/HeartsBackground";
 import { AnimatedBackground } from "@/components/app/AnimatedBackground";
+import { withAuth } from "@/contexts/AuthContext";
 
-export default function CriarPage() {
+function CriarPage() {
     return (
         <div className="relative min-h-screen">
             <AnimatedBackground />
@@ -58,3 +59,5 @@ export default function CriarPage() {
         </div>
     )
 }
+
+export default withAuth(CriarPage);

@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import { Header } from '@/components/app/Header';
 import { Footer } from '@/components/app/Footer';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 export const metadata: Metadata = {
   title: 'Luv ©',
@@ -38,14 +39,16 @@ export default function RootLayout({
           'antialiased overflow-x-hidden bg-background min-h-screen'
         )}
       >
-        <div className="relative w-full h-full">
-          <div className="relative z-10 flex flex-col min-h-screen">
-            <Header />
-            <main className="flex-grow">{children}</main>
-            <Footer />
+        <AuthProvider>
+          <div className="relative w-full h-full">
+            <div className="relative z-10 flex flex-col min-h-screen">
+              <Header />
+              <main className="flex-grow">{children}</main>
+              <Footer />
+            </div>
           </div>
-        </div>
-        <Toaster />
+          <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );
