@@ -32,7 +32,6 @@ export async function POST(req: NextRequest) {
         
         const preference = new Preference(client);
         
-        // Use the request headers to build the base URL dynamically and reliably.
         const host = req.headers.get('host');
         const protocol = host?.startsWith('localhost') ? 'http' : 'https';
         const baseUrl = `${protocol}://${host}`;
@@ -49,7 +48,12 @@ export async function POST(req: NextRequest) {
                     },
                 ],
                 payer: {
-                    email: email, // Sempre usar o e-mail real do cliente
+                    email: email,
+                },
+                payment_methods: {
+                    excluded_payment_methods: [],
+                    excluded_payment_types: [],
+                    installments: 1, // Apenas 1 parcela (pagamento à vista)
                 },
                 back_urls: {
                     success: `${baseUrl}/criar/sucesso/${pageId}`,
