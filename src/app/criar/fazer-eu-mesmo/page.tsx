@@ -56,6 +56,7 @@ const formSchema = z.object({
   photoDisplayType: z.string().optional(),
   musicUrl: z.string().url("URL inválida.").optional().or(z.literal('')),
   backgroundAnimation: z.string().optional(),
+  heartColor: z.string().optional(),
   contactName: z.string().optional(),
   contactEmail: z.string().email("Email inválido.").optional().or(z.literal('')),
   contactPhone: z.string().optional(),
@@ -88,6 +89,7 @@ export default function CreatorStudioPage() {
       dateDisplayType: "padrão",
       musicUrl: "",
       backgroundAnimation: "none",
+      heartColor: "purple",
       contactName: "",
       contactEmail: "",
       contactPhone: "",
@@ -221,7 +223,7 @@ export default function CreatorStudioPage() {
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep + 1);
+      setCurrentStep(currentStep - 1);
     }
   };
 
@@ -535,55 +537,81 @@ export default function CreatorStudioPage() {
                   </div>
                 )}
                 {currentStep === 6 && (
-                   <FormField
-                    control={form.control}
-                    name="backgroundAnimation"
-                    render={({ field }) => (
-                      <FormItem className="space-y-3">
-                        <FormControl>
-                          <RadioGroup
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            className="grid grid-cols-2 lg:grid-cols-3 gap-4"
-                          >
-                            {animationOptions.map(opt => (
-                              <RadioGroupItem key={opt.value} value={opt.value} id={`bg-${opt.value}`} className="h-24 p-0 rounded-xl relative overflow-hidden group/item">
-                                <div className="absolute inset-0 w-full h-full">
-                                    {opt.video ? (
-                                        opt.video.endsWith('.mp4') ? (
-                                        <video
-                                            src={opt.video}
-                                            autoPlay
-                                            loop
-                                            muted
-                                            playsInline
-                                            className="w-full h-full object-cover"
-                                        />
-                                        ) : (
-                                        <Image src={opt.video} alt={opt.label} fill className="object-cover" />
-                                        )
-                                    ) : (
-                                        <div className="w-full h-full bg-card"></div>
-                                    )}
-                                </div>
-                                <div className="absolute inset-0 bg-black/40 group-hover/item:bg-black/20 transition-colors"></div>
-                                <div className="relative z-10 p-2 text-left w-full">
-                                    <h2 className="font-semibold text-white drop-shadow-md">{opt.label}</h2>
-                                    {opt.pro && (
-                                        <div className="absolute top-1 right-1 bg-primary/80 text-primary-foreground text-xs font-semibold flex items-center rounded-full px-1.5 py-0.5">
-                                            <Sparkles className="w-3 h-3 mr-1"/>
-                                            PRO
-                                        </div>
-                                    )}
-                                </div>
-                              </RadioGroupItem>
-                            ))}
-                          </RadioGroup>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
+                   <div className="space-y-6">
+                    <FormField
+                      control={form.control}
+                      name="backgroundAnimation"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel className="font-semibold">Escolha a Animação</FormLabel>
+                          <FormControl>
+                            <RadioGroup
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                              className="grid grid-cols-2 lg:grid-cols-3 gap-4"
+                            >
+                              {animationOptions.map(opt => (
+                                <RadioGroupItem key={opt.value} value={opt.value} id={`bg-${opt.value}`} className="h-24 p-0 rounded-xl relative overflow-hidden group/item">
+                                  <div className="absolute inset-0 w-full h-full">
+                                      {opt.video ? (
+                                          opt.video.endsWith('.mp4') ? (
+                                          <video
+                                              src={opt.video}
+                                              autoPlay
+                                              loop
+                                              muted
+                                              playsInline
+                                              className="w-full h-full object-cover"
+                                          />
+                                          ) : (
+                                          <Image src={opt.video} alt={opt.label} fill className="object-cover" />
+                                          )
+                                      ) : (
+                                          <div className="w-full h-full bg-card"></div>
+                                      )}
+                                  </div>
+                                  <div className="absolute inset-0 bg-black/40 group-hover/item:bg-black/20 transition-colors"></div>
+                                  <div className="relative z-10 p-2 text-left w-full">
+                                      <h2 className="font-semibold text-white drop-shadow-md">{opt.label}</h2>
+                                      {opt.pro && (
+                                          <div className="absolute top-1 right-1 bg-primary/80 text-primary-foreground text-xs font-semibold flex items-center rounded-full px-1.5 py-0.5">
+                                              <Sparkles className="w-3 h-3 mr-1"/>
+                                              PRO
+                                          </div>
+                                      )}
+                                  </div>
+                                </RadioGroupItem>
+                              ))}
+                            </RadioGroup>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {watchedData.backgroundAnimation === 'hearts' && (
+                       <FormField
+                          control={form.control}
+                          name="heartColor"
+                          render={({ field }) => (
+                              <FormItem className="space-y-3">
+                              <FormLabel className="font-semibold">Cor dos Corações</FormLabel>
+                              <FormControl>
+                                  <RadioGroup
+                                      onValueChange={field.onChange}
+                                      defaultValue={field.value}
+                                      className="grid grid-cols-2 gap-4"
+                                  >
+                                      <RadioGroupItem value="purple" id="heart-purple">Roxo</RadioGroupItem>
+                                      <RadioGroupItem value="red" id="heart-red">Vermelho</RadioGroupItem>
+                                  </RadioGroup>
+                              </FormControl>
+                              <FormMessage />
+                              </FormItem>
+                          )}
+                      />
                     )}
-                  />
+                  </div>
                 )}
                 {currentStep === 7 && (
                   <div className="space-y-4">
@@ -682,9 +710,9 @@ export default function CreatorStudioPage() {
       </div>
 
       {/* Preview Section */}
-      <div className="hidden lg:flex sticky top-0 items-center justify-center w-full h-screen p-8">
-          <div className="relative w-full max-w-lg h-full">
-             <AnimatedBackground />
+      <div className="hidden lg:flex sticky top-0 items-center justify-center w-full h-screen p-8 bg-black/10">
+          <div className="relative w-full max-w-lg h-full group/preview">
+             <div className="absolute inset-0 w-full h-full -z-10 overflow-hidden pointer-events-none purple-fog"></div>
               <div className="relative z-10 w-full h-full bg-zinc-950 rounded-2xl flex flex-col shadow-2xl">
                   <div className="bg-zinc-800 rounded-t-lg p-2 flex items-center gap-1.5 border-b border-zinc-700">
                       <div className="flex items-center gap-1.5">
@@ -705,3 +733,5 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
+
+    

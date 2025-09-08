@@ -80,7 +80,7 @@ export default function CreatorPage() {
   return (
     <>
       <AnimatedBackground fixed />
-      <HeartsBackground />
+      <HeartsBackground color="purple" />
       {/* Hero Section */}
       <section className="relative section-padding flex items-center min-h-[calc(100vh-80px)]">
         <div className="container relative z-10 grid lg:grid-cols-2 gap-12 items-center">
@@ -205,3 +205,5 @@ export default function CreatorPage() {
     </>
   );
 }
+
+    

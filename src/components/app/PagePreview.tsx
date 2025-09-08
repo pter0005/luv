@@ -38,6 +38,7 @@ const formSchema = z.object({
   photoDisplayType: z.string().optional(),
   musicUrl: z.string().optional(),
   backgroundAnimation: z.string().optional(),
+  heartColor: z.string().optional(),
   contactName: z.string().optional(),
   contactEmail: z.string().email("Email inválido.").optional(),
   contactPhone: z.string().optional(),
@@ -314,10 +315,10 @@ const MusicPlayer = ({ musicUrl }: { musicUrl?: string }) => {
     )
 }
 
-const DynamicBackground = ({ animation }: { animation?: string }) => {
+const DynamicBackground = ({ animation, heartColor }: { animation?: string, heartColor?: 'purple' | 'red' }) => {
     switch (animation) {
         case 'hearts':
-            return <HeartsBackground />;
+            return <HeartsBackground color={heartColor} />;
         default:
             return null;
     }
@@ -327,7 +328,11 @@ export function PagePreview({ data }: PagePreviewProps) {
   return (
     <div className="w-full h-full flex flex-col relative overflow-hidden bg-black">
         <MusicPlayer musicUrl={data.musicUrl} />
-        <DynamicBackground key={data.backgroundAnimation} animation={data.backgroundAnimation} />
+        <DynamicBackground 
+            key={`${data.backgroundAnimation}-${data.heartColor}`} 
+            animation={data.backgroundAnimation} 
+            heartColor={data.heartColor as 'purple' | 'red'} 
+        />
         
         {/* Page Content */}
         <div
@@ -364,3 +369,5 @@ export function PagePreview({ data }: PagePreviewProps) {
     </div>
   );
 }
+
+    
