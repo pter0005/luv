@@ -5,8 +5,6 @@ import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import { Header } from '@/components/app/Header';
 import { Footer } from '@/components/app/Footer';
-import { AnimatedBackground } from '@/components/app/AnimatedBackground';
-import { HeartsBackground } from '@/components/app/HeartsBackground';
 
 export const metadata: Metadata = {
   title: 'Luv ©',
@@ -38,8 +36,6 @@ export default function RootLayout({
         )}
       >
         <div className="relative w-full h-full">
-          <AnimatedBackground fixed />
-          <HeartsBackground />
           <div className="relative z-10 flex flex-col min-h-screen">
             <Header />
             <main className="flex-grow">{children}</main>

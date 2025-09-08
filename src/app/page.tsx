@@ -22,6 +22,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from "next/link";
 import { TypingAnimation } from "@/components/app/TypingAnimation";
+import { HeartsBackground } from "@/components/app/HeartsBackground";
+import { AnimatedBackground } from "@/components/app/AnimatedBackground";
 
 export default function CreatorPage() {
   const testimonials = [
@@ -77,6 +79,8 @@ export default function CreatorPage() {
 
   return (
     <>
+      <AnimatedBackground fixed />
+      <HeartsBackground />
       {/* Hero Section */}
       <section className="relative section-padding flex items-center min-h-[calc(100vh-80px)]">
         <div className="container relative z-10 grid lg:grid-cols-2 gap-12 items-center">

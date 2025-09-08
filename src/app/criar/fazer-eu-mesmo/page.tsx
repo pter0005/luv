@@ -43,6 +43,7 @@ import {
 import Image from "next/image";
 import { findYoutubeVideo } from "@/ai/flows/find-youtube-video";
 import { useDebounce } from "@/hooks/use-debounce";
+import { AnimatedBackground } from "@/components/app/AnimatedBackground";
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
@@ -220,7 +221,7 @@ export default function CreatorStudioPage() {
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+      setCurrentStep(currentStep + 1);
     }
   };
 
@@ -682,24 +683,25 @@ export default function CreatorStudioPage() {
 
       {/* Preview Section */}
       <div className="hidden lg:flex sticky top-0 items-center justify-center w-full h-screen p-8">
-          <div className="w-full max-w-lg h-full bg-zinc-950 rounded-2xl flex flex-col shadow-2xl">
-              <div className="bg-zinc-800 rounded-t-lg p-2 flex items-center gap-1.5 border-b border-zinc-700">
-                  <div className="flex items-center gap-1.5">
-                      <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                      <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                      <div className="w-3 h-3 rounded-full bg-green-500"></div>
+          <div className="relative w-full max-w-lg h-full">
+             <AnimatedBackground />
+              <div className="relative z-10 w-full h-full bg-zinc-950 rounded-2xl flex flex-col shadow-2xl">
+                  <div className="bg-zinc-800 rounded-t-lg p-2 flex items-center gap-1.5 border-b border-zinc-700">
+                      <div className="flex items-center gap-1.5">
+                          <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                          <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                          <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                      </div>
+                      <div className="flex-grow bg-zinc-700 rounded-sm px-2 py-1 text-xs text-zinc-400 text-center truncate">
+                          https://luv.com/p/{watchedData.title?.toLowerCase().replace(/\s/g, '-') || 'pagina'}
+                      </div>
                   </div>
-                  <div className="flex-grow bg-zinc-700 rounded-sm px-2 py-1 text-xs text-zinc-400 text-center truncate">
-                      https://luv.com/p/{watchedData.title?.toLowerCase().replace(/\s/g, '-') || 'pagina'}
+                  <div className="flex-grow bg-black rounded-b-lg overflow-hidden">
+                      <PagePreview data={watchedData} />
                   </div>
-              </div>
-              <div className="flex-grow bg-black rounded-b-lg overflow-hidden">
-                  <PagePreview data={watchedData} />
               </div>
           </div>
       </div>
     </div>
   );
 }
-
-    
