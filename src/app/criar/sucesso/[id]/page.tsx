@@ -12,9 +12,8 @@ import { useQRCode } from 'next-qrcode';
 import { useToast } from '@/hooks/use-toast';
 
 const planPrices: { [key: string]: number } = {
-    monthly: 20.00,
+    custom: 14.99,
     forever: 34.99,
-    custom: 0, 
 };
 
 export default function SucessoPage({ params }: { params: { id: string } }) {
@@ -49,7 +48,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   }, [params.id, toast]);
 
   const handleCheckout = async () => {
-    if (!pageData) return;
+    if (!pageData || !pageData.plan) return;
     setIsProcessingPayment(true);
 
     const price = planPrices[pageData.plan];
@@ -218,7 +217,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                         Finalize o Pagamento
                     </CardTitle>
                     <CardDescription className="text-center">
-                        Plano selecionado: <span className="font-bold text-primary">{pageData?.plan}</span>
+                        Plano selecionado: <span className="font-bold text-primary capitalize">{pageData?.plan}</span>
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="text-center">
@@ -226,12 +225,12 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                         size="lg" 
                         className="w-full" 
                         onClick={handleCheckout}
-                        disabled={isProcessingPayment}
+                        disabled={isProcessingPayment || !pageData?.plan}
                     >
                         {isProcessingPayment ? 'Processando...' : (
                             <>
                                 <Wallet className="mr-2 h-5 w-5" />
-                                Pagar com Mercado Pago - R$ {planPrices[pageData?.plan]?.toFixed(2)}
+                                Pagar com Mercado Pago - R$ {planPrices[pageData?.plan]?.toFixed(2).replace('.', ',') ?? '0,00'}
                             </>
                         )}
                     </Button>

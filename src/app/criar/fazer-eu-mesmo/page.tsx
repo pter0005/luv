@@ -962,17 +962,13 @@ export default function CreatorStudioPage() {
                             defaultValue={field.value}
                             className="space-y-4"
                           >
-                              <RadioGroupItem value="monthly" id="plan-monthly">
-                                  <div className="font-bold">Mensal - R$20,00/mês</div>
-                                  <div className="text-sm text-muted-foreground">Ideal para uma surpresa pontual.</div>
+                              <RadioGroupItem value="custom" id="plan-custom">
+                                  <div className="font-bold">Plano Essencial - R$14,99</div>
+                                  <div className="text-sm text-muted-foreground">Pague uma vez, acesso por um ano.</div>
                               </RadioGroupItem>
                               <RadioGroupItem value="forever" id="plan-forever">
-                                  <div className="font-bold">Para Sempre - R$34,99</div>
+                                  <div className="font-bold">Plano Para Sempre - R$34,99</div>
                                   <div className="text-sm text-muted-foreground">Acesso vitalício à sua obra de arte digital.</div>
-                              </RadioGroupItem>
-                              <RadioGroupItem value="custom" id="plan-custom">
-                                  <div className="font-bold">Sob Medida - Consulte</div>
-                                  <div className="text-sm text-muted-foreground">Para ideias que transcendem. Crie algo único.</div>
                               </RadioGroupItem>
                           </RadioGroup>
                         </FormControl>
