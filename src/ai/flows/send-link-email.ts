@@ -30,6 +30,8 @@ export async function sendLinkEmail(
 // NOTE: To enable email sending, you need to:
 // 1. Get an API key from https://resend.com
 // 2. Add the key to your environment variables as `RESEND_API_KEY`.
+// 3. For production, purchase a custom domain and verify it on Resend.
+//    Then, update the `from` field below to use your verified domain.
 
 const sendLinkEmailFlow = ai.defineFlow(
   {
@@ -54,7 +56,9 @@ const sendLinkEmailFlow = ai.defineFlow(
 
     try {
       await resend.emails.send({
-        from: 'Luv <onboarding@resend.dev>', // Using Resend's test domain, no verification needed.
+        // For testing, Resend allows sending from this unverified domain.
+        // For production, replace with your own verified domain, e.g., 'Luv <contato@seu-dominio.com>'
+        from: 'Luv <onboarding@resend.dev>',
         to: [email],
         subject: `Sua página especial "${pageTitle}" está pronta!`,
         html: `
