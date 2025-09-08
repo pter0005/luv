@@ -26,6 +26,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     const status = searchParams.get('status');
+    const paymentId = searchParams.get('payment_id');
     
     const checkPageData = async () => {
         setLoading(true);
@@ -33,22 +34,18 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
             const data = await getPageData(params.id);
             if (data) {
                 setPageData(data);
-                // If status is already paid in DB, show success
                 if (data.status === 'paid') {
                     setPaymentStatus('approved');
-                } else if (status === 'approved' && data.status !== 'paid') {
-                    // If redirected with approved but DB is not updated, try to confirm it now.
-                    // This handles cases where the webhook is slow or fails.
+                } else if (status === 'approved' || (data.status !== 'paid' && paymentId)) {
+                    // This handles cases where the webhook is slow or fails, by confirming on redirect.
                     const result = await confirmPaymentAndSendEmail(params.id);
                     if (result.success) {
                         setPaymentStatus('approved');
-                         // Refetch data to be sure
-                        const updatedData = await getPageData(params.id);
+                        const updatedData = await getPageData(params.id); // Refetch data
                         setPageData(updatedData);
                     } else {
-                        // Keep payment status from URL but show an error that confirmation failed
                         setPaymentStatus(status);
-                        toast({ variant: "destructive", title: "Erro de Confirmação", description: "O pagamento foi aprovado, mas houve um erro ao ativar a página. Tente recarregar."});
+                        toast({ variant: "destructive", title: "Erro de Confirmação", description: "O pagamento foi aprovado, mas houve um erro ao ativar a página. Tente recarregar ou contate o suporte."});
                     }
                 } else {
                   setPaymentStatus(status);
@@ -114,6 +111,9 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                 title: "Pagamento de Teste Aprovado!", 
                 description: `O e-mail de teste foi enviado para ${pageData?.contactEmail}. Verifique sua caixa de entrada.`
             });
+            const updatedData = await getPageData(params.id);
+            setPageData(updatedData);
+            setPaymentStatus('approved');
         } else {
             throw new Error(result.message || "Falha ao simular pagamento e enviar e-mail.");
         }
@@ -244,8 +244,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                 Pagamento <span className="text-red-500">Recusado</span>
                 </h1>
                 <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-                Ocorreu um problema ao processar seu pagamento. Por favor, tente novamente ou use outra forma de pagamento.
-                Se o problema persistir, entre em contato conosco em <a href="mailto:criarcomluv@gmail.com" className="underline font-semibold hover:text-primary">criarcomluv@gmail.com</a>.
+                Ocorreu um problema ao processar seu pagamento. Por favor, tente novamente ou use outra forma de pagamento. Se o problema persistir, entre em contato conosco em <a href="mailto:criarcomluv@gmail.com" className="underline font-semibold hover:text-primary">criarcomluv@gmail.com</a>.
                 </p>
                 <Button 
                     size="lg" 
@@ -273,7 +272,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                 Pagamento <span className="text-yellow-500">Pendente</span>
                 </h1>
                 <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-                    Seu pagamento está sendo processado. Assim que for aprovado, sua página será ativada. Você pode recarregar a página para verificar.
+                    Seu pagamento está sendo processado. Assim que for aprovado, sua página será ativada e você receberá um e-mail. Você pode recarregar a página para verificar.
                 </p>
             </>
         )

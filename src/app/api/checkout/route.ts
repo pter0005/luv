@@ -52,12 +52,12 @@ export async function POST(req: NextRequest) {
                     email: email, // Sempre usar o e-mail real do cliente
                 },
                 back_urls: {
-                    success: `${baseUrl}/criar/sucesso/${pageId}?status=approved`,
-                    failure: `${baseUrl}/criar/sucesso/${pageId}?status=failure`,
-                    pending: `${baseUrl}/criar/sucesso/${pageId}?status=pending`,
+                    success: `${baseUrl}/criar/sucesso/${pageId}`,
+                    failure: `${baseUrl}/criar/sucesso/${pageId}`,
+                    pending: `${baseUrl}/criar/sucesso/${pageId}`,
                 },
                 auto_return: 'approved',
-                notification_url: `${baseUrl}/api/webhook/mercado-pago`,
+                notification_url: `${baseUrl}/api/webhook/mercado-pago?source_news=webhooks`,
                 metadata: {
                     page_id: pageId,
                 },
