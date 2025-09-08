@@ -2,11 +2,12 @@
 "use client";
 
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { confirmPaymentAndSendEmail, getPageData } from '@/actions/page';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, CheckCircle, Clock, Copy, Download, Share2, Wallet, TestTube2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Clock, Copy, Download, Share2, Wallet, TestTube2, XCircle, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 import { useQRCode } from 'next-qrcode';
 import { useToast } from '@/hooks/use-toast';
@@ -15,22 +16,34 @@ const FIXED_PRICE = 14.99;
 
 export default function SucessoPage({ params }: { params: { id: string } }) {
   const { toast } = useToast();
+  const searchParams = useSearchParams();
   const [pageData, setPageData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [isPaid, setIsPaid] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
   const { Canvas } = useQRCode();
 
   useEffect(() => {
-    const checkPaymentStatus = async () => {
+    const status = searchParams.get('status');
+    setPaymentStatus(status);
+
+    const checkPageData = async () => {
         setLoading(true);
         try {
             const data = await getPageData(params.id);
             if (data) {
                 setPageData(data);
+                // If status is already paid in DB, show success
                 if (data.status === 'paid') {
-                    setIsPaid(true);
+                    setPaymentStatus('approved');
+                } else if (status === 'approved') {
+                    // If redirected with approved but DB is not updated, try to confirm it now.
+                    // This handles cases where the webhook is slow.
+                    const result = await confirmPaymentAndSendEmail(params.id);
+                    if (result.success) {
+                        setPaymentStatus('approved');
+                    }
                 }
             } else {
                 toast({ variant: "destructive", title: "Página não encontrada" });
@@ -42,8 +55,8 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
         }
     };
     
-    checkPaymentStatus();
-  }, [params.id, toast]);
+    checkPageData();
+  }, [params.id, toast, searchParams]);
 
   const handleCheckout = async () => {
     if (!pageData) return;
@@ -87,17 +100,16 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   const handleTestPayment = async () => {
     setIsTesting(true);
     try {
-        // This confirms payment and sends the email
         const result = await confirmPaymentAndSendEmail(params.id);
         if (result.success) {
             toast({ 
-                title: "E-mail de teste enviado!", 
-                description: `Verifique a caixa de entrada de: ${pageData?.contactEmail}`
+                title: "Pagamento de Teste Aprovado!", 
+                description: `A página agora está ativa e pronta para ser compartilhada.`
             });
-            // We will NOT set isPaid to true here, to force the user to check the email
-            // This makes the test flow more realistic.
+            // Force a reload of the page data to reflect the new paid status
+            setPaymentStatus('approved');
         } else {
-            throw new Error(result.message || "Falha ao simular pagamento e enviar e-mail.");
+            throw new Error(result.message || "Falha ao simular pagamento.");
         }
     } catch (error: any) {
         toast({
@@ -159,7 +171,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
       )
     }
 
-    if (isPaid) {
+    if (paymentStatus === 'approved') {
        return (
           <>
             <div className="p-4 bg-green-500/10 rounded-full mb-6 ring-4 ring-green-500/20">
@@ -214,6 +226,39 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
             </Card>
         </>
        )
+    }
+    
+    if (paymentStatus === 'failure') {
+        return (
+            <>
+                <div className="p-4 bg-red-500/10 rounded-full mb-6 ring-4 ring-red-500/20">
+                    <XCircle className="w-10 h-10 md:w-12 md:h-12 text-red-500" />
+                </div>
+                <h1 className="text-4xl md:text-5xl font-bold tracking-tighter mb-4 text-foreground font-display">
+                Pagamento <span className="text-red-500">Recusado</span>
+                </h1>
+                <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
+                Ocorreu um problema ao processar seu pagamento. Por favor, tente novamente ou use outra forma de pagamento.
+                </p>
+                {/* Render payment card again */}
+            </>
+        )
+    }
+
+    if (paymentStatus === 'pending') {
+        return (
+            <>
+                <div className="p-4 bg-yellow-500/10 rounded-full mb-6 ring-4 ring-yellow-500/20">
+                    <AlertTriangle className="w-10 h-10 md:w-12 md:h-12 text-yellow-500" />
+                </div>
+                <h1 className="text-4xl md:text-5xl font-bold tracking-tighter mb-4 text-foreground font-display">
+                Pagamento <span className="text-yellow-500">Pendente</span>
+                </h1>
+                <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
+                    Seu pagamento está sendo processado. Assim que for aprovado, sua página será ativada. Você pode recarregar a página para verificar.
+                </p>
+            </>
+        )
     }
 
     return (
@@ -271,7 +316,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                         {isTesting ? 'Testando...' : (
                             <>
                                 <TestTube2 className="mr-2 h-4 w-4" />
-                                Simular Pagamento e Enviar E-mail de Teste
+                                Simular Pagamento e Ativar Página
                             </>
                         )}
                     </Button>
@@ -295,3 +340,5 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
+
+    
