@@ -102,14 +102,6 @@ export default {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0' },
         },
-        aurora: {
-          from: {
-            backgroundPosition: "50% 50%, 50% 50%",
-          },
-          to: {
-            backgroundPosition: "350% 50%, 350% 50%",
-          },
-        },
         'purple-fog': {
           '0%': {
             transform: 'scale(1.2) translate(0, 0)',
@@ -143,7 +135,6 @@ export default {
         'fade-in-up': 'fade-in-up 0.8s ease-out forwards',
         'blink': 'blink 1s step-end infinite',
         'purple-fog': 'purple-fog 20s ease-in-out infinite',
-        aurora: "aurora 60s linear infinite",
       },
     },
   },

@@ -23,7 +23,6 @@ import 'swiper/css/effect-cards';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { HeartsBackground } from "./HeartsBackground";
-import { AuroraBackground } from "./AuroraBackground";
 import { CloudsBackground } from "./CloudsBackground";
 import { StarsBackground } from "./StarsBackground";
 import { VortexBackground } from "./VortexBackground";
@@ -327,8 +326,6 @@ const DynamicBackground = ({ animation, heartColor }: { animation?: string, hear
             return <HeartsBackground color={heartColor} />;
         case 'stars':
             return <StarsBackground />;
-        case 'aurora':
-            return <AuroraBackground />;
         case 'clouds':
             return <CloudsBackground />;
         case 'vortex':

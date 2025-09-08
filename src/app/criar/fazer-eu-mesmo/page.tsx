@@ -46,7 +46,6 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { HeartsBackground } from "@/components/app/HeartsBackground";
 import { StarsBackground } from "@/components/app/StarsBackground";
 import { VortexBackground } from "@/components/app/VortexBackground";
-import { AuroraBackground } from "@/components/app/AuroraBackground";
 import { CloudsBackground } from "@/components/app/CloudsBackground";
 import { ColoredStarsBackground } from "@/components/app/ColoredStarsBackground";
 
@@ -272,8 +271,7 @@ export default function CreatorStudioPage() {
     { value: 'hearts', label: 'Chuva de Corações', pro: false },
     { value: 'stars', label: 'Céu Estrelado', pro: false },
     { value: 'colored-stars', label: 'Pontos Coloridos', pro: true },
-    { value: 'aurora', label: 'Aurora Boreal', pro: true },
-    { value: 'vortex', label: 'Nebulosa Roxa', pro: true },
+    { value: 'vortex', label: 'Fumaça Roxa', pro: true },
     { value: 'clouds', label: 'Nuvens', pro: true },
   ];
 
@@ -565,7 +563,6 @@ export default function CreatorStudioPage() {
                                   <div className="absolute inset-0 w-full h-full">
                                         {opt.value === 'stars' && <div className="w-full h-full bg-black relative overflow-hidden"><StarsBackground/></div>}
                                         {opt.value === 'hearts' && <div className="w-full h-full bg-black relative overflow-hidden"><HeartsBackground color={watchedData.heartColor as 'purple' | 'red'} /></div>}
-                                        {opt.value === 'aurora' && <div className="w-full h-full bg-black relative overflow-hidden"><AuroraBackground /></div>}
                                         {opt.value === 'vortex' && <div className="w-full h-full bg-black relative overflow-hidden"><VortexBackground /></div>}
                                         {opt.value === 'clouds' && <div className="w-full h-full bg-black relative overflow-hidden"><CloudsBackground /></div>}
                                         {opt.value === 'colored-stars' && <div className="w-full h-full bg-black relative overflow-hidden"><ColoredStarsBackground /></div>}
