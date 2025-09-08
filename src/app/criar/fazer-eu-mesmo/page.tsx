@@ -483,9 +483,16 @@ function CreatorStudioPage() {
 
 
   return (
-    <div className="grid w-full min-h-screen grid-cols-1 lg:grid-cols-2">
+    <div className="flex flex-col w-full min-h-screen items-center">
+      {/* Preview Section */}
+      <div className="w-full h-[60vh] md:h-[80vh] p-4 md:p-8 bg-background sticky top-0 z-10">
+          <div className="w-full h-full max-w-4xl mx-auto">
+              <PreviewContent data={watchedData} />
+          </div>
+      </div>
+      
       {/* Form Section */}
-      <div className="flex flex-col items-center justify-center p-4 md:p-8 relative">
+      <div className="w-full flex flex-col items-center p-4 md:p-8 relative bg-card -mt-12 rounded-t-3xl border-t border-border">
         <div className="w-full max-w-md">
           <div className="mb-8">
             <Progress value={(currentStep / totalSteps) * 100} className="h-2" />
@@ -1068,28 +1075,6 @@ function CreatorStudioPage() {
             </form>
           </Form>
         </div>
-        
-        {/* Mobile Preview Button */}
-        <div className="lg:hidden fixed bottom-4 right-4 z-50">
-            <Sheet>
-                <SheetTrigger asChild>
-                    <Button size="lg" className="rounded-full shadow-lg h-16 w-16">
-                        <Eye className="w-8 h-8" />
-                    </Button>
-                </SheetTrigger>
-                <SheetContent side="bottom" className="h-screen bg-transparent border-none p-4">
-                     <PreviewContent data={watchedData} />
-                </SheetContent>
-            </Sheet>
-        </div>
-
-      </div>
-
-      {/* Preview Section - Desktop */}
-      <div className="hidden lg:flex sticky top-0 items-center justify-center w-full h-screen p-8 bg-background">
-          <div className="w-full max-w-lg h-full">
-              <PreviewContent data={watchedData} />
-          </div>
       </div>
     </div>
   );
