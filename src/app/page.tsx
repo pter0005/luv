@@ -36,7 +36,7 @@ export default function CreatorPage() {
     {
       icon: Puzzle,
       title: "Quebra-Cabeça Interativo",
-      description: "Uma revelação emocionante através de um quebra-cabeça com uma foto especial.",
+      description: "Transforme a revelação em um jogo! A pessoa amada monta uma foto especial para desvendar a surpresa e acessar sua página.",
       image: "https://i.imgur.com/BzGXfqj.png",
       imageHint: "jigsaw puzzle"
     },
