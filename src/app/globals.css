@@ -150,67 +150,6 @@
     will-change: opacity;
 }
 
-/* Aurora animation */
-@keyframes aurora-glow {
-    0% {
-        transform: translate(var(--x-start), var(--y-start)) scale(1.2);
-        opacity: var(--opacity-start, 0.4);
-    }
-    50% {
-        transform: translate(var(--x-end), var(--y-end)) scale(1.8);
-        opacity: var(--opacity-end, 0.1);
-    }
-    100% {
-        transform: translate(var(--x-start), var(--y-start)) scale(1.2);
-        opacity: var(--opacity-start, 0.4);
-    }
-}
-.aurora {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-}
-.aurora__item {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 50vw;
-    height: 50vh;
-    background: radial-gradient(ellipse at center, hsl(var(--primary) / 0.3) 0%, transparent 70%);
-    border-radius: 50%;
-    filter: blur(100px);
-    mix-blend-mode: screen;
-    animation: aurora-glow 20s ease-in-out infinite alternate;
-    --x-start: 10vw;
-    --y-start: 10vh;
-    --x-end: 80vw;
-    --y-end: 70vh;
-}
-
-.aurora__item:nth-child(2) {
-    width: 60vw;
-    height: 60vh;
-    background: radial-gradient(ellipse at center, hsl(var(--accent) / 0.3) 0%, transparent 70%);
-    --x-start: 80vw;
-    --y-start: 20vh;
-    --x-end: 20vw;
-    --y-end: 80vh;
-    animation-delay: -5s;
-    animation-duration: 25s;
-}
-
-.aurora__item:nth-child(3) {
-    width: 40vw;
-    height: 70vh;
-    background: radial-gradient(ellipse at center, hsl(var(--primary) / 0.2) 0%, transparent 70%);
-    --x-start: 30vw;
-    --y-start: 80vh;
-    --x-end: 70vw;
-    --y-end: 10vh;
-    animation-delay: -10s;
-    animation-duration: 30s;
-}
-
 /* Clouds Animation */
 @keyframes move-clouds {
     0% { transform: translateX(100%); }
