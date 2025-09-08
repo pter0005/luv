@@ -45,8 +45,6 @@ import { findYoutubeVideo } from "@/ai/flows/find-youtube-video";
 import { useDebounce } from "@/hooks/use-debounce";
 import { HeartsBackground } from "@/components/app/HeartsBackground";
 import { StarsBackground } from "@/components/app/StarsBackground";
-import { VortexBackground } from "@/components/app/VortexBackground";
-import { PurpleCloudsBackground } from "@/components/app/PurpleCloudsBackground";
 import { ColoredStarsBackground } from "@/components/app/ColoredStarsBackground";
 
 const formSchema = z.object({
@@ -267,12 +265,10 @@ export default function CreatorStudioPage() {
   };
   
  const animationOptions = [
-    { value: 'none', label: 'Nenhuma', pro: false },
-    { value: 'hearts', label: 'Chuva de Corações', pro: false },
-    { value: 'stars', label: 'Céu Estrelado', pro: false },
-    { value: 'colored-stars', label: 'Pontos Coloridos', pro: true },
-    { value: 'vortex', label: 'Fumaça Roxa', pro: true },
-    { value: 'clouds', label: 'Nuvens', pro: true },
+    { value: 'none', label: 'Nenhuma'},
+    { value: 'hearts', label: 'Chuva de Corações'},
+    { value: 'stars', label: 'Céu Estrelado'},
+    { value: 'colored-stars', label: 'Pontos Coloridos'},
   ];
 
 
@@ -563,20 +559,12 @@ export default function CreatorStudioPage() {
                                   <div className="absolute inset-0 w-full h-full">
                                         {opt.value === 'stars' && <div className="w-full h-full bg-black relative overflow-hidden"><StarsBackground/></div>}
                                         {opt.value === 'hearts' && <div className="w-full h-full bg-black relative overflow-hidden"><HeartsBackground color={watchedData.heartColor as 'purple' | 'red'} /></div>}
-                                        {opt.value === 'vortex' && <div className="w-full h-full bg-black relative overflow-hidden"><VortexBackground /></div>}
-                                        {opt.value === 'clouds' && <div className="w-full h-full bg-black relative overflow-hidden"><PurpleCloudsBackground /></div>}
                                         {opt.value === 'colored-stars' && <div className="w-full h-full bg-black relative overflow-hidden"><ColoredStarsBackground /></div>}
                                         {opt.value === 'none' && <div className="w-full h-full bg-card"></div>}
                                   </div>
                                   <div className="absolute inset-0 bg-black/40 group-hover/item:bg-black/20 transition-colors"></div>
                                   <div className="relative z-10 p-2 text-left w-full">
                                       <h2 className="font-semibold text-white drop-shadow-md">{opt.label}</h2>
-                                      {opt.pro && (
-                                          <div className="absolute top-1 right-1 bg-primary/80 text-primary-foreground text-xs font-semibold flex items-center rounded-full px-1.5 py-0.5">
-                                              <Sparkles className="w-3 h-3 mr-1"/>
-                                              PRO
-                                          </div>
-                                      )}
                                   </div>
                                 </RadioGroupItem>
                               ))}
@@ -730,5 +718,7 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
+
+    
 
     
