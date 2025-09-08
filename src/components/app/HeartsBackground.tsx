@@ -9,9 +9,9 @@ export function HeartsBackground() {
   useEffect(() => {
     // This logic now runs only on the client side, after the component has mounted.
     // This prevents the server and client from generating different random values.
-    const generatedHearts = Array.from({ length: 40 }).map((_, i) => {
+    const generatedHearts = Array.from({ length: 20 }).map((_, i) => {
         const size = Math.random() * 4 + 2; // 2rem to 6rem
-        const rotation = Math.random() * 50 - 25; // -25deg to 25deg
+        const rotation = Math.random() * 90 - 45; // -45deg to 45deg
         return {
         id: i,
         style: {
@@ -29,7 +29,7 @@ export function HeartsBackground() {
 
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full pointer-events-none overflow-hidden -z-10">
+    <div className="fixed top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
       <div className="relative w-full h-full">
         {hearts.map(heart => (
           <div
