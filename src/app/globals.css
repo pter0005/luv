@@ -149,21 +149,42 @@
     will-change: opacity;
 }
 
-/* Clouds Animation */
-@keyframes move-clouds-rtl {
-    0% { transform: translateX(-100vw); }
-    100% { transform: translateX(100vw); }
+
+/* Love Lights animation */
+@keyframes love-light-animation {
+  0% {
+    opacity: 0;
+    transform: scaleY(0.95) scaleX(0.95);
+  }
+  25% {
+    opacity: var(--light-opacity, 0.3);
+  }
+  50% {
+    opacity: 0.1;
+    transform: scaleY(1) scaleX(1);
+  }
+  75% {
+    opacity: var(--light-opacity, 0.3);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleY(0.95) scaleX(0.95);
+  }
 }
 
-.purple-cloud {
+.love-light {
   position: absolute;
-  width: var(--cloud-size);
-  height: var(--cloud-size);
-  background-color: hsl(var(--primary) / 0.15);
-  border-radius: 50%;
-  mask-image: radial-gradient(circle at 60% 40%, white 20%, transparent 70%),
-               radial-gradient(circle at 30% 30%, white 15%, transparent 60%),
-               radial-gradient(circle at 70% 60%, white 25%, transparent 80%),
-               radial-gradient(circle at 40% 80%, white 20%, transparent 70%);
-  mask-composite: add;
+  top: 0;
+  left: var(--light-left);
+  width: var(--light-width);
+  height: 100%;
+  background-image: radial-gradient(
+    farthest-side at 50% 0,
+    var(--light-color) 0%,
+    transparent 100%
+  );
+  transform-origin: top center;
+  animation: love-light-animation 10s ease-in-out infinite;
+  animation-delay: var(--light-delay);
+  will-change: opacity, transform;
 }
