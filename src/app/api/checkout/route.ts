@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
         
         const preference = new Preference(client);
         
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `http://${req.headers.get('host')}`;
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `https://${req.headers.get('host')}`;
 
         const result = await preference.create({
             body: {
@@ -42,6 +42,7 @@ export async function POST(req: NextRequest) {
                         title: `Página Personalizada: ${title}`,
                         quantity: 1,
                         unit_price: FIXED_PRICE,
+                        currency_id: 'BRL',
                         description: 'Acesso à página personalizada Luv.',
                     },
                 ],
@@ -49,9 +50,8 @@ export async function POST(req: NextRequest) {
                     email: email,
                 },
                 payment_methods: {
-                    excluded_payment_methods: [],
                     excluded_payment_types: [
-                        { id: "ticket" }, // Exclui boletos
+                        { id: "ticket" } 
                     ],
                     installments: 1,
                 },
