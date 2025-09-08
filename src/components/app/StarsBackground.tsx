@@ -14,7 +14,7 @@ export function StarsBackground() {
 
   useEffect(() => {
     const generateStars = () => {
-      const newStars: Star[] = Array.from({ length: 50 }).map((_, i) => {
+      const newStars: Star[] = Array.from({ length: 150 }).map((_, i) => {
         const size = Math.random() * 2 + 1; // 1px to 3px
         return {
           id: i,
