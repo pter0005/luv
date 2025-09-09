@@ -11,6 +11,9 @@ import { ArrowLeft, CheckCircle, Clock, Copy, Download, Share2, Wallet, TestTube
 import Link from 'next/link';
 import { useQRCode } from 'next-qrcode';
 import { useToast } from '@/hooks/use-toast';
+import { initMercadoPago, Payment } from '@mercadopago/sdk-react';
+
+initMercadoPago(process.env.NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY!);
 
 const FIXED_PRICE = 14.99;
 
@@ -22,6 +25,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
   const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
+  const [preferenceId, setPreferenceId] = useState<string | null>(null);
   const { Canvas } = useQRCode();
 
   useEffect(() => {
@@ -34,11 +38,9 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
             const data = await getPageData(params.id);
             if (data) {
                 setPageData(data);
-                // If the webhook has already processed, the status will be 'paid'.
                 if (data.status === 'paid') {
                     setPaymentStatus('approved');
                 } 
-                // If the user is redirected with a success status, confirm payment here as a fallback.
                 else if (status === 'approved' && paymentId) {
                     const result = await confirmPaymentAndSendEmail(params.id);
                     if (result.success) {
@@ -46,11 +48,10 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                         const updatedData = await getPageData(params.id); // Refetch data
                         setPageData(updatedData);
                     } else {
-                        setPaymentStatus('failure'); // Set to failure if confirmation fails
+                        setPaymentStatus('failure');
                         toast({ variant: "destructive", title: "Erro de Confirmação", description: result.message || "Ocorreu um erro ao ativar a página. Tente recarregar ou contate o suporte."});
                     }
                 } else {
-                  // For any other status (pending, failure, or null)
                   setPaymentStatus(status);
                 }
             } else {
@@ -88,22 +89,26 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
         throw new Error(errorData.error || 'Falha ao iniciar pagamento.');
       }
       
-      const { init_point } = await response.json();
-
-      if (init_point) {
-        window.location.href = init_point;
+      const { id } = await response.json();
+      if (id) {
+        setPreferenceId(id);
       } else {
-        throw new Error('Link de pagamento não foi retornado.');
+        throw new Error('ID de preferência não foi retornado.');
       }
     } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Erro no Checkout",
-        description: error.message || "Não foi possível redirecionar para o pagamento.",
+        description: error.message || "Não foi possível preparar o pagamento.",
       });
       setIsProcessingCheckout(false);
     }
   };
+  
+  const onPaymentBrickReady = () => {
+    setIsProcessingCheckout(false);
+    toast({ title: "Formulário de pagamento carregado!", description: "Preencha seus dados para finalizar." });
+  }
 
   const handleTestPayment = async () => {
     setIsTesting(true);
@@ -262,7 +267,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                     onClick={handleCheckout}
                     disabled={isProcessingCheckout || !pageData}
                 >
-                    {isProcessingCheckout ? 'Processando...' : (
+                    {isProcessingCheckout ? 'Carregando...' : (
                         <>
                             <Wallet className="mr-2 h-5 w-5" />
                             Tentar Novamente - R$ {FIXED_PRICE.toFixed(2).replace('.', ',')}
@@ -310,21 +315,58 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <Button 
-                        size="lg" 
-                        className="w-full" 
-                        onClick={handleCheckout}
-                        disabled={isProcessingCheckout || !pageData}
-                    >
-                        {isProcessingCheckout ? 'Processando...' : (
-                            <>
-                                <Wallet className="mr-2 h-5 w-5" />
-                                Pagar agora - R$ {FIXED_PRICE.toFixed(2).replace('.', ',')}
-                            </>
-                        )}
-                    </Button>
+                    {preferenceId ? (
+                        <div className="flex flex-col items-center justify-center">
+                          {isProcessingCheckout && <Skeleton className="h-72 w-full" />}
+                          <Payment
+                            initialization={{
+                                amount: FIXED_PRICE,
+                                preferenceId: preferenceId,
+                            }}
+                            customization={{
+                                visual: {
+                                    style: {
+                                        theme: 'dark',
+                                        customVariables: {
+                                            baseColor: 'hsl(var(--background))',
+                                            contrastTextColor: 'hsl(var(--foreground))',
+                                            primaryColor: 'hsl(var(--primary))',
+                                            secondaryColor: 'hsl(var(--secondary))',
+                                            formBackgroundColor: 'hsl(var(--card))',
+                                            borderRadius: 'var(--radius)',
+                                            fontSizeMedium: '1rem',
+                                            fontWeightNormal: '400',
+                                            fontWeightSemiBold: '600',
+                                        }
+                                    }
+                                }
+                            }}
+                            onReady={onPaymentBrickReady}
+                            onSubmit={async ({ formData }) => {
+                                // This is where you would call your backend to process the payment
+                                // This is a simplified example, you should handle the response properly
+                                console.log('Payment submitted', formData);
+                            }}
+                        />
+                        </div>
+                    ) : (
+                         <Button 
+                            size="lg" 
+                            className="w-full" 
+                            onClick={handleCheckout}
+                            disabled={isProcessingCheckout || !pageData}
+                        >
+                            {isProcessingCheckout ? 'Carregando...' : (
+                                <>
+                                    <Wallet className="mr-2 h-5 w-5" />
+                                    Pagar agora - R$ {FIXED_PRICE.toFixed(2).replace('.', ',')}
+                                </>
+                            )}
+                        </Button>
+                    )}
+                   
                      <p className="text-xs text-muted-foreground mt-4 text-center">
-                        Você será redirecionado para a página de pagamento segura do Mercado Pago. Pague com Cartão ou Pix, sem precisar de conta.
+                        Pague com Cartão ou Pix de forma segura com Mercado Pago.
                      </p>
                      <div className="relative flex py-5 items-center">
                         <div className="flex-grow border-t border-border"></div>

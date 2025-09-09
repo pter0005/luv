@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 import { config } from 'dotenv';
 
-config(); // Carrega as variáveis de ambiente do arquivo .env
+config(); 
 
 const MERCADO_PAGO_ACCESS_TOKEN = process.env.MERCADO_PAGO_ACCESS_TOKEN;
 const FIXED_PRICE = 14.99;
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
         
         const preference = new Preference(client);
         
-        const host = req.headers.get('host');
+        const host = req.headers.get('x-forwarded-host') || req.headers.get('host');
         const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
         const baseUrl = `${protocol}://${host}`;
 
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
             },
         });
 
-        return NextResponse.json({ id: result.id, init_point: result.init_point });
+        return NextResponse.json({ id: result.id });
 
     } catch (error: any) {
         console.error('Mercado Pago API error:', error);
@@ -78,3 +78,5 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
 }
+
+    
