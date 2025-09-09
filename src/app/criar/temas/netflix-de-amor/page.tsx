@@ -277,7 +277,7 @@ function NetflixCreatorPage() {
     <div className="bg-[#141414] text-white min-h-screen">
         <div className="flex flex-col-reverse md:grid md:grid-cols-2">
             {/* Form Section */}
-            <div className="p-4 md:p-8 overflow-y-auto md:h-screen md:scrollbar-hide">
+            <div className="p-4 md:p-8 overflow-y-auto md:h-screen md:scrollbar-hide order-2 md:order-1">
                 <div className="max-w-xl mx-auto">
                     <header className="text-center mb-12">
                         <h1 className="text-4xl font-bold tracking-tighter mt-4">Netflix de Amor</h1>
@@ -488,13 +488,26 @@ function NetflixCreatorPage() {
             </div>
             
             {/* Preview Section */}
-            <div className="w-full h-auto md:h-screen p-4 md:p-8 bg-black md:sticky md:top-0 order-1 md:order-2 flex items-center justify-center">
-                 <div className="w-full h-full max-w-full md:max-w-md aspect-auto md:aspect-[9/16] mx-auto bg-zinc-900 rounded-[2.5rem] border-[10px] border-zinc-800 shadow-2xl overflow-hidden relative">
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-zinc-800 rounded-b-xl z-10"></div>
-                     <div className="w-full h-full">
-                        <NetflixDeAmorPage data={watchedData} isPreview={true} />
+             <div className="w-full h-auto md:h-screen p-4 md:p-8 bg-black md:sticky md:top-0 order-1 md:order-2 flex items-center justify-center">
+                <div className="w-full h-full max-w-full md:max-w-xl aspect-auto md:aspect-[9/16] mx-auto">
+                    <div className="relative w-full h-full group/preview">
+                        <div className="relative z-10 w-full h-full bg-zinc-950 rounded-2xl flex flex-col shadow-2xl">
+                        <div className="bg-zinc-800 rounded-t-lg p-2 flex items-center gap-1.5 border-b border-zinc-700">
+                            <div className="flex items-center gap-1.5">
+                            <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                            </div>
+                            <div className="flex-grow bg-zinc-700 rounded-sm px-2 py-1 text-xs text-zinc-400 text-center truncate">
+                                https://luv.com/p/{watchedData.heroTitle?.toLowerCase().replace(/\s/g, '-') || 'pagina'}
+                            </div>
+                        </div>
+                        <div className="flex-grow bg-black rounded-b-lg overflow-hidden relative">
+                            <NetflixDeAmorPage data={watchedData} isPreview={true} />
+                        </div>
+                        </div>
                     </div>
-                 </div>
+                </div>
             </div>
         </div>
     </div>

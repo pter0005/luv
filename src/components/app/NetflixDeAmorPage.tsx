@@ -83,8 +83,8 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
             )}
             
              <header className="absolute top-0 left-0 w-full z-20 bg-gradient-to-b from-black/80 to-transparent p-4 md:p-6">
-                 <div className="flex items-center justify-center">
-                   
+                <div className="flex items-center justify-center">
+                    <Image src="https://i.imgur.com/L4QSoTw.png" alt="Luv Logo" width={100} height={40} className="w-auto h-8 md:h-10"/>
                 </div>
             </header>
             
@@ -113,10 +113,6 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
                     </div>
                     <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/50 to-transparent"></div>
                      <div className="relative z-10 p-4 md:p-10 text-left space-y-4">
-                         <div className="flex items-center gap-2">
-                             <Image src="https://i.imgur.com/YWU5u37.png" alt="Netflix N Logo" width={20} height={36} className="w-4 h-7 md:w-5 md:h-9" />
-                            <span className="text-base tracking-[0.2em] text-zinc-300 font-semibold">FILME</span>
-                        </div>
                         <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter max-w-2xl" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.8)' }}>{data.heroTitle}</h1>
                         <p className="max-w-xl text-base md:text-lg text-zinc-200">{data.heroDescription}</p>
                         <div className="flex items-center gap-4 pt-2">
@@ -133,7 +129,7 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
                 </div>
 
                 {/* Categories */}
-                <div className="py-8 relative z-10 md:pt-4 md:-mt-16">
+                <div className="py-8 relative z-10 md:pt-4">
                     {data.categories?.map((category: any, index: number) => (
                         <CategoryRow key={index} category={category} />
                     ))}
