@@ -304,6 +304,8 @@ function CreatorStudioPage() {
     try {
         const pageDataToSave = {
             ...data,
+            // Convert Date to ISO string before sending to server to avoid serialization issues
+            startDate: data.startDate ? data.startDate.toISOString() : undefined,
             contactEmail: user.email,
         };
 
@@ -417,7 +419,7 @@ function CreatorStudioPage() {
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+      setCurrentStep(currentStep + 1);
     }
   };
 

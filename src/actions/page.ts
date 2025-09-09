@@ -62,14 +62,9 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
     const pageDataForDb = { ...data };
 
     // Firestore cannot store JavaScript Date objects or invalid date strings directly. They must be converted to Firestore Timestamps.
-    if (pageDataForDb.startDate) {
-        let date: Date;
-        if (pageDataForDb.startDate instanceof Date) {
-            date = pageDataForDb.startDate;
-        } else {
-            // It might be a string from JSON serialization, try to parse it.
-            date = new Date(pageDataForDb.startDate);
-        }
+    // The data now arrives as a string from the client.
+    if (pageDataForDb.startDate && typeof pageDataForDb.startDate === 'string') {
+        const date = new Date(pageDataForDb.startDate);
         
         // Check if the created date is valid before converting
         if (!isNaN(date.getTime())) {
