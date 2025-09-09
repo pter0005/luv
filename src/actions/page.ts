@@ -6,8 +6,6 @@ import { prepareAndSendEmail } from '@/ai/flows/send-link-email';
 import { doc, setDoc, getDoc, collection, getDocs, query, where, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
-// This schema is no longer needed on the server-side as validation is handled on the client forms.
-// Keeping it was causing a mismatch and preventing data from being saved.
 type FormData = any;
 
 // Helper to convert Firebase Timestamps to serializable strings
@@ -42,12 +40,21 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
     const pageId = Date.now().toString();
     const status = data.plan === 'essencial' ? 'pending_payment' : 'pending_quote';
     
-    const pageDataForDb = {
-      ...data,
-      userId: userId,
-      status: status,
-      createdAt: new Date(),
-    };
+    // Create a mutable copy to avoid modifying the original data object
+    const pageDataForDb = { ...data };
+
+    // Convert JavaScript Date object to Firestore Timestamp if it exists
+    if (pageDataForDb.startDate && pageDataForDb.startDate instanceof Date) {
+        pageDataForDb.startDate = Timestamp.fromDate(pageDataForDb.startDate);
+    } else if (pageDataForDb.startDate && typeof pageDataForDb.startDate === 'string') {
+        // Handle case where date might be a string
+        pageDataForDb.startDate = Timestamp.fromDate(new Date(pageDataForDb.startDate));
+    }
+
+    // Add server-side data
+    pageDataForDb.userId = userId;
+    pageDataForDb.status = status;
+    pageDataForDb.createdAt = Timestamp.now(); // Use Firestore timestamp for creation
     
     await setDoc(doc(db, "pages", pageId), pageDataForDb);
     
