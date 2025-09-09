@@ -12,10 +12,18 @@ import Link from 'next/link';
 import { useQRCode } from 'next-qrcode';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
+import Script from 'next/script';
 
 const NEXT_PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
 const FIXED_PRICE = 14.99;
+
+// Função para disparar eventos de pixel
+const trackPixelEvent = (eventName: string, data: any = {}) => {
+  if (typeof window !== 'undefined' && (window as any).fbq) {
+    (window as any).fbq('track', eventName, data);
+  }
+};
 
 export default function SucessoPage({ params }: { params: { id: string } }) {
   const { toast } = useToast();
@@ -27,6 +35,9 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
   const [pixData, setPixData] = useState<{qrCodeBase64: string, qrCode: string} | null>(null);
   const { Canvas } = useQRCode();
+  const [hasTrackedCheckout, setHasTrackedCheckout] = useState(false);
+  const [hasTrackedPurchase, setHasTrackedPurchase] = useState(false);
+
 
   // Effect to handle initial page load and payment confirmation from URL params
   const checkPageAndPayment = useCallback(async () => {
@@ -41,6 +52,18 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
         
         setPageData(data);
         setPaymentStatus(data.status);
+
+        // Track "InitiateCheckout" when the page loads, but only once.
+        if (data.status === 'pending_payment' && !hasTrackedCheckout) {
+          trackPixelEvent('InitiateCheckout', {
+            content_name: data.title,
+            content_ids: [params.id],
+            content_type: 'product',
+            value: FIXED_PRICE,
+            currency: 'BRL',
+          });
+          setHasTrackedCheckout(true);
+        }
         
         const mpStatus = searchParams.get('status');
         const paymentId = searchParams.get('payment_id');
@@ -52,9 +75,26 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                 const updatedData = await getPageData(params.id);
                 setPageData(updatedData);
                 setPaymentStatus('paid');
+                 if (!hasTrackedPurchase) {
+                  trackPixelEvent('Purchase', {
+                    value: FIXED_PRICE,
+                    currency: 'BRL',
+                    content_name: updatedData.title,
+                    content_ids: [params.id],
+                  });
+                  setHasTrackedPurchase(true);
+                }
             } else {
                 toast({ variant: "destructive", title: "Erro de Confirmação", description: result.message || "Ocorreu um erro ao ativar a página. Tente recarregar ou contate o suporte."});
             }
+        } else if (data.status === 'paid' && !hasTrackedPurchase) {
+           trackPixelEvent('Purchase', {
+              value: FIXED_PRICE,
+              currency: 'BRL',
+              content_name: data.title,
+              content_ids: [params.id],
+            });
+            setHasTrackedPurchase(true);
         }
     } catch (error) {
         console.error("Error fetching page data:", error);
@@ -62,7 +102,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     } finally {
         setLoading(false);
     }
-  }, [params.id, toast, searchParams]);
+  }, [params.id, toast, searchParams, hasTrackedCheckout, hasTrackedPurchase]);
 
   useEffect(() => {
     checkPageAndPayment();
@@ -78,6 +118,15 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
           if (data && data.status === 'paid') {
             setPageData(data);
             setPaymentStatus('paid');
+             if (!hasTrackedPurchase) {
+                trackPixelEvent('Purchase', {
+                  value: FIXED_PRICE,
+                  currency: 'BRL',
+                  content_name: data.title,
+                  content_ids: [params.id],
+                });
+                setHasTrackedPurchase(true);
+              }
             clearInterval(interval); // Stop polling once paid
           }
         } catch (error) {
@@ -95,7 +144,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
         clearTimeout(timeout);
       };
     }
-  }, [pixData, params.id, paymentStatus]);
+  }, [pixData, params.id, paymentStatus, hasTrackedPurchase]);
 
 
   const handleGeneratePix = async () => {
