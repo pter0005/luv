@@ -94,6 +94,7 @@ const formSchema = z.object({
   }),
   contactEmail: z.string().email("Email inválido.").min(1, "O e-mail é obrigatório."),
   contactPhone: z.string().min(1, "O telefone é obrigatório."),
+  contactDoc: z.string().min(11, "O CPF/CNPJ é obrigatório."),
   plan: z.string().min(1, "Você deve escolher uma opção."),
 });
 
@@ -206,6 +207,7 @@ function CreatorStudioPage() {
       contactName: user?.displayName || "",
       contactEmail: user?.email || "",
       contactPhone: "",
+      contactDoc: "",
       plan: "essencial",
     },
   });
@@ -320,7 +322,7 @@ function CreatorStudioPage() {
               title: "Página salva com sucesso!",
               description: "Você será redirecionado para a tela de pagamento.",
             });
-            router.push(`/criar/sucesso/${pageId}`);
+            router.push(`/criar/sucesso/${pageId}?doc=${encodeURIComponent(data.contactDoc)}`);
         } else {
              toast({
               title: "Solicitação enviada!",
@@ -387,7 +389,7 @@ function CreatorStudioPage() {
     let fieldsToValidate: (keyof FormData)[] = [currentField];
     
     if (currentField === 'contactName') {
-        fieldsToValidate = ['contactName', 'contactEmail', 'contactPhone', 'plan'];
+        fieldsToValidate = ['contactName', 'contactEmail', 'contactPhone', 'contactDoc', 'plan'];
     }
 
     if (currentField === 'musicChoice') {
@@ -1014,6 +1016,20 @@ function CreatorStudioPage() {
                                   <FormControl>
                                       <Input placeholder="seu.email@exemplo.com" {...field} disabled/>
                                   </FormControl>
+                                  <FormMessage />
+                              </FormItem>
+                          )}
+                      />
+                       <FormField
+                          control={form.control}
+                          name="contactDoc"
+                          render={({ field }) => (
+                              <FormItem>
+                                  <FormLabel>Seu CPF ou CNPJ</FormLabel>
+                                  <FormControl>
+                                      <Input placeholder="Apenas números" {...field} />
+                                  </FormControl>
+                                   <FormDescription>Obrigatório para gerar o PIX.</FormDescription>
                                   <FormMessage />
                               </FormItem>
                           )}
