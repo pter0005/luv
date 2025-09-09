@@ -89,7 +89,9 @@ const formSchema = z.object({
   puzzleImage: z.string().optional().or(z.literal('')),
   puzzleTitle: z.string().optional(),
   puzzleDescription: z.string().optional(),
-  contactName: z.string().min(1, "O nome é obrigatório."),
+  contactName: z.string().min(1, "O nome é obrigatório.").refine(s => s.trim().split(' ').length >= 2, {
+    message: "Por favor, insira nome e sobrenome."
+  }),
   contactEmail: z.string().email("Email inválido.").min(1, "O e-mail é obrigatório."),
   contactPhone: z.string().min(1, "O telefone é obrigatório."),
   plan: z.string().min(1, "Você deve escolher uma opção."),
@@ -201,7 +203,7 @@ function CreatorStudioPage() {
       puzzleImage: "",
       puzzleTitle: "Um Quebra-Cabeça Especial",
       puzzleDescription: "Resolva o enigma para revelar a surpresa!",
-      contactName: "",
+      contactName: user?.displayName || "",
       contactEmail: user?.email || "",
       contactPhone: "",
       plan: "essencial",
@@ -213,6 +215,7 @@ function CreatorStudioPage() {
   React.useEffect(() => {
     if (user) {
         form.setValue('contactEmail', user.email || '');
+        form.setValue('contactName', user.displayName || '');
     }
   }, [user, form])
 
@@ -993,10 +996,11 @@ function CreatorStudioPage() {
                           name="contactName"
                           render={({ field }) => (
                               <FormItem>
-                                  <FormLabel>Seu Nome</FormLabel>
+                                  <FormLabel>Seu Nome e Sobrenome</FormLabel>
                                   <FormControl>
                                       <Input placeholder="Seu nome completo" {...field} />
                                   </FormControl>
+                                  <FormDescription>Essencial para o processamento do pagamento.</FormDescription>
                                   <FormMessage />
                               </FormItem>
                           )}

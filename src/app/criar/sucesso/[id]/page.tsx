@@ -112,6 +112,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
           pageId: params.id,
           title: pageData.title,
           email: pageData.contactEmail,
+          name: pageData.contactName, // Sending the name
         }),
       });
 

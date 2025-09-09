@@ -22,12 +22,16 @@ export async function POST(req: NextRequest) {
 
     try {
         const body = await req.json();
-        const { pageId, title, email } = body;
+        const { pageId, title, email, name } = body;
 
-        if (!pageId || !title || !email) {
-            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+        if (!pageId || !title || !email || !name) {
+            return NextResponse.json({ error: 'Todos os campos são obrigatórios: pageId, title, email, name' }, { status: 400 });
         }
         
+        const nameParts = name.trim().split(' ');
+        const firstName = nameParts.shift() || '';
+        const lastName = nameParts.join(' ') || firstName; // If no last name, use first name
+
         const preference = new Preference(client);
         
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
@@ -52,6 +56,8 @@ export async function POST(req: NextRequest) {
                 ],
                 payer: {
                     email: email,
+                    first_name: firstName,
+                    last_name: lastName,
                 },
                 payment_methods: {
                     installments: 1,
