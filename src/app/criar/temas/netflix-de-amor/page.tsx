@@ -250,7 +250,6 @@ function NetflixCreatorPage() {
             title: data.heroTitle,
             contactName: "Pedro Henrique Oliveira de Paula",
             contactEmail: user.email,
-            contactCpf: "58954844847",
         };
         const pageId = await savePageData(pageDataForDb as any, user.uid);
         
