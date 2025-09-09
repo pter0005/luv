@@ -101,15 +101,13 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent className="flex-grow flex flex-col justify-between">
                 <div className="relative aspect-video w-full bg-muted rounded-md mb-4 overflow-hidden">
-                    <Image src={page.photos?.[0] || page.heroImage || 'https://picsum.photos/400/225'} alt={page.title} layout="fill" objectFit="cover" />
+                    <Image src={page.photos?.[0] || page.heroImage || 'https://picsum.photos/400/225'} alt={page.title || 'Imagem da página'} layout="fill" objectFit="cover" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                 </div>
-                 <Link href={`/p/${page.id}`} passHref>
-                    <Button asChild className="w-full" disabled={page.status !== 'paid'}>
-                        <a>
-                            <Eye className="mr-2 h-4 w-4" />
-                            {page.status === 'paid' ? 'Ver Página' : 'Pagamento Pendente'}
-                        </a>
+                 <Link href={`/p/${page.id}`}>
+                    <Button className="w-full" disabled={page.status !== 'paid'}>
+                        <Eye className="mr-2 h-4 w-4" />
+                        {page.status === 'paid' ? 'Ver Página' : 'Pagamento Pendente'}
                     </Button>
                 </Link>
               </CardContent>
