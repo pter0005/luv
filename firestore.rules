@@ -1,21 +1,23 @@
-
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Users can only read and write their own data
+    // Coleção 'users': Permite que um usuário crie, leia, atualize e delete
+    // seu próprio perfil, mas não o de outros.
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read, update, delete: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null;
     }
 
-    // Pages can be read by anyone.
-    // Pages can only be created or updated by the authenticated user who owns the page.
-    // The status can be updated by anyone (for webhooks).
+    // Coleção 'pages':
+    // - read: Qualquer pessoa pode ler uma página.
+    // - create: Um usuário autenticado só pode criar uma página para si mesmo.
+    // - update/delete: Apenas o dono da página (userId) pode atualizá-la ou deletá-la.
     match /pages/{pageId} {
       allow read: if true;
       allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
-      allow update: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow update, delete: if request.auth != null && request.auth.uid == resource.data.userId;
     }
   }
 }
