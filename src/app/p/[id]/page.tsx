@@ -38,13 +38,18 @@ export default function Page({ params }: { params: { id: string } }) {
 
   if (loading) {
     return (
-      <div className="w-full h-screen bg-black flex items-center justify-center p-8">
-        <div className="w-full max-w-md space-y-6">
-            <Skeleton className="h-64 w-full" />
-            <Skeleton className="h-12 w-3/4 mx-auto" />
-            <Skeleton className="h-24 w-full" />
-            <Skeleton className="h-40 w-full" />
-        </div>
+      <div className="w-full h-screen bg-[#141414] flex flex-col p-8 space-y-8">
+          <div className="w-full h-1/2">
+            <Skeleton className="h-full w-full bg-zinc-800" />
+          </div>
+          <div className="w-full h-1/2 space-y-4">
+            <Skeleton className="h-8 w-1/4 bg-zinc-800" />
+            <div className="flex gap-4">
+                <Skeleton className="h-48 w-32 bg-zinc-800" />
+                <Skeleton className="h-48 w-32 bg-zinc-800" />
+                <Skeleton className="h-48 w-32 bg-zinc-800" />
+            </div>
+          </div>
       </div>
     );
   }

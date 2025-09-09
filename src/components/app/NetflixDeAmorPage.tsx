@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 
 interface NetflixDeAmorPageProps {
     data: any;
+    isPreview?: boolean;
 }
 
 const CategoryRow = ({ category }: { category: any }) => (
@@ -16,7 +17,10 @@ const CategoryRow = ({ category }: { category: any }) => (
             {category.items.map((item: any, index: number) => (
                 <div key={index} className="flex-shrink-0 w-40 md:w-48 group">
                     <div className="aspect-[2/3] bg-zinc-800 rounded-md overflow-hidden transform transition-transform duration-300 group-hover:scale-105">
-                         {item.image && <Image src={item.image} alt={item.title || 'Foto do casal'} width={200} height={300} className="w-full h-full object-cover" />}
+                         {item.image ? 
+                            <Image src={item.image} alt={item.title || 'Foto do casal'} width={200} height={300} className="w-full h-full object-cover" />
+                            : <div className="w-full h-full bg-zinc-700"></div>
+                         }
                     </div>
                 </div>
             ))}
@@ -25,7 +29,7 @@ const CategoryRow = ({ category }: { category: any }) => (
 );
 
 
-export function NetflixDeAmorPage({ data }: NetflixDeAmorPageProps) {
+export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPageProps) {
     if (!data) return null;
 
     return (
@@ -35,16 +39,20 @@ export function NetflixDeAmorPage({ data }: NetflixDeAmorPageProps) {
                     <Image src="https://i.imgur.com/EMwsRdt.png" alt="Luv Logo" width={80} height={80} className="w-16 h-16 md:w-20 md:h-20" />
                     <div className="flex items-center gap-4">
                         <span className="font-semibold">{data.profileName}</span>
-                         <Image src={`https://avatar.vercel.sh/${data.profileName}.png`} alt="Profile" width={40} height={40} className="rounded-md w-8 h-8 md:w-10 md:h-10" />
+                         <Image src={`https://avatar.vercel.sh/${data.profileName || 'default'}.png`} alt="Profile" width={40} height={40} className="rounded-md w-8 h-8 md:w-10 md:h-10" />
                     </div>
                 </div>
             </header>
 
-            <main>
+            <main className={isPreview ? 'scrollbar-hide' : ''}>
                 {/* Hero Section */}
                 <div className="relative h-[60vh] md:h-[80vh] w-full">
                     <div className="absolute inset-0">
-                        {data.heroImage && <Image src={data.heroImage} alt="Hero image" layout="fill" objectFit="cover" className="opacity-60" />}
+                        {data.heroImage ? (
+                            <Image src={data.heroImage} alt="Hero image" layout="fill" objectFit="cover" className="opacity-60" />
+                        ) : (
+                            <div className="w-full h-full bg-zinc-900"></div>
+                        )}
                     </div>
                     <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-black/20"></div>
                     <div className="relative z-10 flex flex-col justify-end h-full p-4 md:p-10 text-left">
@@ -52,7 +60,7 @@ export function NetflixDeAmorPage({ data }: NetflixDeAmorPageProps) {
                         <p className="mt-4 max-w-xl text-base md:text-lg">{data.heroDescription}</p>
                         <Button size="lg" className="mt-6 bg-white text-black hover:bg-white/80 w-auto">
                             <Play className="w-6 h-6 mr-2 fill-black" />
-                            Assistir trailer
+                            Assistir
                         </Button>
                     </div>
                 </div>
