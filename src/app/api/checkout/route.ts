@@ -12,7 +12,6 @@ if (!MERCADO_PAGO_ACCESS_TOKEN) {
 
 const client = new MercadoPagoConfig({ 
     accessToken: MERCADO_PAGO_ACCESS_TOKEN!,
-    options: { timeout: 5000, idempotencyKey: randomUUID() }
 });
 
 export async function POST(req: NextRequest) {
@@ -28,10 +27,6 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Todos os campos são obrigatórios: pageId, title, email, name' }, { status: 400 });
         }
         
-        const nameParts = name.trim().split(' ');
-        const firstName = nameParts.shift() || '';
-        const lastName = nameParts.join(' ') || firstName; 
-
         const payment = new Payment(client);
         
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
@@ -46,17 +41,20 @@ export async function POST(req: NextRequest) {
             payment_method_id: 'pix',
             payer: {
                 email: email,
-                first_name: firstName,
-                last_name: lastName,
             },
-            notification_url: `${baseUrl}/api/webhook/mercado-pago?source_news=webhooks`,
+            notification_url: `${baseUrl}/api/webhook/mercado-pago`,
             metadata: {
                 page_id: pageId,
             },
             date_of_expiration: expirationDateISO,
         };
 
-        const result = await payment.create({ body: paymentData });
+        const result = await payment.create({ 
+            body: paymentData,
+            requestOptions: {
+                idempotencyKey: randomUUID(),
+            }
+        });
         
         const qrCodeBase64 = result.point_of_interaction?.transaction_data?.qr_code_base64;
         const qrCodeCopyPaste = result.point_of_interaction?.transaction_data?.qr_code;
@@ -77,26 +75,16 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ pixData });
 
     } catch (error: any) {
-        // Log detalhado no servidor para depuração
         console.error('Falha crítica na API de checkout:', JSON.stringify(error, null, 2));
 
-        // Verifica se é um erro da API do Mercado Pago
-        if (error.cause && typeof error.cause === 'object') {
-            const cause = error.cause as Record<string, any>;
-            const errorMessage = cause.error?.message || 'Erro desconhecido da API do Mercado Pago.';
-            const errorStatus = cause.status || 500;
-            
+        if (error.cause) { // Erros da SDK do Mercado Pago geralmente têm `cause`
+            const errorDetails = error.cause.data || { message: error.message };
             return NextResponse.json({ 
-                error: `Erro da API do Mercado Pago: ${errorMessage}`,
-                details: {
-                    status: errorStatus,
-                    error: cause.error?.error || 'N/A',
-                    cause: cause.error?.cause || []
-                }
-            }, { status: errorStatus });
+                error: 'Erro da API do Mercado Pago.',
+                details: errorDetails
+            }, { status: error.statusCode || 500 });
         }
 
-        // Erro genérico
         return NextResponse.json({ 
             error: 'Ocorreu um erro inesperado no servidor ao processar o pagamento.',
             details: error.message 
