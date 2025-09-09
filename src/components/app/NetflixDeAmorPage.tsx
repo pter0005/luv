@@ -124,7 +124,7 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
                 </div>
 
                 {/* Categories */}
-                <div className="py-8 -mt-20 md:-mt-32 relative z-20">
+                <div className="py-8 md:-mt-16 relative z-20">
                     {data.categories?.map((category: any, index: number) => (
                         <CategoryRow key={index} category={category} />
                     ))}
