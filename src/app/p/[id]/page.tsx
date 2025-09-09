@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { getPageData } from '@/actions/page';
 import { PublicPage } from '@/components/app/PublicPage';
 import { Skeleton } from '@/components/ui/skeleton';
+import { NetflixDeAmorPage } from '@/components/app/NetflixDeAmorPage';
 
 export default function Page({ params }: { params: { id: string } }) {
   const [pageData, setPageData] = useState<any>(null);
@@ -55,6 +56,10 @@ export default function Page({ params }: { params: { id: string } }) {
         <p className="text-muted-foreground">{error}</p>
       </div>
     );
+  }
+  
+  if (pageData?.template === 'netflix-de-amor') {
+    return <NetflixDeAmorPage data={pageData} />;
   }
 
   return <PublicPage data={pageData} />;
