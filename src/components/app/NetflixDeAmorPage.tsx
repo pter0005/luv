@@ -83,8 +83,8 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
             )}
             
              <header className="absolute top-0 left-0 w-full z-20 bg-gradient-to-b from-black/80 to-transparent p-4 md:p-6">
-                <div className="flex items-center justify-center">
-                   <Image src="https://i.imgur.com/EMwsRdt.png" alt="Luv Logo" width={80} height={80} className="w-20 h-20" />
+                 <div className="flex items-center justify-start">
+                   <Image src="https://i.imgur.com/L4QSoTw.png" alt="Luvflix Logo" width={140} height={50} className="w-28 md:w-36" />
                 </div>
             </header>
             
@@ -95,11 +95,20 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
                         {data.heroType === 'image' && data.heroImage ? (
                             <Image src={data.heroImage} alt="Hero image" layout="fill" objectFit="cover" className="opacity-60" />
                         ) : (
-                            <div className="w-full h-full bg-zinc-900 flex items-center justify-center">
-                                {(data.heroType === 'video' || data.heroType === 'upload') && (
+                             (data.heroType === 'video' || data.heroType === 'upload') && data.heroVideoUrl ? (
+                                <video
+                                    src={data.heroVideoUrl}
+                                    autoPlay
+                                    loop
+                                    muted
+                                    playsInline
+                                    className="w-full h-full object-cover opacity-60"
+                                />
+                             ) : (
+                                <div className="w-full h-full bg-zinc-900 flex items-center justify-center">
                                     <Play className="w-24 h-24 text-zinc-600"/>
-                                )}
-                            </div>
+                                </div>
+                             )
                         )}
                     </div>
                     <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/50 to-transparent"></div>
@@ -124,7 +133,7 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
                 </div>
 
                 {/* Categories */}
-                <div className="py-8 md:-mt-16 relative z-20">
+                <div className="py-8 md:-mt-24 relative z-20">
                     {data.categories?.map((category: any, index: number) => (
                         <CategoryRow key={index} category={category} />
                     ))}
