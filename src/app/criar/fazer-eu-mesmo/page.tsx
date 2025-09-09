@@ -88,6 +88,8 @@ const formSchema = z.object({
   puzzleTitle: z.string().optional(),
   puzzleDescription: z.string().optional(),
   plan: z.string().min(1, "Você deve escolher uma opção."),
+  contactName: z.string().min(1, 'O nome do titular do cartão é obrigatório.'),
+  contactCpf: z.string().min(14, 'O CPF é obrigatório e deve ser válido.'),
 });
 
 export type FormData = z.infer<typeof formSchema>;
@@ -195,6 +197,8 @@ function CreatorStudioPage() {
       puzzleTitle: "Um Quebra-Cabeça Especial",
       puzzleDescription: "Resolva o enigma para revelar a surpresa!",
       plan: "essencial",
+      contactName: "",
+      contactCpf: "",
     },
   });
 
@@ -300,7 +304,6 @@ function CreatorStudioPage() {
     try {
         const pageDataToSave = {
             ...data,
-            contactName: "Pedro Henrique Oliveira de Paula",
             contactEmail: user.email,
         };
 
@@ -377,7 +380,7 @@ function CreatorStudioPage() {
     let fieldsToValidate: (keyof FormData)[] = [currentField];
     
     if (currentField === 'plan') {
-        fieldsToValidate = ['plan'];
+        fieldsToValidate = ['plan', 'contactName', 'contactCpf'];
     }
 
     if (currentField === 'musicChoice') {
@@ -1042,6 +1045,49 @@ function CreatorStudioPage() {
                               </FormItem>
                           )}
                       />
+                       {watchedData.plan === 'essencial' && (
+                        <div className="space-y-4 pt-4 border-t border-border">
+                          <FormField
+                            control={form.control}
+                            name="contactName"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Nome Completo do Titular</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="Seu nome completo" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="contactCpf"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>CPF do Titular</FormLabel>
+                                <FormControl>
+                                  <Input 
+                                    placeholder="000.000.000-00" 
+                                    {...field}
+                                    onChange={(e) => {
+                                        const { value } = e.target;
+                                        const formattedValue = value
+                                            .replace(/\D/g, '')
+                                            .replace(/(\d{3})(\d)/, '$1.$2')
+                                            .replace(/(\d{3})(\d)/, '$1.$2')
+                                            .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                                        field.onChange(formattedValue);
+                                    }}
+                                    maxLength={14}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      )}
                   </div>
                 )}
               </div>
