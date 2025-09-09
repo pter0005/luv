@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, use } from 'react';
 import { getPageData } from '@/actions/page';
 import { PublicPage } from '@/components/app/PublicPage';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -15,11 +15,12 @@ export default function Page({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isOwner, setIsOwner] = useState(false);
+  const pageId = params.id;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getPageData(params.id);
+        const data = await getPageData(pageId);
         if (data) {
           setPageData(data);
           // Check if the logged-in user is the owner of the page
@@ -42,7 +43,7 @@ export default function Page({ params }: { params: { id: string } }) {
     };
 
     fetchData();
-  }, [params.id, user]);
+  }, [pageId, user]);
 
   if (loading) {
     return (
@@ -68,7 +69,7 @@ export default function Page({ params }: { params: { id: string } }) {
         <h1 className="text-4xl font-bold text-white mb-4">Acesso Negado</h1>
         <p className="text-muted-foreground">{error}</p>
         {isOwner && (
-            <Link href={`/criar/sucesso/${params.id}`} className="mt-4 text-primary underline">
+            <Link href={`/criar/sucesso/${pageId}`} className="mt-4 text-primary underline">
                 Finalizar pagamento
             </Link>
         )}
