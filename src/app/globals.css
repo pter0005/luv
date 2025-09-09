@@ -203,15 +203,15 @@
 /* Swiper Styles */
 .swiper-container-coverflow .swiper-slide {
   width: 80%;
-  max-width: 250px;
+  max-width: 300px; /* Increased max-width */
 }
 .swiper-container-cube {
-  width: 200px;
-  height: 250px;
+  width: 250px; /* Increased width */
+  height: 320px; /* Increased height */
 }
 .swiper-container-cards {
-  height: 320px;
-  width: 240px;
+  height: 400px; /* Increased height */
+  width: 300px; /* Increased width */
 }
 .mySwiper {
   width: 100%;

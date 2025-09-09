@@ -174,7 +174,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
 
   return (
     <div className={cn(
-      "w-full my-6 relative flex items-center justify-center h-[300px]",
+      "w-full my-6 relative flex items-center justify-center h-[400px]", // Increased height
     )}>
       <Swiper {...getSwiperEffectProps()} key={displayType} className={cn("mySwiper", `swiper-container-${displayType?.toLowerCase()}`)}>
         {photos.map((photo, index) => (
@@ -184,7 +184,8 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
                 src={photo}
                 alt={`User photo ${index + 1}`}
                 fill
-                sizes="(max-width: 400px) 100vw, 250px"
+                sizes="(max-width: 640px) 80vw, 300px"
+                className="object-contain" // Changed from object-cover to object-contain
               />
             </div>
           </SwiperSlide>
