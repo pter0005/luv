@@ -49,9 +49,12 @@ export async function POST(req: NextRequest) {
                 },
                 payment_methods: {
                     excluded_payment_types: [
-                        { id: "ticket" } 
+                        { id: "ticket" },
+                        { id: "debit_card"},
+                        { id: "credit_card" },
                     ],
                     installments: 1,
+                    default_payment_method_id: "pix",
                 },
                 back_urls: {
                     success: `${baseUrl}/criar/sucesso/${pageId}`,
@@ -66,7 +69,12 @@ export async function POST(req: NextRequest) {
             },
         });
 
-        return NextResponse.json({ id: result.id });
+        const pixData = {
+            qrCodeBase64: result.point_of_interaction?.transaction_data?.qr_code_base64,
+            qrCode: result.point_of_interaction?.transaction_data?.qr_code,
+        };
+
+        return NextResponse.json({ pixData });
 
     } catch (error: any) {
         console.error('Mercado Pago API error:', error);

@@ -7,17 +7,13 @@ import { confirmPaymentAndSendEmail, getPageData } from '@/actions/page';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, CheckCircle, Clock, Copy, Download, Share2, Wallet, TestTube2, XCircle, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Clock, Copy, Download, Share2, Wallet, TestTube2, XCircle, AlertTriangle, QrCode } from 'lucide-react';
 import Link from 'next/link';
 import { useQRCode } from 'next-qrcode';
 import { useToast } from '@/hooks/use-toast';
-import { initMercadoPago, Payment } from '@mercadopago/sdk-react';
+import Image from 'next/image';
 
-// ATENÇÃO: Substitua este valor pela sua Chave Pública do Mercado Pago
-const NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY = "SEU_PUBLIC_KEY_DO_MERCADO_PAGO";
 const NEXT_PUBLIC_BASE_URL = 'https://criarcomluv.site';
-
-initMercadoPago(NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY!);
 
 const FIXED_PRICE = 14.99;
 
@@ -29,7 +25,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
   const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
-  const [preferenceId, setPreferenceId] = useState<string | null>(null);
+  const [pixData, setPixData] = useState<{qrCodeBase64: string, qrCode: string} | null>(null);
   const { Canvas } = useQRCode();
 
   useEffect(() => {
@@ -71,7 +67,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     checkPageData();
   }, [params.id, toast, searchParams]);
 
-  const handleCheckout = async () => {
+  const handleGeneratePix = async () => {
     if (!pageData) return;
     setIsProcessingCheckout(true);
 
@@ -93,11 +89,11 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
         throw new Error(errorData.error || 'Falha ao iniciar pagamento.');
       }
       
-      const { id } = await response.json();
-      if (id) {
-        setPreferenceId(id);
+      const { pixData } = await response.json();
+      if (pixData?.qrCodeBase64) {
+        setPixData(pixData);
       } else {
-        throw new Error('ID de preferência não foi retornado.');
+        throw new Error('Não foi possível gerar o QR Code do Pix.');
       }
     } catch (error: any) {
       toast({
@@ -105,15 +101,18 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
         title: "Erro no Checkout",
         description: error.message || "Não foi possível preparar o pagamento.",
       });
-      setIsProcessingCheckout(false);
+    } finally {
+        setIsProcessingCheckout(false);
     }
   };
-  
-  const onPaymentBrickReady = () => {
-    setIsProcessingCheckout(false);
-    toast({ title: "Formulário de pagamento carregado!", description: "Preencha seus dados para finalizar." });
-  }
 
+  const handleCopyPixCode = () => {
+    if (pixData?.qrCode) {
+        navigator.clipboard.writeText(pixData.qrCode);
+        toast({ title: "Código Pix copiado para a área de transferência!" });
+    }
+  }
+  
   const handleTestPayment = async () => {
     setIsTesting(true);
     try {
@@ -268,10 +267,10 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                 </p>
                 <Button 
                     size="lg" 
-                    onClick={handleCheckout}
+                    onClick={handleGeneratePix}
                     disabled={isProcessingCheckout || !pageData}
                 >
-                    {isProcessingCheckout ? 'Carregando...' : (
+                    {isProcessingCheckout ? 'Gerando Pix...' : (
                         <>
                             <Wallet className="mr-2 h-5 w-5" />
                             Tentar Novamente - R$ {FIXED_PRICE.toFixed(2).replace('.', ',')}
@@ -312,66 +311,46 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
             <Card className="w-full max-w-lg bg-card/80">
                  <CardHeader>
                     <CardTitle className="flex items-center gap-3 justify-center text-center">
-                        Finalize o Pagamento
+                        Finalize o Pagamento via Pix
                     </CardTitle>
                     <CardDescription className="text-center">
-                        Acesso vitalício à sua página personalizada.
+                        Acesso vitalício por R$ {FIXED_PRICE.toFixed(2).replace('.', ',')}
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {preferenceId ? (
-                        <div className="flex flex-col items-center justify-center">
-                          {isProcessingCheckout && <Skeleton className="h-72 w-full" />}
-                          <Payment
-                            initialization={{
-                                amount: FIXED_PRICE,
-                                preferenceId: preferenceId,
-                            }}
-                            customization={{
-                                visual: {
-                                    style: {
-                                        theme: 'dark',
-                                        customVariables: {
-                                            baseColor: 'hsl(var(--background))',
-                                            contrastTextColor: 'hsl(var(--foreground))',
-                                            primaryColor: 'hsl(var(--primary))',
-                                            secondaryColor: 'hsl(var(--secondary))',
-                                            formBackgroundColor: 'hsl(var(--card))',
-                                            borderRadius: 'var(--radius)',
-                                            fontSizeMedium: '1rem',
-                                            fontWeightNormal: '400',
-                                            fontWeightSemiBold: '600',
-                                        }
-                                    }
-                                }
-                            }}
-                            onReady={onPaymentBrickReady}
-                            onSubmit={async ({ formData }) => {
-                                // This is where you would call your backend to process the payment
-                                // This is a simplified example, you should handle the response properly
-                                console.log('Payment submitted', formData);
-                            }}
-                        />
+                    {pixData ? (
+                        <div className="flex flex-col items-center justify-center gap-4">
+                            <p className="text-sm text-center text-muted-foreground">Escaneie o QR Code com o app do seu banco:</p>
+                            <div className="bg-white p-2 rounded-lg">
+                                <Image 
+                                    src={`data:image/jpeg;base64,${pixData.qrCodeBase64}`}
+                                    width={256}
+                                    height={256}
+                                    alt="PIX QR Code"
+                                />
+                            </div>
+                            <p className="text-sm text-center text-muted-foreground">Ou use o Pix Copia e Cola:</p>
+                            <Button className="w-full" variant="secondary" onClick={handleCopyPixCode}>
+                                <Copy className="mr-2 h-4 w-4" />
+                                Copiar Código Pix
+                            </Button>
                         </div>
                     ) : (
                          <Button 
                             size="lg" 
                             className="w-full" 
-                            onClick={handleCheckout}
+                            onClick={handleGeneratePix}
                             disabled={isProcessingCheckout || !pageData}
                         >
-                            {isProcessingCheckout ? 'Carregando...' : (
+                            {isProcessingCheckout ? 'Gerando Pix...' : (
                                 <>
-                                    <Wallet className="mr-2 h-5 w-5" />
-                                    Pagar agora - R$ {FIXED_PRICE.toFixed(2).replace('.', ',')}
+                                    <QrCode className="mr-2 h-5 w-5" />
+                                    Gerar QR Code Pix
                                 </>
                             )}
                         </Button>
                     )}
                    
-                     <p className="text-xs text-muted-foreground mt-4 text-center">
-                        Pague com Cartão ou Pix de forma segura com Mercado Pago.
-                     </p>
                      <div className="relative flex py-5 items-center">
                         <div className="flex-grow border-t border-border"></div>
                         <span className="flex-shrink mx-4 text-muted-foreground text-xs">PARA TESTES</span>
@@ -411,3 +390,4 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
+
