@@ -96,7 +96,7 @@ export default function DashboardPage() {
               <CardHeader>
                 <CardTitle className="truncate">{page.title || 'Página Sem Título'}</CardTitle>
                 <CardDescription>
-                  Criada em: {new Date(page.createdAt.seconds * 1000).toLocaleDateString('pt-BR')}
+                  Criada em: {page.createdAt ? new Date(page.createdAt).toLocaleDateString('pt-BR') : 'Data Indisponível'}
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex-grow flex flex-col justify-between">
@@ -104,13 +104,13 @@ export default function DashboardPage() {
                     <Image src={page.photos?.[0] || page.heroImage || 'https://picsum.photos/400/225'} alt={page.title} layout="fill" objectFit="cover" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                 </div>
-                 <Link href={`/p/${page.id}`} passHref legacyBehavior>
-                    <a target="_blank" rel="noopener noreferrer" className="w-full">
-                        <Button className="w-full" disabled={page.status !== 'paid'}>
+                 <Link href={`/p/${page.id}`} passHref>
+                    <Button asChild className="w-full" disabled={page.status !== 'paid'}>
+                        <a>
                             <Eye className="mr-2 h-4 w-4" />
                             {page.status === 'paid' ? 'Ver Página' : 'Pagamento Pendente'}
-                        </Button>
-                    </a>
+                        </a>
+                    </Button>
                 </Link>
               </CardContent>
             </Card>
