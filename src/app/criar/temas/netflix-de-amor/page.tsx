@@ -275,9 +275,9 @@ function NetflixCreatorPage() {
 
   return (
     <div className="bg-[#141414] text-white min-h-screen">
-        <div className="grid md:grid-cols-2">
+        <div className="flex flex-col-reverse md:grid md:grid-cols-2">
             {/* Form Section */}
-            <div className="section-padding overflow-y-auto h-screen scrollbar-hide">
+            <div className="p-4 md:p-8 overflow-y-auto md:h-screen md:scrollbar-hide">
                 <div className="max-w-xl mx-auto">
                     <header className="text-center mb-12">
                         <Image src="https://i.imgur.com/EMwsRdt.png" alt="Luv Logo" width={100} height={100} className="mx-auto w-24 h-24" />
@@ -489,7 +489,7 @@ function NetflixCreatorPage() {
             </div>
             
             {/* Preview Section */}
-            <div className="hidden md:block sticky top-0 h-screen p-8">
+            <div className="md:sticky top-0 h-[80vh] md:h-screen p-2 md:p-8">
                 <div className="w-full h-full bg-zinc-950 rounded-2xl flex flex-col shadow-2xl overflow-hidden">
                     <div className="bg-zinc-800 rounded-t-lg p-2 flex items-center gap-1.5 border-b border-zinc-700">
                         <div className="flex items-center gap-1.5">
@@ -512,3 +512,5 @@ function NetflixCreatorPage() {
 }
 
 export default withAuth(NetflixCreatorPage);
+
+    
