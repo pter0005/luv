@@ -38,7 +38,7 @@ export const JigsawPuzzle: React.FC<JigsawPuzzleProps> = ({
     const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
     const [puzzleSize, setPuzzleSize] = useState(0);
     const [isComplete, setIsComplete] = useState(false);
-    const [isDragging, setIsDragging] = useState<number | null>(null);
+    const [selectedPieceIndex, setSelectedPieceIndex] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [showHint, setShowHint] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -53,35 +53,43 @@ export const JigsawPuzzle: React.FC<JigsawPuzzleProps> = ({
             const size = Math.min(containerWidth * 0.9, 500);
             setPuzzleSize(size);
             setImageSize({ width: img.width, height: img.height });
-            initializePuzzle(size / gridSize, size);
+            initializePuzzle(size);
             setIsLoading(false);
+        };
+         img.onerror = () => {
+            setIsLoading(false);
+            // Handle image loading error if necessary
         };
     }, [imageSrc, gridSize]);
 
-    const initializePuzzle = (size: number, puzSize: number) => {
+    const initializePuzzle = (puzSize: number) => {
         const newPieces: Omit<Piece, 'currentIndex'>[] = [];
         for (let i = 0; i < gridSize; i++) {
             for (let j = 0; j < gridSize; j++) {
                 newPieces.push({
                     id: i * gridSize + j,
                     correctIndex: i * gridSize + j,
-                    x: j * size,
-                    y: i * size,
+                    x: j * (puzSize / gridSize),
+                    y: i * (puzSize / gridSize),
                     imgX: j * (imageSize.width / gridSize),
                     imgY: i * (imageSize.height / gridSize),
                 });
             }
         }
         
-        // Fisher-Yates shuffle
         let shuffled = [...newPieces].map((p, index) => ({...p, currentIndex: index }));
-        for (let i = shuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffled[i].currentIndex, shuffled[j].currentIndex] = [shuffled[j].currentIndex, shuffled[i].currentIndex];
-        }
+        // Ensure not already solved and is solvable
+        do {
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i].currentIndex, shuffled[j].currentIndex] = [shuffled[j].currentIndex, shuffled[i].currentIndex];
+            }
+        } while (shuffled.every(p => p.correctIndex === p.currentIndex))
+
 
         setPieces(shuffled);
         setIsComplete(false);
+        setSelectedPieceIndex(null);
     };
 
     const checkCompletion = (currentPieces: Piece[]) => {
@@ -93,36 +101,30 @@ export const JigsawPuzzle: React.FC<JigsawPuzzleProps> = ({
         }
     };
     
-    const handleDrop = (fromIndex: number, toIndex: number) => {
-        if (fromIndex === toIndex) return;
+    const handlePieceClick = (clickedIndex: number) => {
+        if (isComplete) return;
 
-        const newPieces = [...pieces];
-        const fromPiece = newPieces.find(p => p.currentIndex === fromIndex)!;
-        const toPiece = newPieces.find(p => p.currentIndex === toIndex)!;
-        
-        [fromPiece.currentIndex, toPiece.currentIndex] = [toPiece.currentIndex, fromPiece.currentIndex];
+        if (selectedPieceIndex === null) {
+            // First piece selected
+            setSelectedPieceIndex(clickedIndex);
+        } else {
+            // Second piece selected, swap them
+            const newPieces = [...pieces];
+            const fromPiece = newPieces.find(p => p.currentIndex === selectedPieceIndex)!;
+            const toPiece = newPieces.find(p => p.currentIndex === clickedIndex)!;
+            
+            if(fromPiece && toPiece) {
+                [fromPiece.currentIndex, toPiece.currentIndex] = [toPiece.currentIndex, fromPiece.currentIndex];
+            }
 
-        setPieces(newPieces);
-        checkCompletion(newPieces);
-    };
-
-    const handleDragStart = (e: React.DragEvent<HTMLDivElement>, index: number) => {
-        e.dataTransfer.setData('text/plain', index.toString());
-        setIsDragging(index);
-    };
-
-    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-    };
-    
-    const handleOnDrop = (e: React.DragEvent<HTMLDivElement>, toIndex: number) => {
-        const fromIndex = parseInt(e.dataTransfer.getData('text/plain'));
-        handleDrop(fromIndex, toIndex);
-        setIsDragging(null);
+            setPieces(newPieces);
+            checkCompletion(newPieces);
+            setSelectedPieceIndex(null); // Reset selection
+        }
     };
     
     const resetPuzzle = () => {
-        initializePuzzle(pieceSize, puzzleSize);
+        initializePuzzle(puzzleSize);
     }
     
     if (isLoading) {
@@ -151,18 +153,20 @@ export const JigsawPuzzle: React.FC<JigsawPuzzleProps> = ({
                     <motion.div
                         key={piece.id}
                         layoutId={`piece-${piece.id}`}
-                        draggable
-                        onDragStart={(e) => handleDragStart(e, piece.currentIndex)}
-                        onDragOver={handleDragOver}
-                        onDrop={(e) => handleOnDrop(e, piece.currentIndex)}
-                        className={`relative cursor-grab rounded-md overflow-hidden transition-all duration-300 ${isDragging === piece.currentIndex ? 'opacity-50 scale-95' : ''}`}
+                        onClick={() => handlePieceClick(piece.currentIndex)}
+                        className={`relative cursor-pointer rounded-md overflow-hidden transition-all duration-300`}
                         style={{ 
                             width: pieceSize, 
                             height: pieceSize,
                         }}
+                         animate={{
+                            scale: selectedPieceIndex === piece.currentIndex ? 1.1 : 1,
+                            zIndex: selectedPieceIndex === piece.currentIndex ? 10 : 1,
+                            boxShadow: selectedPieceIndex === piece.currentIndex ? '0 0 15px rgba(168, 85, 247, 0.8)' : '0 0 0 rgba(0,0,0,0)',
+                        }}
                     >
                          <div
-                            className="w-full h-full bg-no-repeat bg-cover"
+                            className="w-full h-full bg-no-repeat"
                             style={{
                                 backgroundImage: `url(${imageSrc})`,
                                 backgroundSize: `${puzzleSize}px ${puzzleSize}px`,
