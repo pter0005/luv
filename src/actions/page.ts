@@ -27,7 +27,7 @@ const formSchema = z.object({
   puzzleDescription: z.string().optional(),
   contactName: z.string().min(1, "O nome é obrigatório."),
   contactEmail: z.string().email("Email inválido.").min(1, "O e-mail é obrigatório."),
-  contactDoc: z.string().min(11, "O CPF/CNPJ é obrigatório."),
+  contactPhone: z.string().optional(),
   plan: z.string().min(1, "Você deve escolher uma opção."),
   heroVideoUrl: z.string().optional(),
   // For templates
@@ -37,7 +37,6 @@ const formSchema = z.object({
   heroTitle: z.string().optional(),
   heroDescription: z.string().optional(),
   categories: z.array(z.any()).optional(),
-  contactPhone: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;

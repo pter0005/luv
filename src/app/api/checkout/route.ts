@@ -22,10 +22,10 @@ export async function POST(req: NextRequest) {
 
     try {
         const body = await req.json();
-        const { pageId, title, email, name, doc: contactDoc } = body;
+        const { pageId, title, email, name } = body;
 
-        if (!pageId || !title || !email || !name || !contactDoc) {
-            return NextResponse.json({ error: 'Todos os campos são obrigatórios: pageId, title, email, name, doc' }, { status: 400 });
+        if (!pageId || !title || !email || !name) {
+            return NextResponse.json({ error: 'Todos os campos são obrigatórios: pageId, title, email, name' }, { status: 400 });
         }
         
         const payment = new Payment(client);
@@ -48,6 +48,9 @@ export async function POST(req: NextRequest) {
         const firstName = nameParts.shift() || '';
         const lastName = nameParts.join(' ') || firstName;
 
+        // CPF genérico para cumprir requisito da API do Mercado Pago
+        const genericCpf = "54625872502";
+
         const paymentData = {
             transaction_amount: FIXED_PRICE,
             description: `Página Personalizada: ${title}`,
@@ -57,8 +60,8 @@ export async function POST(req: NextRequest) {
                 first_name: firstName,
                 last_name: lastName,
                 identification: {
-                    type: contactDoc.length === 11 ? 'CPF' : 'CNPJ',
-                    number: contactDoc,
+                    type: 'CPF',
+                    number: genericCpf,
                 },
             },
             notification_url: `${baseUrl}/api/webhook/mercado-pago`,

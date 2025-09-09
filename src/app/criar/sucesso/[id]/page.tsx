@@ -159,10 +159,9 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           pageId: params.id,
-          title: pageData.title,
+          title: pageData.title || pageData.heroTitle,
           email: pageData.contactEmail,
           name: pageData.contactName,
-          doc: pageData.contactDoc,
         }),
       });
 

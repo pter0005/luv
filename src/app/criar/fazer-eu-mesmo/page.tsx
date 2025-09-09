@@ -89,7 +89,7 @@ const formSchema = z.object({
   puzzleDescription: z.string().optional(),
   contactName: z.string().min(1, "O nome é obrigatório."),
   contactEmail: z.string().email("Email inválido.").min(1, "O e-mail é obrigatório."),
-  contactDoc: z.string().min(11, "O CPF/CNPJ é obrigatório."),
+  contactPhone: z.string().optional(),
   plan: z.string().min(1, "Você deve escolher uma opção."),
 });
 
@@ -199,11 +199,18 @@ function CreatorStudioPage() {
       puzzleTitle: "Um Quebra-Cabeça Especial",
       puzzleDescription: "Resolva o enigma para revelar a surpresa!",
       contactName: "",
-      contactEmail: "",
-      contactDoc: "",
+      contactEmail: user?.email || "",
+      contactPhone: "",
       plan: "essencial",
     },
   });
+
+  React.useEffect(() => {
+    if (user) {
+      form.setValue('contactEmail', user.email || '');
+    }
+  }, [user, form]);
+
 
   const watchedData = form.watch();
 
@@ -378,7 +385,7 @@ function CreatorStudioPage() {
     let fieldsToValidate: (keyof FormData)[] = [currentField];
     
     if (currentField === 'contactName') {
-        fieldsToValidate = ['contactName', 'contactEmail', 'contactDoc', 'plan'];
+        fieldsToValidate = ['contactName', 'contactEmail', 'plan'];
     }
 
     if (currentField === 'musicChoice') {
@@ -1036,14 +1043,14 @@ function CreatorStudioPage() {
                       />
                         <FormField
                           control={form.control}
-                          name="contactDoc"
+                          name="contactPhone"
                           render={({ field }) => (
                               <FormItem>
-                                  <FormLabel>Seu CPF ou CNPJ</FormLabel>
+                                  <FormLabel>Seu Telefone (Opcional)</FormLabel>
                                   <FormControl>
-                                      <Input placeholder="Apenas números" {...field} />
+                                      <Input placeholder="(99) 99999-9999" {...field} />
                                   </FormControl>
-                                   <FormDescription>Necessário para a emissão do pagamento via Pix.</FormDescription>
+                                   <FormDescription>Caso a gente precise entrar em contato sobre seu pedido.</FormDescription>
                                   <FormMessage />
                               </FormItem>
                           )}

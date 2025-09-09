@@ -47,7 +47,7 @@ const formSchema = z.object({
   categories: z.array(categorySchema).min(1, "Adicione pelo menos uma categoria."),
   contactName: z.string().min(1, "O nome é obrigatório."),
   contactEmail: z.string().email("Email inválido.").min(1, "O e-mail é obrigatório."),
-  contactDoc: z.string().min(11, "O CPF/CNPJ é obrigatório."),
+  contactPhone: z.string().optional(),
   plan: z.string().min(1, "Você deve escolher uma opção.").default("essencial"),
 }).refine(data => {
     if (data.heroType === 'image') return !!data.heroImage;
@@ -192,11 +192,17 @@ function NetflixCreatorPage() {
         { title: "Filmes em Alta", items: [] },
       ],
       contactName: "",
-      contactEmail: "",
-      contactDoc: "",
+      contactEmail: user?.email || "",
+      contactPhone: "",
       plan: "essencial",
     },
   });
+
+   React.useEffect(() => {
+    if (user) {
+      form.setValue('contactEmail', user.email || '');
+    }
+  }, [user, form]);
   
   const { fields: categories, append, remove } = useFieldArray({
     control: form.control,
@@ -486,12 +492,12 @@ function NetflixCreatorPage() {
                                 />
                                  <FormField
                                     control={form.control}
-                                    name="contactDoc"
+                                    name="contactPhone"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Seu CPF ou CNPJ</FormLabel>
+                                            <FormLabel>Seu Telefone (Opcional)</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="Apenas números" {...field} className="bg-zinc-800 border-zinc-700" />
+                                                <Input placeholder="(99) 99999-9999" {...field} className="bg-zinc-800 border-zinc-700" />
                                             </FormControl>
                                              <FormMessage />
                                         </FormItem>
