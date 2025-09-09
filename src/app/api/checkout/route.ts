@@ -52,12 +52,6 @@ export async function POST(req: NextRequest) {
                     email: email,
                 },
                 payment_methods: {
-                    excluded_payment_types: [
-                        { id: "ticket" },
-                        { id: "debit_card" },
-                        { id: "credit_card" },
-                    ],
-                    default_payment_method_id: 'pix',
                     installments: 1,
                 },
                  purpose: 'wallet_purchase',
