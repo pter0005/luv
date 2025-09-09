@@ -22,10 +22,10 @@ export async function POST(req: NextRequest) {
 
     try {
         const body = await req.json();
-        const { pageId, title, email, name, docNumber } = body;
+        const { pageId, title, email, name } = body;
 
-        if (!pageId || !title || !email || !name || !docNumber) {
-            return NextResponse.json({ error: 'Todos os campos são obrigatórios: pageId, title, email, name, docNumber' }, { status: 400 });
+        if (!pageId || !title || !email || !name) {
+            return NextResponse.json({ error: 'Todos os campos são obrigatórios: pageId, title, email, name' }, { status: 400 });
         }
         
         const payment = new Payment(client);
@@ -56,10 +56,6 @@ export async function POST(req: NextRequest) {
                 email: email,
                 first_name: firstName,
                 last_name: lastName,
-                identification: {
-                    type: 'CPF',
-                    number: docNumber,
-                },
             },
             notification_url: `${baseUrl}/api/webhook/mercado-pago`,
             metadata: {

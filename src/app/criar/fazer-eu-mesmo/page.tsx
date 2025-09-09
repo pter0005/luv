@@ -87,11 +87,8 @@ const formSchema = z.object({
   puzzleImage: z.string().optional().or(z.literal('')),
   puzzleTitle: z.string().optional(),
   puzzleDescription: z.string().optional(),
-  contactName: z.string().min(1, "O nome é obrigatório.").refine(s => s.trim().split(' ').length >= 2, {
-    message: "Por favor, insira nome e sobrenome."
-  }),
+  contactName: z.string().min(1, "O nome é obrigatório."),
   contactEmail: z.string().email("Email inválido.").min(1, "O e-mail é obrigatório."),
-  contactDoc: z.string().min(11, "O CPF/CNPJ é obrigatório."),
   plan: z.string().min(1, "Você deve escolher uma opção."),
 });
 
@@ -202,7 +199,6 @@ function CreatorStudioPage() {
       puzzleDescription: "Resolva o enigma para revelar a surpresa!",
       contactName: "",
       contactEmail: "",
-      contactDoc: "",
       plan: "essencial",
     },
   });
@@ -313,7 +309,7 @@ function CreatorStudioPage() {
               title: "Página salva com sucesso!",
               description: "Você será redirecionado para a tela de pagamento.",
             });
-            router.push(`/criar/sucesso/${pageId}?doc=${encodeURIComponent(data.contactDoc)}`);
+            router.push(`/criar/sucesso/${pageId}`);
         } else {
              toast({
               title: "Solicitação enviada!",
@@ -380,7 +376,7 @@ function CreatorStudioPage() {
     let fieldsToValidate: (keyof FormData)[] = [currentField];
     
     if (currentField === 'contactName') {
-        fieldsToValidate = ['contactName', 'contactEmail', 'contactDoc', 'plan'];
+        fieldsToValidate = ['contactName', 'contactEmail', 'plan'];
     }
 
     if (currentField === 'musicChoice') {
@@ -1014,7 +1010,7 @@ function CreatorStudioPage() {
                           name="contactName"
                           render={({ field }) => (
                               <FormItem>
-                                  <FormLabel>Seu Nome e Sobrenome</FormLabel>
+                                  <FormLabel>Seu Nome Completo</FormLabel>
                                   <FormControl>
                                       <Input placeholder="Seu nome completo" {...field} />
                                   </FormControl>
@@ -1032,20 +1028,6 @@ function CreatorStudioPage() {
                                       <Input placeholder="seu.email@exemplo.com" {...field} />
                                   </FormControl>
                                   <FormDescription>Essencial para o envio do link da sua página.</FormDescription>
-                                  <FormMessage />
-                              </FormItem>
-                          )}
-                      />
-                       <FormField
-                          control={form.control}
-                          name="contactDoc"
-                          render={({ field }) => (
-                              <FormItem>
-                                  <FormLabel>Seu CPF ou CNPJ</FormLabel>
-                                  <FormControl>
-                                      <Input placeholder="Apenas números" {...field} />
-                                  </FormControl>
-                                   <FormDescription>Obrigatório para gerar o PIX.</FormDescription>
                                   <FormMessage />
                               </FormItem>
                           )}

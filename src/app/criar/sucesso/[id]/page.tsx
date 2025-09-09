@@ -27,7 +27,6 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
   const [pixData, setPixData] = useState<{qrCodeBase64: string, qrCode: string} | null>(null);
   const { Canvas } = useQRCode();
-  const contactDoc = searchParams.get('doc'); // Get doc from URL
 
   // Effect to handle initial page load and payment confirmation from URL params
   const checkPageAndPayment = useCallback(async () => {
@@ -101,14 +100,6 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
 
   const handleGeneratePix = async () => {
     if (!pageData) return;
-     if (!contactDoc) {
-        toast({
-            variant: "destructive",
-            title: "CPF/CNPJ não encontrado",
-            description: "Por favor, volte e preencha o formulário novamente.",
-        });
-        return;
-    }
 
     setCheckoutStatus('loading');
     setCheckoutError(null);
@@ -122,7 +113,6 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
           title: pageData.title,
           email: pageData.contactEmail,
           name: pageData.contactName,
-          docNumber: contactDoc,
         }),
       });
 

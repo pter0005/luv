@@ -47,7 +47,6 @@ const formSchema = z.object({
   categories: z.array(categorySchema).min(1, "Adicione pelo menos uma categoria."),
   contactName: z.string().min(1, "O nome é obrigatório."),
   contactEmail: z.string().email("Email inválido.").min(1, "O e-mail é obrigatório."),
-  contactDoc: z.string().min(11, "O CPF/CNPJ é obrigatório."),
   plan: z.string().min(1, "Você deve escolher uma opção.").default("essencial"),
 }).refine(data => {
     if (data.heroType === 'image') return !!data.heroImage;
@@ -193,7 +192,6 @@ function NetflixCreatorPage() {
       ],
       contactName: "",
       contactEmail: "",
-      contactDoc: "",
       plan: "essencial",
     },
   });
@@ -258,7 +256,7 @@ function NetflixCreatorPage() {
           title: "Sua Netflix de Amor foi salva!",
           description: "Você será redirecionado para a tela de pagamento.",
         });
-        router.push(`/criar/sucesso/${pageId}?doc=${encodeURIComponent(data.contactDoc)}`);
+        router.push(`/criar/sucesso/${pageId}`);
     } catch (error) {
       console.error("Failed to process page:", error);
       toast({
@@ -463,7 +461,7 @@ function NetflixCreatorPage() {
                                     name="contactName"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Seu Nome</FormLabel>
+                                            <FormLabel>Seu Nome Completo</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="Seu nome completo" {...field} className="bg-zinc-800 border-zinc-700" />
                                             </FormControl>
@@ -480,20 +478,6 @@ function NetflixCreatorPage() {
                                             <FormControl>
                                                 <Input placeholder="seu.email@exemplo.com" {...field} className="bg-zinc-800 border-zinc-700"/>
                                             </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="contactDoc"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Seu CPF/CNPJ</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Apenas números" {...field} className="bg-zinc-800 border-zinc-700"/>
-                                            </FormControl>
-                                            <FormDescription>Necessário para gerar a cobrança PIX.</FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
