@@ -72,40 +72,6 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     checkPageAndPayment();
   }, [params.id, toast, searchParams]);
 
-  // Polling effect to check payment status after generating PIX
-  useEffect(() => {
-    if (pixData && paymentStatus !== 'approved') {
-      const interval = setInterval(async () => {
-        try {
-          const updatedPageData = await getPageData(params.id);
-          if (updatedPageData && updatedPageData.status === 'paid') {
-            setPageData(updatedPageData);
-            setPaymentStatus('approved');
-            toast({
-                title: "Pagamento Aprovado!",
-                description: "Sua página foi ativada com sucesso.",
-                className: "bg-green-600 border-green-600 text-white"
-            })
-            clearInterval(interval);
-          }
-        } catch (error) {
-          console.error("Polling error:", error);
-        }
-      }, 5000); // Check every 5 seconds
-
-      // Clear interval after 5 minutes to avoid infinite polling
-      const timeout = setTimeout(() => {
-        clearInterval(interval);
-        console.log("Polling stopped after 5 minutes.");
-      }, 300000);
-
-      return () => {
-        clearInterval(interval);
-        clearTimeout(timeout);
-      };
-    }
-  }, [pixData, paymentStatus, params.id, toast]);
-
 
   const handleGeneratePix = async () => {
     if (!pageData) return;
@@ -144,7 +110,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
         setPixData(responseData.pixData);
         setCheckoutStatus('success');
       } else {
-        throw new Error('A API retornou uma resposta OK, mas não incluiu os dados do QR Code. Verifique o painel do Mercado Pago.');
+        throw new Error('A API do Mercado Pago retornou uma resposta OK, mas não incluiu os dados do QR Code. Verifique o painel do Mercado Pago.');
       }
 
     } catch (error: any) {
@@ -214,7 +180,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
       )
     }
 
-    if (paymentStatus === 'approved') {
+    if (paymentStatus === 'approved' || pageData?.status === 'paid') {
        return (
           <>
             <div className="p-4 bg-green-500/10 rounded-full mb-6 ring-4 ring-green-500/20">
@@ -224,7 +190,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
               Sua página está <span className="gradient-text">Pronta!</span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-              Sua obra de arte digital foi criada com sucesso. Agora é só compartilhar com aquela pessoa especial.
+              Sua obra de arte digital foi criada com sucesso. Um e-mail com o link de acesso foi enviado para você. Agora é só compartilhar com aquela pessoa especial.
             </p>
 
             <Card className="w-full max-w-lg bg-card/80">
@@ -359,7 +325,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                                 <Copy className="mr-2 h-4 w-4" />
                                 Copiar Código Pix
                             </Button>
-                             <p className="text-xs text-muted-foreground text-center pt-2">Aguardando pagamento... A página será atualizada automaticamente.</p>
+                             <p className="text-xs text-muted-foreground text-center pt-2">Aguardando pagamento... Você será notificado por e-mail quando for confirmado.</p>
                         </div>
                     ) : (
                          <Button 
@@ -408,3 +374,5 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
+
+    
