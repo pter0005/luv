@@ -83,7 +83,8 @@ export async function POST(req: NextRequest) {
 
     } catch (error: any) {
         console.error('Mercado Pago API error:', error.cause ? error.cause : error);
-        const errorMessage = error?.cause?.error || error?.message || 'Failed to create payment preference';
-        return NextResponse.json({ error: errorMessage }, { status: 500 });
+        // Improved error handling to return specific message from Mercado Pago
+        const errorMessage = error?.cause?.error?.message || error?.message || 'Failed to create payment preference';
+        return NextResponse.json({ error: `Erro do Mercado Pago: ${errorMessage}` }, { status: 500 });
     }
 }
