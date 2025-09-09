@@ -3,7 +3,7 @@
 
 import Image from "next/image";
 import * as React from "react";
-import { Play, Info } from "lucide-react";
+import { Play, Info, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface NetflixDeAmorPageProps {
@@ -35,7 +35,7 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
     const [showVideo, setShowVideo] = React.useState(false);
     
     const videoId = React.useMemo(() => {
-        if (!data.heroVideoUrl) return null;
+        if (data.heroType !== 'video' || !data.heroVideoUrl) return null;
         try {
             const url = new URL(data.heroVideoUrl);
             if (url.hostname === 'youtu.be') return url.pathname.slice(1);
@@ -44,10 +44,10 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
             }
             return null;
         } catch (error) { return null; }
-    }, [data.heroVideoUrl]);
+    }, [data.heroType, data.heroVideoUrl]);
 
     const handlePlay = () => {
-        if(data.heroType === 'video' && videoId) {
+        if((data.heroType === 'video' && videoId) || data.heroType === 'upload') {
             setShowVideo(true);
         }
     }
@@ -57,18 +57,38 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
         <div className="bg-[#141414] text-white min-h-screen">
             {showVideo && (
                 <div className="fixed inset-0 bg-black z-50 flex items-center justify-center">
-                    <iframe
-                        width="100%"
-                        height="100%"
-                        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
-                        title="YouTube video player"
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                    ></iframe>
-                     <Button variant="ghost" size="icon" className="absolute top-4 right-4 text-white bg-black/50 hover:bg-black/80" onClick={() => setShowVideo(false)}>X</Button>
+                    {data.heroType === 'video' && videoId && (
+                         <iframe
+                            width="100%"
+                            height="100%"
+                            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
+                            title="YouTube video player"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        ></iframe>
+                    )}
+                    {data.heroType === 'upload' && data.heroVideoUrl && (
+                        <video
+                            src={data.heroVideoUrl}
+                            controls
+                            autoPlay
+                            className="w-full h-full object-contain"
+                        />
+                    )}
+                     <Button variant="ghost" size="icon" className="absolute top-4 right-4 text-white bg-black/50 hover:bg-black/80 z-50" onClick={() => setShowVideo(false)}>
+                        <X className="w-6 h-6"/>
+                    </Button>
                 </div>
             )}
+            
+             <header className="absolute top-0 left-0 w-full z-20 bg-gradient-to-b from-black/80 to-transparent p-4 md:p-6">
+                <div className="flex items-center justify-center">
+                    <svg width="40" height="50" viewBox="0 0 32 50" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-8 h-10 md:w-10 md:h-12 text-red-600">
+                        <path d="M21.5781 49.5312H32V0.46875H21.5781V16.8984L15.3203 5.71094V21.7656L3.82812 0.46875V49.5312H15.3203L27.1094 26.5312V49.5312H21.5781Z" fill="currentColor"/>
+                    </svg>
+                </div>
+            </header>
             
             <main className={isPreview ? 'scrollbar-hide' : ''}>
                 {/* Hero Section */}
@@ -78,19 +98,19 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
                             <Image src={data.heroImage} alt="Hero image" layout="fill" objectFit="cover" className="opacity-60" />
                         ) : (
                             <div className="w-full h-full bg-zinc-900 flex items-center justify-center">
-                                {data.heroType === 'video' && (
+                                {(data.heroType === 'video' || data.heroType === 'upload') && (
                                     <Play className="w-24 h-24 text-zinc-600"/>
                                 )}
                             </div>
                         )}
                     </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-black/20"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/50 to-transparent"></div>
                     <div className="relative z-10 flex flex-col justify-end h-full p-4 md:p-10 text-left">
-                        <div className="flex items-center gap-2">
-                             <svg width="24" height="40" viewBox="0 0 24 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-8 md:w-6 md:h-10">
-                                <path d="M14.2422 39.8438H23.5V0.46875H14.2422V13.8984L9.38281 4.71094V17.7656L0.59375 0.46875V39.8438H9.38281L18.4219 22.0312V39.8438H14.2422Z" fill="#E50914"/>
+                         <div className="flex items-center gap-2">
+                             <svg width="24" height="40" viewBox="0 0 24 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-4 h-6 md:w-5 md:h-8 text-red-600">
+                                <path d="M14.2422 39.8438H23.5V0.46875H14.2422V13.8984L9.38281 4.71094V17.7656L0.59375 0.46875V39.8438H9.38281L18.4219 22.0312V39.8438H14.2422Z" fill="currentColor"/>
                             </svg>
-                            <span className="text-lg tracking-[0.2em] text-zinc-300 font-semibold">FILME</span>
+                            <span className="text-base tracking-[0.2em] text-zinc-300 font-semibold">FILME</span>
                         </div>
                         <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter max-w-2xl mt-2" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.8)' }}>{data.heroTitle}</h1>
                         <p className="mt-4 max-w-xl text-base md:text-lg text-zinc-200">{data.heroDescription}</p>
@@ -108,7 +128,7 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
                 </div>
 
                 {/* Categories */}
-                <div className="py-8 -mt-20 relative z-20">
+                <div className="py-8 -mt-20 md:-mt-32 relative z-20">
                     {data.categories?.map((category: any, index: number) => (
                         <CategoryRow key={index} category={category} />
                     ))}

@@ -16,15 +16,16 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { ArrowLeft, ChevronRight, Loader, PlusCircle, Trash2, Upload, Video, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, ChevronRight, Loader, PlusCircle, Trash2, Upload, Video, Image as ImageIcon, FileVideo } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { savePageData } from "@/actions/page";
+import { savePageData, uploadVideo } from "@/actions/page";
 import { useRouter } from "next/navigation";
 import { useAuth, withAuth } from "@/contexts/AuthContext";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import { NetflixDeAmorPage } from "@/components/app/NetflixDeAmorPage";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Progress } from "@/components/ui/progress";
 
 const categorySchema = z.object({
   title: z.string().min(1, "O título da categoria é obrigatório."),
@@ -39,7 +40,7 @@ const formSchema = z.object({
   template: z.literal("netflix-de-amor"),
   heroType: z.string().default("image"),
   heroImage: z.string().optional(),
-  heroVideoUrl: z.string().url("URL inválida.").optional().or(z.literal('')),
+  heroVideoUrl: z.string().optional(),
   heroTitle: z.string().min(1, "O título de destaque é obrigatório."),
   heroDescription: z.string().min(1, "A sinopse é obrigatória."),
   categories: z.array(categorySchema).min(1, "Adicione pelo menos uma categoria."),
@@ -48,15 +49,12 @@ const formSchema = z.object({
   contactPhone: z.string().min(1, "O telefone é obrigatório."),
   plan: z.string().min(1, "Você deve escolher uma opção.").default("essencial"),
 }).refine(data => {
-    if (data.heroType === 'image') {
-        return !!data.heroImage;
-    }
-    if (data.heroType === 'video') {
-        return !!data.heroVideoUrl;
-    }
+    if (data.heroType === 'image') return !!data.heroImage;
+    if (data.heroType === 'video') return !!data.heroVideoUrl;
+    if (data.heroType === 'upload') return !!data.heroVideoUrl; // We use heroVideoUrl to store the uploaded URL too
     return false;
 }, {
-    message: "Você precisa fornecer uma imagem ou um vídeo de destaque.",
+    message: "Você precisa fornecer uma imagem, um vídeo do YouTube ou anexar um vídeo.",
     path: ["heroType"],
 });
 
@@ -175,6 +173,9 @@ function NetflixCreatorPage() {
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const heroFileInputRef = React.useRef<HTMLInputElement>(null);
+  const heroVideoInputRef = React.useRef<HTMLInputElement>(null);
+  const [uploadProgress, setUploadProgress] = React.useState<number | null>(null);
+
 
   const form = useForm<NetflixFormData>({
     resolver: zodResolver(formSchema),
@@ -210,16 +211,36 @@ function NetflixCreatorPage() {
     }
   }, [user, form]);
   
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>, onChange: (value: string) => void) => {
+  const handleHeroImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       toast({ title: 'Processando imagem...', description: 'Aguarde um momento.'});
       try {
         const processedImage = await processImage(file);
-        onChange(processedImage);
+        form.setValue('heroImage', processedImage);
         toast({ title: 'Imagem adicionada!' });
       } catch (error) {
          toast({ variant: "destructive", title: "Erro ao processar imagem." });
+      }
+    }
+  };
+  
+  const handleHeroVideoChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setUploadProgress(0);
+      toast({ title: 'Enviando vídeo...', description: 'Isso pode levar alguns minutos dependendo do tamanho do arquivo.'});
+      try {
+        // Here you would typically use a progress callback from your upload function
+        // For now, we'll just simulate it.
+        // In a real scenario, `uploadVideo` would need to support progress reporting.
+        const videoUrl = await uploadVideo(file);
+        form.setValue('heroVideoUrl', videoUrl);
+        setUploadProgress(100);
+        toast({ title: 'Vídeo enviado com sucesso!' });
+      } catch (error) {
+         toast({ variant: "destructive", title: "Erro ao enviar vídeo.", description: "Tente novamente ou verifique sua conexão." });
+         setUploadProgress(null);
       }
     }
   };
@@ -277,12 +298,17 @@ function NetflixCreatorPage() {
                                         <FormLabel>Tipo de Mídia de Destaque</FormLabel>
                                         <FormControl>
                                             <RadioGroup
-                                                onValueChange={field.onChange}
+                                                onValueChange={(value) => {
+                                                    field.onChange(value);
+                                                    form.setValue('heroImage', '');
+                                                    form.setValue('heroVideoUrl', '');
+                                                }}
                                                 defaultValue={field.value}
-                                                className="grid grid-cols-2 gap-4"
+                                                className="grid grid-cols-1 md:grid-cols-3 gap-4"
                                             >
                                                 <RadioGroupItem value="image" id="type-image"><ImageIcon className="mr-2"/> Imagem</RadioGroupItem>
-                                                <RadioGroupItem value="video" id="type-video"><Video className="mr-2"/> Vídeo (YouTube)</RadioGroupItem>
+                                                <RadioGroupItem value="video" id="type-video"><Video className="mr-2"/> YouTube</RadioGroupItem>
+                                                <RadioGroupItem value="upload" id="type-upload"><FileVideo className="mr-2"/> Anexar Vídeo</RadioGroupItem>
                                             </RadioGroup>
                                         </FormControl>
                                         <FormMessage />
@@ -307,7 +333,7 @@ function NetflixCreatorPage() {
                                                                 <p>Clique para enviar a imagem de destaque</p>
                                                             </div>
                                                         )}
-                                                        <input type="file" ref={heroFileInputRef} accept="image/*" className="hidden" onChange={(e) => handleFileChange(e, field.onChange)} />
+                                                        <input type="file" ref={heroFileInputRef} accept="image/*" className="hidden" onChange={handleHeroImageChange} />
                                                     </div>
                                                 </FormControl>
                                                 <FormMessage />
@@ -325,6 +351,35 @@ function NetflixCreatorPage() {
                                             <FormControl><Input placeholder="https://www.youtube.com/watch?v=..." {...field} className="bg-zinc-800 border-zinc-700" /></FormControl>
                                             <FormMessage />
                                         </FormItem>
+                                        )}
+                                    />
+                                )}
+                                {watchedData.heroType === "upload" && (
+                                     <FormField
+                                        control={form.control}
+                                        name="heroVideoUrl"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Anexar Arquivo de Vídeo</FormLabel>
+                                                <FormControl>
+                                                    <div className="w-full p-8 bg-zinc-800 rounded-md flex flex-col items-center justify-center border-2 border-dashed border-zinc-700 cursor-pointer hover:border-red-600" onClick={() => heroVideoInputRef.current?.click()}>
+                                                        <FileVideo className="mx-auto h-10 w-10 text-muted-foreground mb-2" />
+                                                        <p className="font-semibold">Clique para anexar um vídeo</p>
+                                                        <p className="text-xs text-muted-foreground">MP4, MOV, AVI (máx. 100MB)</p>
+                                                        <input type="file" ref={heroVideoInputRef} accept="video/*" className="hidden" onChange={handleHeroVideoChange} />
+                                                    </div>
+                                                </FormControl>
+                                                {uploadProgress !== null && uploadProgress < 100 && (
+                                                  <div className="space-y-2 mt-2">
+                                                    <Progress value={uploadProgress} className="h-2" />
+                                                    <p className="text-xs text-muted-foreground text-center">Enviando... {uploadProgress}%</p>
+                                                  </div>
+                                                )}
+                                                {field.value && uploadProgress === 100 && (
+                                                  <p className="text-sm text-green-400 p-2 bg-green-950/50 rounded-md mt-2">✔️ Vídeo anexado com sucesso!</p>
+                                                )}
+                                                <FormMessage />
+                                            </FormItem>
                                         )}
                                     />
                                 )}

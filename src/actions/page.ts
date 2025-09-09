@@ -1,8 +1,9 @@
 
 'use server';
 
-import { db } from '@/lib/firebase';
+import { db, storage } from '@/lib/firebase';
 import { collection, addDoc, getDoc, doc, updateDoc, getDocs, query, where } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { z } from 'zod';
 import { prepareAndSendEmail } from '@/ai/flows/send-link-email';
 
@@ -29,10 +30,29 @@ const formSchema = z.object({
   contactEmail: z.string().email("Email inválido.").min(1, "O e-mail é obrigatório."),
   contactPhone: z.string().min(1, "O telefone é obrigatório."),
   plan: z.string().min(1, "Você deve escolher uma opção."),
+  heroVideoUrl: z.string().optional(),
 });
 
 
 type FormData = z.infer<typeof formSchema>;
+
+
+export async function uploadVideo(file: File): Promise<string> {
+  if (!file) {
+    throw new Error("No file provided for upload.");
+  }
+  
+  const storageRef = ref(storage, `videos/${Date.now()}-${file.name}`);
+  
+  try {
+    const snapshot = await uploadBytes(storageRef, file);
+    const downloadURL = await getDownloadURL(snapshot.ref);
+    return downloadURL;
+  } catch (error) {
+    console.error("Error uploading video:", error);
+    throw new Error("Failed to upload video.");
+  }
+}
 
 export async function savePageData(data: FormData, userId: string): Promise<string> {
   if (!userId) {
