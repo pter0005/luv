@@ -71,12 +71,20 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
     const pageId = Date.now().toString();
     const status = data.plan === 'essencial' ? 'pending_payment' : 'pending_quote';
     
-    const pageDataForDb = {
+    const pageDataForDb: Record<string, any> = {
       ...data,
       userId: userId,
       status: status,
       createdAt: new Date(),
     };
+
+    // Firestore does not accept 'undefined' values.
+    // We must clean the object before sending it.
+    Object.keys(pageDataForDb).forEach(key => {
+      if (pageDataForDb[key] === undefined) {
+        delete pageDataForDb[key];
+      }
+    });
     
     await setDoc(doc(db, "pages", pageId), pageDataForDb);
     
