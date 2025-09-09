@@ -82,8 +82,13 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
                 </div>
             )}
             
-             <header className="absolute top-0 left-0 w-full z-20 bg-gradient-to-b from-black/80 to-transparent pt-4 flex justify-center items-start">
+             <header className="absolute top-0 left-0 w-full z-20 bg-gradient-to-b from-black/80 to-transparent pt-0 flex justify-center items-center p-4">
                  <Image src="https://imgur.com/wHnsdGw.png" alt="Netflix Luv Logo" width={160} height={160} className="h-16 w-auto md:h-20" />
+                 <div className="absolute top-4 right-4 md:top-6 md:right-6">
+                    <Button variant="link" className="text-white font-semibold text-lg">
+                        Login
+                    </Button>
+                 </div>
             </header>
             
             <main className={isPreview ? 'scrollbar-hide' : ''}>
@@ -127,7 +132,7 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
                 </div>
 
                 {/* Categories */}
-                <div className="-mt-16 md:-mt-20 py-8 relative z-10">
+                <div className="-mt-24 md:-mt-32 py-8 relative z-10">
                     {data.categories?.map((category: any, index: number) => (
                         <CategoryRow key={index} category={category} />
                     ))}
