@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -24,6 +23,7 @@ import Link from "next/link";
 import { TypingAnimation } from "@/components/app/TypingAnimation";
 import { HeartsBackground } from "@/components/app/HeartsBackground";
 import { AnimatedBackground } from "@/components/app/AnimatedBackground";
+import { ScrollFadeIn } from "@/components/app/ScrollFadeIn";
 
 export default function CreatorPage() {
   const testimonials = [
@@ -115,6 +115,7 @@ export default function CreatorPage() {
 
       {/* Themes Section */}
       <section id="temas" className="section-padding bg-background/80 backdrop-blur-sm">
+        <ScrollFadeIn>
           <div className="container text-center">
               <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Comece com um <span className="gradient-text">Modelo</span></h2>
               <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16">Escolha um de nossos temas exclusivos e personalize com sua história. Ou, se preferir, comece do zero e crie algo totalmente seu.</p>
@@ -155,104 +156,109 @@ export default function CreatorPage() {
                   </Link>
               </div>
           </div>
+        </ScrollFadeIn>
       </section>
 
 
        {/* Features Section */}
       <section id="recursos" className="section-padding bg-background/80 backdrop-blur-sm">
-        <div className="container text-center">
-          <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Uma Experiência <span className="gradient-text">Incomparável</span></h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16">Cada detalhe foi pensado para proporcionar uma declaração de amor que transcende o comum. Oferecemos mais que uma página, uma memória viva.</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, i) => (
-               <Card key={i} className="bg-card/80 border-border text-left overflow-hidden group">
-                  <div className="relative aspect-[4/3] overflow-hidden">
-                     <Image
-                        src={feature.image}
-                        alt={feature.title}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        data-ai-hint={feature.imageHint}
-                      />
-                  </div>
-                 <CardHeader>
-                    <feature.icon className="w-8 h-8 mb-2 text-primary" />
-                    <CardTitle>{feature.title}</CardTitle>
-                    <CardDescription>{feature.description}</CardDescription>
-                 </CardHeader>
-               </Card>
-            ))}
-          </div>
-           <Card className="mt-12 bg-gradient-to-r from-primary/20 to-accent/20 border-primary/30 p-6 md:p-8 text-center relative overflow-hidden">
-             <AnimatedBackground />
-            <div className="relative z-10">
-              <CardHeader className="p-0 mb-4 items-center">
-                  <div className="p-3 bg-background rounded-full mb-3">
-                      <PlayCircle className="w-8 h-8 md:w-10 md:h-10 text-primary" />
-                  </div>
-                  <CardTitle className="text-2xl md:text-3xl">Veja a Revelação em Ação</CardTitle>
-                  <CardDescription className="text-base md:text-lg text-foreground/80 mt-2">Descubra como funciona a experiência interativa que torna sua declaração inesquecível.</CardDescription>
-              </CardHeader>
-              <CardContent className="p-0">
-                  <Link href="/como-funciona">
-                      <Button size="lg" variant="outline" className="bg-background/80 hover:bg-background">Como funciona?</Button>
-                  </Link>
-              </CardContent>
+        <ScrollFadeIn>
+          <div className="container text-center">
+            <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Uma Experiência <span className="gradient-text">Incomparável</span></h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16">Cada detalhe foi pensado para proporcionar uma declaração de amor que transcende o comum. Oferecemos mais que uma página, uma memória viva.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {features.map((feature, i) => (
+                 <Card key={i} className="bg-card/80 border-border text-left overflow-hidden group">
+                    <div className="relative aspect-[4/3] overflow-hidden">
+                       <Image
+                          src={feature.image}
+                          alt={feature.title}
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          data-ai-hint={feature.imageHint}
+                        />
+                    </div>
+                   <CardHeader>
+                      <feature.icon className="w-8 h-8 mb-2 text-primary" />
+                      <CardTitle>{feature.title}</CardTitle>
+                      <CardDescription>{feature.description}</CardDescription>
+                   </CardHeader>
+                 </Card>
+              ))}
             </div>
-           </Card>
-        </div>
+             <Card className="mt-12 bg-gradient-to-r from-primary/20 to-accent/20 border-primary/30 p-6 md:p-8 text-center relative overflow-hidden">
+               <AnimatedBackground />
+              <div className="relative z-10">
+                <CardHeader className="p-0 mb-4 items-center">
+                    <div className="p-3 bg-background rounded-full mb-3">
+                        <PlayCircle className="w-8 h-8 md:w-10 md:h-10 text-primary" />
+                    </div>
+                    <CardTitle className="text-2xl md:text-3xl">Veja a Revelação em Ação</CardTitle>
+                    <CardDescription className="text-base md:text-lg text-foreground/80 mt-2">Descubra como funciona a experiência interativa que torna sua declaração inesquecível.</CardDescription>
+                </CardHeader>
+                <CardContent className="p-0">
+                    <Link href="/como-funciona">
+                        <Button size="lg" variant="outline" className="bg-background/80 hover:bg-background">Como funciona?</Button>
+                    </Link>
+                </CardContent>
+              </div>
+             </Card>
+          </div>
+        </ScrollFadeIn>
       </section>
 
       {/* Testimonials Section */}
       <section id="avaliacoes" className="section-padding bg-background/80 backdrop-blur-sm">
-        <div className="container text-center">
-          <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Histórias que <span className="gradient-text">Inspiram</span></h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16">Relatos de quem escolheu a Luv para eternizar seus momentos e vivenciou uma experiência única e emocionante.</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {testimonials.map((testimonial, index) => (
-                  <Card
-                    key={index}
-                    className="bg-card/80 border-border p-6 text-left flex flex-col justify-between"
-                  >
-                    <div>
-                      <div className="flex items-center gap-4 mb-4">
-                        <Image src={testimonial.image} alt={testimonial.name} width={48} height={48} className="rounded-full" data-ai-hint="person"/>
-                        <div>
-                          <p className="font-semibold text-foreground">{testimonial.name}</p>
-                          <p className="text-sm text-muted-foreground">{testimonial.date}</p>
+        <ScrollFadeIn>
+          <div className="container text-center">
+            <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Histórias que <span className="gradient-text">Inspiram</span></h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16">Relatos de quem escolheu a Luv para eternizar seus momentos e vivenciou uma experiência única e emocionante.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {testimonials.map((testimonial, index) => (
+                    <Card
+                      key={index}
+                      className="bg-card/80 border-border p-6 text-left flex flex-col justify-between"
+                    >
+                      <div>
+                        <div className="flex items-center gap-4 mb-4">
+                          <Image src={testimonial.image} alt={testimonial.name} width={48} height={48} className="rounded-full" data-ai-hint="person"/>
+                          <div>
+                            <p className="font-semibold text-foreground">{testimonial.name}</p>
+                            <p className="text-sm text-muted-foreground">{testimonial.date}</p>
+                          </div>
                         </div>
+                        <p className="text-muted-foreground italic mb-4">"{testimonial.message}"</p>
                       </div>
-                      <p className="text-muted-foreground italic mb-4">"{testimonial.message}"</p>
-                    </div>
-                    <div className="flex pt-4 border-t border-border">
-                        {[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 text-amber-400 fill-amber-400" />)}
-                    </div>
-                  </Card>
-              ))}
+                      <div className="flex pt-4 border-t border-border">
+                          {[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 text-amber-400 fill-amber-400" />)}
+                      </div>
+                    </Card>
+                ))}
+            </div>
           </div>
-        </div>
+        </ScrollFadeIn>
       </section>
 
       {/* Final CTA */}
       <section className="section-padding bg-card/50 relative overflow-hidden">
         <AnimatedBackground />
-        <div className="container text-center relative z-10">
-          <h2 className="text-4xl lg:text-5xl font-bold tracking-tighter mb-4 text-foreground font-display">
-            Comece a sua <span className="gradient-text">obra de arte</span>
-          </h2>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-            Não espere uma data especial para criar um momento especial. Surpreenda hoje com uma declaração que será lembrada para sempre.
-          </p>
-          <Link href="/criar">
-            <Button size="lg" className="h-12 md:h-14 group relative">
-                Comece agora, é grátis
-                <Heart className="w-5 h-5 ml-2 group-hover:fill-red-400 transition-colors" />
-            </Button>
-          </Link>
-        </div>
+        <ScrollFadeIn>
+          <div className="container text-center relative z-10">
+            <h2 className="text-4xl lg:text-5xl font-bold tracking-tighter mb-4 text-foreground font-display">
+              Comece a sua <span className="gradient-text">obra de arte</span>
+            </h2>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+              Não espere uma data especial para criar um momento especial. Surpreenda hoje com uma declaração que será lembrada para sempre.
+            </p>
+            <Link href="/criar">
+              <Button size="lg" className="h-12 md:h-14 group relative">
+                  Comece agora, é grátis
+                  <Heart className="w-5 h-5 ml-2 group-hover:fill-red-400 transition-colors" />
+              </Button>
+            </Link>
+          </div>
+        </ScrollFadeIn>
       </section>
     </>
   );
 }
-
-    
