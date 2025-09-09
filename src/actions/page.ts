@@ -6,23 +6,39 @@ import { prepareAndSendEmail } from '@/ai/flows/send-link-email';
 import { doc, setDoc, getDoc, collection, getDocs, query, where, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
-type FormData = any;
+// This is a generic type for form data, as we have multiple form structures.
+// The validation happens on the client-side with Zod. Here, we accept a flexible object.
+type FormData = { [key: string]: any };
 
-// Helper to convert Firebase Timestamps to serializable strings
+// Helper to convert Firebase Timestamps to serializable strings for client-side use.
 const toJSON = (data: any) => {
   if (!data) return data;
-  if (data.createdAt && data.createdAt.seconds) {
-      data.createdAt = new Timestamp(data.createdAt.seconds, data.createdAt.nanoseconds).toDate().toISOString();
-  }
-  return JSON.parse(JSON.stringify(data, (key, value) => {
-    if (value && value.seconds !== undefined && value.nanoseconds !== undefined) {
-      // Check if it's a Firebase Timestamp-like object
-      const date = new Timestamp(value.seconds, value.nanoseconds).toDate();
-      return date.toISOString();
+  // Firestore data is often nested. We need a recursive conversion.
+  const isObject = (val: any) => val && typeof val === 'object' && !Array.isArray(val);
+
+  const convertTimestamps = (obj: any): any => {
+    if (!isObject(obj)) return obj;
+
+    const newObj: { [key: string]: any } = {};
+    for (const key in obj) {
+      const value = obj[key];
+      if (value && typeof value.seconds === 'number' && typeof value.nanoseconds === 'number') {
+        // It's a Firestore Timestamp-like object
+        newObj[key] = new Timestamp(value.seconds, value.nanoseconds).toDate().toISOString();
+      } else if (isObject(value)) {
+        newObj[key] = convertTimestamps(value);
+      } else if (Array.isArray(value)) {
+         newObj[key] = value.map(item => convertTimestamps(item));
+      } else {
+        newObj[key] = value;
+      }
     }
-    return value;
-  }));
+    return newObj;
+  };
+  
+  return JSON.parse(JSON.stringify(convertTimestamps(data)));
 };
+
 
 export async function uploadVideo(file: File): Promise<string> {
     // This is a mock function. In a real app, you'd upload to a service like S3 or Firebase Storage.
@@ -43,12 +59,18 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
     // Create a mutable copy to avoid modifying the original data object
     const pageDataForDb = { ...data };
 
-    // Convert JavaScript Date object to Firestore Timestamp if it exists
-    if (pageDataForDb.startDate && pageDataForDb.startDate instanceof Date) {
-        pageDataForDb.startDate = Timestamp.fromDate(pageDataForDb.startDate);
-    } else if (pageDataForDb.startDate && typeof pageDataForDb.startDate === 'string') {
-        // Handle case where date might be a string
-        pageDataForDb.startDate = Timestamp.fromDate(new Date(pageDataForDb.startDate));
+    // Firestore cannot store JavaScript Date objects directly. They must be converted to Firestore Timestamps.
+    if (pageDataForDb.startDate) {
+        if (pageDataForDb.startDate instanceof Date) {
+            pageDataForDb.startDate = Timestamp.fromDate(pageDataForDb.startDate);
+        } else if (typeof pageDataForDb.startDate === 'string') {
+            const date = new Date(pageDataForDb.startDate);
+            if (!isNaN(date.getTime())) {
+                pageDataForDb.startDate = Timestamp.fromDate(date);
+            } else {
+                delete pageDataForDb.startDate; // Remove invalid date string
+            }
+        }
     }
 
     // Add server-side data

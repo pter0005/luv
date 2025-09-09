@@ -208,6 +208,7 @@ function CreatorStudioPage() {
   React.useEffect(() => {
     if (user) {
       form.setValue('contactEmail', user.email || '');
+      form.setValue('contactName', user.displayName || '');
     }
   }, [user, form]);
 
@@ -311,7 +312,7 @@ function CreatorStudioPage() {
     }
     setIsSubmitting(true);
     try {
-        const pageId = await savePageData(data as any, user.uid);
+        const pageId = await savePageData(data, user.uid);
         
         if (data.plan === 'essencial') {
             toast({
