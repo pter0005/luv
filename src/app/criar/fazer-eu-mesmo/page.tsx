@@ -89,6 +89,7 @@ const formSchema = z.object({
   puzzleDescription: z.string().optional(),
   contactName: z.string().min(1, "O nome é obrigatório."),
   contactEmail: z.string().email("Email inválido.").min(1, "O e-mail é obrigatório."),
+  contactDoc: z.string().min(11, "O CPF/CNPJ é obrigatório."),
   plan: z.string().min(1, "Você deve escolher uma opção."),
 });
 
@@ -199,6 +200,7 @@ function CreatorStudioPage() {
       puzzleDescription: "Resolva o enigma para revelar a surpresa!",
       contactName: "",
       contactEmail: "",
+      contactDoc: "",
       plan: "essencial",
     },
   });
@@ -376,7 +378,7 @@ function CreatorStudioPage() {
     let fieldsToValidate: (keyof FormData)[] = [currentField];
     
     if (currentField === 'contactName') {
-        fieldsToValidate = ['contactName', 'contactEmail', 'plan'];
+        fieldsToValidate = ['contactName', 'contactEmail', 'contactDoc', 'plan'];
     }
 
     if (currentField === 'musicChoice') {
@@ -1028,6 +1030,20 @@ function CreatorStudioPage() {
                                       <Input placeholder="seu.email@exemplo.com" {...field} />
                                   </FormControl>
                                   <FormDescription>Essencial para o envio do link da sua página.</FormDescription>
+                                  <FormMessage />
+                              </FormItem>
+                          )}
+                      />
+                        <FormField
+                          control={form.control}
+                          name="contactDoc"
+                          render={({ field }) => (
+                              <FormItem>
+                                  <FormLabel>Seu CPF ou CNPJ</FormLabel>
+                                  <FormControl>
+                                      <Input placeholder="Apenas números" {...field} />
+                                  </FormControl>
+                                   <FormDescription>Necessário para a emissão do pagamento via Pix.</FormDescription>
                                   <FormMessage />
                               </FormItem>
                           )}

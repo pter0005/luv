@@ -16,7 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { ArrowLeft, ChevronRight, Loader, LogIn, PlusCircle, Trash2, Upload, Video, Image as ImageIcon, FileVideo } from "lucide-react";
+import { ArrowLeft, ChevronRight, Loader, LogIn, PlusCircle, Trash2, Upload, Video, Image as ImageIcon, FileVideo, Gem, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { savePageData, uploadVideo } from "@/actions/page";
 import { useRouter } from "next/navigation";
@@ -47,6 +47,7 @@ const formSchema = z.object({
   categories: z.array(categorySchema).min(1, "Adicione pelo menos uma categoria."),
   contactName: z.string().min(1, "O nome é obrigatório."),
   contactEmail: z.string().email("Email inválido.").min(1, "O e-mail é obrigatório."),
+  contactDoc: z.string().min(11, "O CPF/CNPJ é obrigatório."),
   plan: z.string().min(1, "Você deve escolher uma opção.").default("essencial"),
 }).refine(data => {
     if (data.heroType === 'image') return !!data.heroImage;
@@ -192,6 +193,7 @@ function NetflixCreatorPage() {
       ],
       contactName: "",
       contactEmail: "",
+      contactDoc: "",
       plan: "essencial",
     },
   });
@@ -482,12 +484,61 @@ function NetflixCreatorPage() {
                                         </FormItem>
                                     )}
                                 />
+                                 <FormField
+                                    control={form.control}
+                                    name="contactDoc"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Seu CPF ou CNPJ</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="Apenas números" {...field} className="bg-zinc-800 border-zinc-700" />
+                                            </FormControl>
+                                             <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="plan"
+                                    render={({ field }) => (
+                                        <FormItem className="space-y-3">
+                                        <FormLabel className="font-semibold">Qual o próximo passo?</FormLabel>
+                                        <FormControl>
+                                            <RadioGroup
+                                                onValueChange={field.onChange}
+                                                defaultValue={field.value}
+                                                className="grid grid-cols-1 gap-4"
+                                            >
+                                                <RadioGroupItem value="essencial" id="plan-essencial">
+                                                    <div className="flex items-start gap-4">
+                                                        <Gem className="w-6 h-6 text-red-500 mt-1" />
+                                                        <div>
+                                                            <h3 className="font-bold">Plano Essencial - R$14,99</h3>
+                                                            <p className="text-sm text-muted-foreground">Finalize com os recursos deste tema e pague para ativar a página.</p>
+                                                        </div>
+                                                    </div>
+                                                </RadioGroupItem>
+                                                <RadioGroupItem value="orcamento" id="plan-orcamento">
+                                                    <div className="flex items-start gap-4">
+                                                        <FileText className="w-6 h-6 text-red-500 mt-1" />
+                                                        <div>
+                                                            <h3 className="font-bold">Projeto Sob Medida</h3>
+                                                            <p className="text-sm text-muted-foreground">Envie sua criação para nós. Entraremos em contato para um orçamento personalizado.</p>
+                                                        </div>
+                                                    </div>
+                                                </RadioGroupItem>
+                                            </RadioGroup>
+                                        </FormControl>
+                                        <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                             </div>
 
                             <div className="flex justify-end pt-8">
                                 <Button type="submit" size="lg" className="bg-red-600 hover:bg-red-700 text-white" disabled={isSubmitting}>
                                     {isSubmitting && <Loader className="mr-2 h-4 w-4 animate-spin"/>}
-                                    Criar e ir para o Pagamento
+                                    {watchedData.plan === 'orcamento' ? 'Solicitar Orçamento' : 'Criar e ir para o Pagamento'}
                                     <ChevronRight className="ml-2 h-4 w-4"/>
                                 </Button>
                             </div>

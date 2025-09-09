@@ -45,6 +45,9 @@ type FormData = z.infer<typeof formSchema>;
 // Helper to convert Firebase Timestamps to serializable strings
 const toJSON = (data: any) => {
   if (!data) return data;
+  if (data.createdAt && data.createdAt.seconds) {
+      data.createdAt = new Timestamp(data.createdAt.seconds, data.createdAt.nanoseconds).toDate().toISOString();
+  }
   return JSON.parse(JSON.stringify(data, (key, value) => {
     if (value && value.seconds !== undefined && value.nanoseconds !== undefined) {
       // Check if it's a Firebase Timestamp-like object

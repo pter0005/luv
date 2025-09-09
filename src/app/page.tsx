@@ -82,7 +82,7 @@ export default function CreatorPage() {
       {/* Hero Section */}
       <section className="relative section-padding flex items-center min-h-[calc(100vh-80px)] overflow-hidden">
         <AnimatedBackground />
-        <HeartsBackground color="purple" direction="rise" />
+        <HeartsBackground color="purple" direction="fall" />
         <div className="container relative z-10 grid lg:grid-cols-2 gap-12 items-center">
           <div className="text-center lg:text-left">
              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground font-display leading-tight">
@@ -254,5 +254,3 @@ export default function CreatorPage() {
     </>
   );
 }
-
-    
