@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from 'react';
@@ -22,61 +21,93 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   const searchParams = useSearchParams();
   const [pageData, setPageData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [checkoutStatus, setCheckoutStatus] = useState<'idle' | 'loading' | 'error' | 'success'>('idle');
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
-  const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
   const [pixData, setPixData] = useState<{qrCodeBase64: string, qrCode: string} | null>(null);
   const { Canvas } = useQRCode();
 
+  // Effect to handle initial page load and payment confirmation from URL params
   useEffect(() => {
     const status = searchParams.get('status');
     const paymentId = searchParams.get('payment_id');
     
-    const checkPageData = async () => {
+    const checkPageAndPayment = async () => {
         setLoading(true);
         try {
             const data = await getPageData(params.id);
-            if (data) {
-                setPageData(data);
-                if (data.status === 'paid') {
-                    setPaymentStatus('approved');
-                } 
-                else if (status === 'approved' && paymentId) {
-                    const result = await confirmPaymentAndSendEmail(params.id);
-                    if (result.success) {
-                        setPaymentStatus('approved');
-                        const updatedData = await getPageData(params.id); // Refetch data
-                        setPageData(updatedData);
-                    } else {
-                        setPaymentStatus('failure');
-                        toast({ variant: "destructive", title: "Erro de Confirmação", description: result.message || "Ocorreu um erro ao ativar a página. Tente recarregar ou contate o suporte."});
-                    }
-                } else {
-                  setPaymentStatus(status);
-                }
-            } else {
+            if (!data) {
                 toast({ variant: "destructive", title: "Página não encontrada" });
+                setLoading(false);
+                return;
+            }
+            
+            setPageData(data);
+
+            if (data.status === 'paid') {
+                setPaymentStatus('approved');
+            } else if (status === 'approved' && paymentId) {
+                const result = await confirmPaymentAndSendEmail(params.id);
+                if (result.success) {
+                    const updatedData = await getPageData(params.id);
+                    setPageData(updatedData);
+                    setPaymentStatus('approved');
+                } else {
+                    setPaymentStatus('failure');
+                    toast({ variant: "destructive", title: "Erro de Confirmação", description: result.message || "Ocorreu um erro ao ativar a página. Tente recarregar ou contate o suporte."});
+                }
+            } else if (status) {
+              setPaymentStatus(status);
             }
         } catch (error) {
-            toast({ variant: "destructive", title: "Erro ao buscar dados" });
+            console.error("Error fetching page data:", error);
+            toast({ variant: "destructive", title: "Erro ao buscar dados da página." });
         } finally {
             setLoading(false);
         }
     };
     
-    checkPageData();
+    checkPageAndPayment();
   }, [params.id, toast, searchParams]);
+
+  // Polling effect to check payment status after generating PIX
+  useEffect(() => {
+    if (pixData && pageData?.status !== 'paid') {
+      const interval = setInterval(async () => {
+        try {
+          const updatedPageData = await getPageData(params.id);
+          if (updatedPageData && updatedPageData.status === 'paid') {
+            setPageData(updatedPageData);
+            setPaymentStatus('approved');
+            clearInterval(interval);
+          }
+        } catch (error) {
+          console.error("Polling error:", error);
+        }
+      }, 5000); // Check every 5 seconds
+
+      // Clear interval after 5 minutes to avoid infinite polling
+      const timeout = setTimeout(() => clearInterval(interval), 300000);
+
+      return () => {
+        clearInterval(interval);
+        clearTimeout(timeout);
+      };
+    }
+  }, [pixData, pageData, params.id]);
+
 
   const handleGeneratePix = async () => {
     if (!pageData) return;
-    setIsProcessingCheckout(true);
+
+    setCheckoutStatus('loading');
+    setCheckoutError(null);
 
     try {
       const response = await fetch('/api/checkout', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           pageId: params.id,
           title: pageData.title,
@@ -87,23 +118,27 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
       const responseData = await response.json();
 
       if (!response.ok) {
+        // This will now throw the exact error message from the API
         throw new Error(responseData.error || 'Falha ao iniciar pagamento.');
       }
       
-      const { pixData } = responseData;
-      if (pixData?.qrCodeBase64) {
-        setPixData(pixData);
+      if (responseData.pixData?.qrCodeBase64) {
+        setPixData(responseData.pixData);
+        setCheckoutStatus('success');
       } else {
+        // This is a fallback error if the API responds 200 OK but without pixData
         throw new Error('Não foi possível obter os dados do QR Code do Pix da resposta da API.');
       }
+
     } catch (error: any) {
+      console.error("Checkout error:", error);
+      setCheckoutStatus('error');
+      setCheckoutError(error.message);
       toast({
         variant: "destructive",
         title: "Erro no Checkout",
         description: error.message || "Não foi possível preparar o pagamento.",
       });
-    } finally {
-        setIsProcessingCheckout(false);
     }
   };
 
@@ -269,9 +304,9 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                 <Button 
                     size="lg" 
                     onClick={handleGeneratePix}
-                    disabled={isProcessingCheckout || !pageData}
+                    disabled={checkoutStatus === 'loading' || !pageData}
                 >
-                    {isProcessingCheckout ? 'Gerando Pix...' : (
+                    {checkoutStatus === 'loading' ? 'Gerando Pix...' : (
                         <>
                             <Wallet className="mr-2 h-5 w-5" />
                             Tentar Novamente - R$ {FIXED_PRICE.toFixed(2).replace('.', ',')}
@@ -321,7 +356,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                 <CardContent className="space-y-4">
                     {pixData ? (
                         <div className="flex flex-col items-center justify-center gap-4">
-                            <p className="text-sm text-center text-muted-foreground">Escaneie o QR Code com o app do seu banco:</p>
+                            <p className="text-sm text-center text-muted-foreground">Escaneie o QR Code com o app do seu banco ou use o Copia e Cola:</p>
                             <div className="bg-white p-2 rounded-lg">
                                 <Image 
                                     src={`data:image/jpeg;base64,${pixData.qrCodeBase64}`}
@@ -330,20 +365,20 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                                     alt="PIX QR Code"
                                 />
                             </div>
-                            <p className="text-sm text-center text-muted-foreground">Ou use o Pix Copia e Cola:</p>
                             <Button className="w-full" variant="secondary" onClick={handleCopyPixCode}>
                                 <Copy className="mr-2 h-4 w-4" />
                                 Copiar Código Pix
                             </Button>
+                             <p className="text-xs text-muted-foreground text-center pt-2">Aguardando pagamento... A página será atualizada automaticamente.</p>
                         </div>
                     ) : (
                          <Button 
                             size="lg" 
                             className="w-full" 
                             onClick={handleGeneratePix}
-                            disabled={isProcessingCheckout || !pageData}
+                            disabled={checkoutStatus === 'loading' || !pageData}
                         >
-                            {isProcessingCheckout ? 'Gerando Pix...' : (
+                            {checkoutStatus === 'loading' ? 'Gerando Pix...' : (
                                 <>
                                     <QrCode className="mr-2 h-5 w-5" />
                                     Gerar QR Code Pix
@@ -391,5 +426,3 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
-
-    
