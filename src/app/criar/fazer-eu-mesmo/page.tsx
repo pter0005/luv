@@ -484,7 +484,7 @@ function CreatorStudioPage() {
 
   return (
     <div className="flex flex-col md:grid md:grid-cols-2 w-full min-h-screen">
-       {/* Form Section */}
+      {/* Form Section */}
       <div className="w-full flex flex-col items-center p-4 md:p-8 bg-card md:bg-transparent rounded-t-3xl md:rounded-none order-2 md:order-1">
         <div className="w-full max-w-md">
           <div className="mb-8">
@@ -1072,7 +1072,7 @@ function CreatorStudioPage() {
 
        {/* Preview Section */}
       <div className="w-full h-auto md:h-screen p-4 md:p-8 bg-background md:sticky md:top-0 order-1 md:order-2 flex items-center justify-center">
-          <div className="w-full h-full max-w-sm max-h-[80vh] aspect-[9/16] mx-auto">
+          <div className="w-full h-full max-w-full md:max-w-sm aspect-auto md:aspect-[9/16] mx-auto">
               <PreviewContent data={watchedData} />
           </div>
       </div>

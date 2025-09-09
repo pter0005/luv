@@ -220,6 +220,14 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                                     light: '#FFFFFF',
                                     },
                                 }}
+                                logo={{
+                                  src: "https://i.imgur.com/EMwsRdt.png",
+                                  options: {
+                                    width: 50,
+                                    x: undefined,
+                                    y: undefined
+                                  }
+                                }}
                             />
                         </div>
                          <Button onClick={downloadQRCode}>
@@ -357,3 +365,5 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
+
+    
