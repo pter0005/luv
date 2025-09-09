@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
         
         const nameParts = name.trim().split(' ');
         const firstName = nameParts.shift() || '';
-        const lastName = nameParts.join(' ') || firstName; // If no last name, use first name
+        const lastName = nameParts.join(' ') || firstName; 
 
         const preference = new Preference(client);
         
@@ -60,10 +60,10 @@ export async function POST(req: NextRequest) {
                     last_name: lastName,
                 },
                 payment_methods: {
+                    excluded_payment_methods: [],
+                    excluded_payment_types: [],
                     installments: 1,
                 },
-                purpose: 'wallet_purchase',
-                date_of_expiration: expirationDateISO,
                 back_urls: {
                     success: `${baseUrl}/criar/sucesso/${pageId}`,
                     failure: `${baseUrl}/criar/sucesso/${pageId}`,
@@ -74,6 +74,7 @@ export async function POST(req: NextRequest) {
                 metadata: {
                     page_id: pageId,
                 },
+                date_of_expiration: expirationDateISO,
             },
              requestOptions: {
                 idempotencyKey: idempotencyKey
