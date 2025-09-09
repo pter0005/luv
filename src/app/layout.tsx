@@ -47,21 +47,14 @@ export default function RootLayout({
             s.parentNode.insertBefore(t,s)}(window, document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
             
-            // IMPORTANTE: Substitua 'SEU_PIXEL_ID' pelo ID real que você pegou do Gerenciador de Eventos da Meta.
-            fbq('init', 'SEU_PIXEL_ID'); 
+            fbq('init', '1528046218358955'); 
             fbq('track', 'PageView');
           `}
         </Script>
         <noscript>
-          {/* 
-            IMPORTANTE: Se você substituir o ID do pixel no script acima, 
-            lembre-se de substituir aqui também.
-          */}
-          {/* 
           <img height="1" width="1" style={{display:'none'}}
-            src="https://www.facebook.com/tr?id=SEU_PIXEL_ID&ev=PageView&noscript=1"
+            src="https://www.facebook.com/tr?id=1528046218358955&ev=PageView&noscript=1"
           />
-          */}
         </noscript>
         {/* <!-- End Meta Pixel Code --> */}
 
