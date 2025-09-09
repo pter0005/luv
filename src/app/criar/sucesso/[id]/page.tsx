@@ -13,7 +13,11 @@ import { useQRCode } from 'next-qrcode';
 import { useToast } from '@/hooks/use-toast';
 import { initMercadoPago, Payment } from '@mercadopago/sdk-react';
 
-initMercadoPago(process.env.NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY!);
+// ATENÇÃO: Substitua este valor pela sua Chave Pública do Mercado Pago
+const NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY = "SEU_PUBLIC_KEY_DO_MERCADO_PAGO";
+const NEXT_PUBLIC_BASE_URL = 'http://localhost:9002'; // Ou a URL do seu site em produção
+
+initMercadoPago(NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY!);
 
 const FIXED_PRICE = 14.99;
 
@@ -137,7 +141,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   }
 
 
-  const pageUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002'}/p/${params.id}`;
+  const pageUrl = `${NEXT_PUBLIC_BASE_URL}/p/${params.id}`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(pageUrl);
@@ -407,5 +411,3 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
-
-    

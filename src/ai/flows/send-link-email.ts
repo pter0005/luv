@@ -21,6 +21,11 @@ const SendLinkEmailInputSchema = z.object({
 });
 export type SendLinkEmailInput = z.infer<typeof SendLinkEmailInputSchema>;
 
+// ATENÇÃO: Substitua estes valores pelos seus dados do Gmail
+const GMAIL_USER = "SEU_EMAIL_GMAIL";
+const GMAIL_PASS = "SUA_SENHA_DE_APLICATIVO_GMAIL";
+const NEXT_PUBLIC_BASE_URL = 'http://localhost:9002'; // Ou a URL do seu site em produção
+
 export async function prepareAndSendEmail(
   input: SendLinkEmailInput
 ): Promise<{ success: boolean }> {
@@ -36,29 +41,25 @@ const sendNodemailerEmailFlow = ai.defineFlow(
   async (input) => {
     const { name, email, pageId, pageTitle } = input;
     
-    const gmailUser = process.env.GMAIL_USER;
-    const gmailPass = process.env.GMAIL_PASS;
-
-    if (!gmailUser || !gmailPass) {
-        console.error('Gmail credentials are not configured. Please set GMAIL_USER and GMAIL_PASS in your environment variables.');
+    if (!GMAIL_USER || !GMAIL_PASS || GMAIL_USER === "SEU_EMAIL_GMAIL") {
+        console.error('Credenciais do Gmail não configuradas. Por favor, adicione seu e-mail e senha de aplicativo.');
         return { success: false };
     }
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: gmailUser,
-            pass: gmailPass, // This should be an App Password
+            user: GMAIL_USER,
+            pass: GMAIL_PASS, // Esta deve ser uma Senha de Aplicativo
         },
     });
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002';
-    const pageUrl = `${baseUrl}/p/${pageId}`;
+    const pageUrl = `${NEXT_PUBLIC_BASE_URL}/p/${pageId}`;
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(pageUrl)}`;
 
     try {
       await transporter.sendMail({
-        from: `"Luv" <${gmailUser}>`,
+        from: `"Luv" <${GMAIL_USER}>`,
         to: email,
         subject: `Sua página especial "${pageTitle}" está pronta!`,
         html: `

@@ -1,15 +1,13 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
-import { config } from 'dotenv';
 
-config(); 
-
-const MERCADO_PAGO_ACCESS_TOKEN = process.env.MERCADO_PAGO_ACCESS_TOKEN;
+// ATENÇÃO: Substitua este valor pela sua Chave de Acesso do Mercado Pago
+const MERCADO_PAGO_ACCESS_TOKEN = "SEU_ACCESS_TOKEN_DO_MERCADO_PAGO";
 const FIXED_PRICE = 14.99;
 
-if (!MERCADO_PAGO_ACCESS_TOKEN) {
-    console.warn("MERCADO_PAGO_ACCESS_TOKEN is not set in environment variables.");
+if (!MERCADO_PAGO_ACCESS_TOKEN || MERCADO_PAGO_ACCESS_TOKEN === "SEU_ACCESS_TOKEN_DO_MERCADO_PAGO") {
+    console.warn("MERCADO_PAGO_ACCESS_TOKEN não está configurado. Por favor, adicione sua chave para o checkout funcionar.");
 }
 
 const client = new MercadoPagoConfig({ 
@@ -18,8 +16,8 @@ const client = new MercadoPagoConfig({
 });
 
 export async function POST(req: NextRequest) {
-    if (!MERCADO_PAGO_ACCESS_TOKEN) {
-        return NextResponse.json({ error: 'Mercado Pago credentials not configured.' }, { status: 500 });
+    if (!MERCADO_PAGO_ACCESS_TOKEN || MERCADO_PAGO_ACCESS_TOKEN === "SEU_ACCESS_TOKEN_DO_MERCADO_PAGO") {
+        return NextResponse.json({ error: 'Credenciais do Mercado Pago não configuradas.' }, { status: 500 });
     }
 
     try {
