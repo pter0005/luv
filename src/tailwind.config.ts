@@ -18,9 +18,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Poppins', 'sans-serif'],
-        display: ['Playfair Display', 'serif'],
-        handwriting: ['Dancing Script', 'cursive'],
+        sans: ['var(--font-poppins)', 'sans-serif'],
+        display: ['var(--font-playfair)', 'serif'],
+        handwriting: ['var(--font-dancing)', 'cursive'],
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -140,3 +140,5 @@ export default {
   },
   plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],
 } satisfies Config;
+
+    

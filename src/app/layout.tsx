@@ -1,11 +1,30 @@
 
 import type { Metadata } from 'next';
+import { Poppins, Playfair_Display, Dancing_Script } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import { Header } from '@/components/app/Header';
 import { Footer } from '@/components/app/Footer';
 import { AuthProvider } from '@/contexts/AuthContext';
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['400', '600', '700'],
+  variable: '--font-poppins',
+});
+
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  weight: ['700'],
+  variable: '--font-playfair',
+});
+
+const dancing = Dancing_Script({
+  subsets: ['latin'],
+  weight: ['700'],
+  variable: '--font-dancing',
+});
 
 export const metadata: Metadata = {
   title: 'Luv ©',
@@ -21,19 +40,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt" className="dark scroll-smooth">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="pt" className={cn("dark scroll-smooth", poppins.variable, playfair.variable, dancing.variable)}>
+      <head/>
       <body
         className={cn(
           'antialiased overflow-x-hidden bg-background min-h-screen'
@@ -53,3 +61,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+    

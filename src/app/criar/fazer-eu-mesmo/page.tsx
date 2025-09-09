@@ -147,7 +147,7 @@ const processImage = (file: File, maxSize = 1280): Promise<string> => {
                 canvas.height = height;
                 ctx?.drawImage(img, 0, 0, width, height);
 
-                resolve(canvas.toDataURL('image/jpeg', 0.8)); // Compress to JPEG with 80% quality
+                resolve(canvas.toDataURL('image/webp', 0.8)); // Compress to WebP with 80% quality
             };
             img.onerror = (error) => {
                 reject(error);
@@ -1105,3 +1105,5 @@ function CreatorStudioPage() {
 }
 
 export default CreatorStudioPage;
+
+    

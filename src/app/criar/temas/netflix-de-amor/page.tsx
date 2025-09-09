@@ -81,7 +81,7 @@ const processImage = (file: File, maxSize = 1280): Promise<string> => {
                 canvas.width = width;
                 canvas.height = height;
                 ctx?.drawImage(img, 0, 0, width, height);
-                resolve(canvas.toDataURL('image/jpeg', 0.8));
+                resolve(canvas.toDataURL('image/webp', 0.8));
             };
             img.onerror = (error) => reject(error);
         };
@@ -540,3 +540,5 @@ function NetflixCreatorPage() {
 }
 
 export default NetflixCreatorPage;
+
+    
