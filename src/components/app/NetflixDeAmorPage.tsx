@@ -90,7 +90,7 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
             
             <main className={isPreview ? 'scrollbar-hide' : ''}>
                 {/* Hero Section */}
-                <div className="relative h-[60vh] md:h-[80vh] w-full">
+                <div className="relative h-[60vh] md:h-[80vh] w-full flex flex-col justify-end">
                     <div className="absolute inset-0">
                         {data.heroType === 'image' && data.heroImage ? (
                             <Image src={data.heroImage} alt="Hero image" layout="fill" objectFit="cover" className="opacity-60" />
@@ -111,15 +111,15 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
                              )
                         )}
                     </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/50 to-transparent"></div>
-                    <div className="relative z-10 flex flex-col justify-end h-full p-4 md:p-10 text-left">
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-transparent"></div>
+                     <div className="relative z-10 p-4 md:p-10 text-left space-y-4">
                          <div className="flex items-center gap-2">
                              <Image src="https://i.imgur.com/YWU5u37.png" alt="Netflix N Logo" width={20} height={36} className="w-4 h-7 md:w-5 md:h-9" />
                             <span className="text-base tracking-[0.2em] text-zinc-300 font-semibold">FILME</span>
                         </div>
-                        <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter max-w-2xl mt-2" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.8)' }}>{data.heroTitle}</h1>
-                        <p className="mt-4 max-w-xl text-base md:text-lg text-zinc-200">{data.heroDescription}</p>
-                        <div className="flex items-center gap-4 mt-6">
+                        <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter max-w-2xl" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.8)' }}>{data.heroTitle}</h1>
+                        <p className="max-w-xl text-base md:text-lg text-zinc-200">{data.heroDescription}</p>
+                        <div className="flex items-center gap-4 pt-2">
                             <Button size="lg" className="bg-white text-black hover:bg-white/80" onClick={handlePlay}>
                                 <Play className="w-6 h-6 mr-2 fill-black" />
                                 Assistir
@@ -133,7 +133,7 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
                 </div>
 
                 {/* Categories */}
-                <div className="py-8 md:-mt-24 relative z-20">
+                <div className="py-8 relative z-10">
                     {data.categories?.map((category: any, index: number) => (
                         <CategoryRow key={index} category={category} />
                     ))}
