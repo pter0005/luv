@@ -83,8 +83,8 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
             )}
             
              <header className="absolute top-0 left-0 w-full z-20 bg-gradient-to-b from-black/80 to-transparent p-4 md:p-6">
-                <div className="flex items-center">
-                   <Image src="https://i.imgur.com/YWU5u37.png" alt="Netflix N Logo" width={20} height={36} className="w-5 h-9" />
+                <div className="flex items-center justify-center">
+                   <Image src="https://i.imgur.com/EMwsRdt.png" alt="Luv Logo" width={80} height={80} className="w-20 h-20" />
                 </div>
             </header>
             
