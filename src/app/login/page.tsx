@@ -49,11 +49,19 @@ export default function LoginPage() {
       toast({ title: "Login bem-sucedido!" });
       router.push("/dashboard");
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Erro no Login",
-        description: "Credenciais inválidas. Verifique seu e-mail e senha.",
-      });
+       if (error.code === 'auth/invalid-credential') {
+         toast({
+            variant: "destructive",
+            title: "Erro no Login",
+            description: "E-mail ou senha incorretos. Por favor, verifique seus dados e tente novamente.",
+        });
+       } else {
+        toast({
+            variant: "destructive",
+            title: "Erro no Login",
+            description: "Ocorreu um erro inesperado. Tente novamente mais tarde.",
+        });
+       }
       console.error(error);
     } finally {
         setIsSubmitting(false);

@@ -46,14 +46,14 @@ export default function CadastroPage() {
     setIsSubmitting(true);
     try {
       await createUserWithEmailAndPassword(auth, values.email, values.password);
-      toast({ title: "Conta criada com sucesso!", description: "Você foi redirecionado para o login." });
+      toast({ title: "Conta criada com sucesso!", description: "Você será redirecionado para o login." });
       router.push("/login");
     } catch (error: any) {
       if (error.code === 'auth/email-already-in-use') {
         toast({
             variant: "destructive",
             title: "Erro no Cadastro",
-            description: "Este e-mail já está em uso. Tente fazer login.",
+            description: "Este e-mail já está em uso. Tente fazer login ou use um e-mail diferente.",
         });
       } else {
         toast({
