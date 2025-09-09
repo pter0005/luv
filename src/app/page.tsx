@@ -90,7 +90,7 @@ export default function CreatorPage() {
               <TypingAnimation />
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 my-8">
-              Transforme seus sentimentos em uma obra de arte digital. Uma experiência exclusiva, criada para celebrar momentos que merecem ser eternos.
+              Transforme seus sentimentos em uma obra de arte digital. Uma experiência única, criada para celebrar momentos que merecem ser eternos.
             </p>
             <Link href="/criar">
                 <Button size="lg" className="h-12 text-base md:h-14 group relative w-full sm:w-auto">
