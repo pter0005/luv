@@ -15,7 +15,7 @@ const client = new MercadoPagoConfig({
 });
 
 export async function POST(req: NextRequest) {
-    if (!MERCADO_PAGO_ACCESS_TOKEN) {
+    if (!MERCADO_PAGO_ACCESS_TOKEN || MERCADO_PAGO_ACCESS_TOKEN === "SEU_TOKEN_AQUI") {
         return NextResponse.json({ error: 'Credenciais do Mercado Pago não configuradas.' }, { status: 500 });
     }
 
@@ -52,8 +52,11 @@ export async function POST(req: NextRequest) {
                     email: email,
                 },
                 payment_methods: {
-                    excluded_payment_methods: [],
-                    excluded_payment_types: [],
+                    excluded_payment_types: [
+                        { id: "ticket" },
+                        { id: "debit_card" },
+                        { id: "credit_card" },
+                    ],
                     default_payment_method_id: 'pix',
                     installments: 1,
                 },
