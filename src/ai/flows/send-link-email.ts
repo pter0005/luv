@@ -40,7 +40,7 @@ const sendNodemailerEmailFlow = ai.defineFlow(
   async (input) => {
     const { name, email, pageId, pageTitle } = input;
     
-    if (!GMAIL_USER || !GMAIL_PASS || GMAIL_USER === "SEU_EMAIL_GMAIL") {
+    if (!GMAIL_USER || !GMAIL_PASS) {
         console.error('Credenciais do Gmail não configuradas. Por favor, adicione seu e-mail e senha de aplicativo no arquivo .env');
         return { success: false };
     }
@@ -49,7 +49,7 @@ const sendNodemailerEmailFlow = ai.defineFlow(
         service: 'gmail',
         auth: {
             user: GMAIL_USER,
-            pass: GMAIL_PASS, // Esta deve ser uma Senha de Aplicativo
+            pass: GMAIL_PASS, // This should be an App Password
         },
     });
 
@@ -62,20 +62,20 @@ const sendNodemailerEmailFlow = ai.defineFlow(
         to: email,
         subject: `Sua página especial "${pageTitle}" está pronta!`,
         html: `
-            <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-              <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
-                <h2 style="color: #6d28d9;">Olá, ${name}!</h2>
-                <p>Parabéns por adquirir sua página personalizada! "<strong>${pageTitle}</strong>" foi criada com sucesso e está pronta para encantar!</p>
-                <p>Você pode acessá-la e compartilhá-la usando o link exclusivo abaixo:</p>
-                <p style="text-align: center; margin: 25px 0;">
-                  <a href="${pageUrl}" style="background-color: #6d28d9; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">Ver minha página</a>
+            <div style="font-family: Poppins, Arial, sans-serif; line-height: 1.6; color: #e5e7eb; background-color: #0f0721; padding: 20px;">
+              <div style="max-width: 600px; margin: auto; padding: 30px; background-color: #1c1139; border: 1px solid #4a2f8c; border-radius: 12px;">
+                <h2 style="font-family: 'Playfair Display', serif; color: #c084fc; text-align: center; font-size: 28px;">Olá, ${name}!</h2>
+                <p style="text-align: center; font-size: 16px; color: #d1d5db;">Parabéns! Sua página personalizada "<strong>${pageTitle}</strong>" foi criada com sucesso e está pronta para encantar!</p>
+                <p style="text-align: center; font-size: 16px; color: #d1d5db;">Você pode acessá-la e compartilhá-la usando o link exclusivo abaixo:</p>
+                <p style="text-align: center; margin: 30px 0;">
+                  <a href="${pageUrl}" style="background: linear-gradient(to right, #a855f7, #d946ef); color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">Ver Minha Página</a>
                 </p>
-                <p>Para uma surpresa ainda mais criativa, use o QR Code. Perfeito para imprimir em um cartão ou presente:</p>
-                <div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
-                  <img src="${qrCodeUrl}" alt="QR Code da sua página" style="border: 1px solid #eee; padding: 5px; border-radius: 8px;"/>
+                <p style="text-align: center; font-size: 16px; color: #d1d5db;">Para uma surpresa ainda mais criativa, use o QR Code. Perfeito para imprimir em um cartão ou presente:</p>
+                <div style="text-align: center; margin-top: 20px; margin-bottom: 20px; background-color: #ffffff; padding: 10px; border-radius: 8px; display: inline-block;">
+                  <img src="${qrCodeUrl}" alt="QR Code da sua página" style="border: none;"/>
                 </div>
-                <hr style="margin: 30px 0; border: none; border-top: 1px solid #e2e8f0;" />
-                <p style="font-size: 0.9em; color: #64748b;">Atenciosamente,<br>Equipe Luv</p>
+                <hr style="margin: 30px 0; border: none; border-top: 1px solid #4a2f8c;" />
+                <p style="font-size: 0.9em; color: #9ca3af; text-align: center;">Atenciosamente,<br>Equipe Luv</p>
               </div>
             </div>
           `,
@@ -88,3 +88,4 @@ const sendNodemailerEmailFlow = ai.defineFlow(
     }
   }
 );
+
