@@ -1071,8 +1071,8 @@ function CreatorStudioPage() {
       </div>
 
        {/* Preview Section */}
-      <div className="w-full h-[60vh] md:h-screen p-4 md:p-8 bg-background md:sticky md:top-0 order-1 md:order-2">
-          <div className="w-full h-full max-w-4xl mx-auto">
+      <div className="w-full h-[60vh] md:h-screen p-4 md:p-8 bg-background md:sticky md:top-0 order-1 md:order-2 flex items-center justify-center">
+          <div className="w-full h-full max-w-sm max-h-[80vh] aspect-[9/16] mx-auto">
               <PreviewContent data={watchedData} />
           </div>
       </div>
