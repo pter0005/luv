@@ -3,17 +3,17 @@ import { confirmPaymentAndSendEmail } from '@/actions/page';
 import { NextRequest, NextResponse } from 'next/server';
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 
-// ATENÇÃO: Substitua este valor pela sua Chave de Acesso do Mercado Pago
-const MERCADO_PAGO_ACCESS_TOKEN = "APP_USR-6722629955338428-090901-5ab563981e2387cf18bda99246af2a36-1450048744";
+const MERCADO_PAGO_ACCESS_TOKEN = process.env.MERCADO_PAGO_ACCESS_TOKEN;
 
-if (!MERCADO_PAGO_ACCESS_TOKEN || MERCADO_PAGO_ACCESS_TOKEN === "SEU_ACCESS_TOKEN_DO_MERCADO_PAGO") {
+
+if (!MERCADO_PAGO_ACCESS_TOKEN) {
     console.warn("MERCADO_PAGO_ACCESS_TOKEN não está configurado. O webhook não funcionará.");
 }
 
 const client = new MercadoPagoConfig({ accessToken: MERCADO_PAGO_ACCESS_TOKEN! });
 
 export async function POST(req: NextRequest) {
-    if (!MERCADO_PAGO_ACCESS_TOKEN || MERCADO_PAGO_ACCESS_TOKEN === "SEU_ACCESS_TOKEN_DO_MERCADO_PAGO") {
+    if (!MERCADO_PAGO_ACCESS_TOKEN) {
         return NextResponse.json({ error: 'Credenciais do Mercado Pago não configuradas.' }, { status: 500 });
     }
 
@@ -48,4 +48,3 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Failed to process webhook' }, { status: 500 });
     }
 }
-

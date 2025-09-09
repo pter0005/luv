@@ -2,11 +2,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 
-// ATENÇÃO: Substitua este valor pela sua Chave de Acesso do Mercado Pago
-const MERCADO_PAGO_ACCESS_TOKEN = "APP_USR-6722629955338428-090901-5ab563981e2387cf18bda99246af2a36-1450048744";
+const MERCADO_PAGO_ACCESS_TOKEN = process.env.MERCADO_PAGO_ACCESS_TOKEN;
 const FIXED_PRICE = 14.99;
 
-if (!MERCADO_PAGO_ACCESS_TOKEN || MERCADO_PAGO_ACCESS_TOKEN === "SEU_ACCESS_TOKEN_DO_MERCADO_PAGO") {
+if (!MERCADO_PAGO_ACCESS_TOKEN) {
     console.warn("MERCADO_PAGO_ACCESS_TOKEN não está configurado. Por favor, adicione sua chave para o checkout funcionar.");
 }
 
@@ -16,7 +15,7 @@ const client = new MercadoPagoConfig({
 });
 
 export async function POST(req: NextRequest) {
-    if (!MERCADO_PAGO_ACCESS_TOKEN || MERCADO_PAGO_ACCESS_TOKEN === "SEU_ACCESS_TOKEN_DO_MERCADO_PAGO") {
+    if (!MERCADO_PAGO_ACCESS_TOKEN) {
         return NextResponse.json({ error: 'Credenciais do Mercado Pago não configuradas.' }, { status: 500 });
     }
 
@@ -30,7 +29,7 @@ export async function POST(req: NextRequest) {
         
         const preference = new Preference(client);
         
-        const baseUrl = 'https://criarcomluv.site';
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
         // Definir a data de expiração para 30 minutos a partir de agora
         const expirationDate = new Date();

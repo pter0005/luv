@@ -13,7 +13,7 @@ import { useQRCode } from 'next-qrcode';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
 
-const NEXT_PUBLIC_BASE_URL = 'https://criarcomluv.site';
+const NEXT_PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
 const FIXED_PRICE = 14.99;
 
@@ -390,4 +390,3 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
-

@@ -21,10 +21,9 @@ const SendLinkEmailInputSchema = z.object({
 });
 export type SendLinkEmailInput = z.infer<typeof SendLinkEmailInputSchema>;
 
-// ATENÇÃO: Substitua estes valores pelos seus dados do Gmail
-const GMAIL_USER = "SEU_EMAIL_GMAIL";
-const GMAIL_PASS = "SUA_SENHA_DE_APLICATIVO_GMAIL";
-const NEXT_PUBLIC_BASE_URL = 'https://criarcomluv.site';
+const GMAIL_USER = process.env.GMAIL_USER;
+const GMAIL_PASS = process.env.GMAIL_PASS;
+const NEXT_PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
 export async function prepareAndSendEmail(
   input: SendLinkEmailInput
@@ -42,7 +41,7 @@ const sendNodemailerEmailFlow = ai.defineFlow(
     const { name, email, pageId, pageTitle } = input;
     
     if (!GMAIL_USER || !GMAIL_PASS || GMAIL_USER === "SEU_EMAIL_GMAIL") {
-        console.error('Credenciais do Gmail não configuradas. Por favor, adicione seu e-mail e senha de aplicativo.');
+        console.error('Credenciais do Gmail não configuradas. Por favor, adicione seu e-mail e senha de aplicativo no arquivo .env');
         return { success: false };
     }
 
