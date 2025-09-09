@@ -294,37 +294,36 @@ function CreatorStudioPage() {
 
   async function onSubmit(data: FormData) {
     if (!user) {
-        toast({
-            variant: "destructive",
-            title: "Usuário não autenticado",
-            description: "Por favor, faça login para criar uma página.",
-        });
-        return;
+      toast({
+        variant: "destructive",
+        title: "Usuário não autenticado",
+        description: "Por favor, faça login para criar uma página.",
+      });
+      return;
     }
 
     try {
-        const pageDataToSave = {
-            ...data,
-            // Convert Date to ISO string before sending to server to avoid serialization issues
-            startDate: data.startDate ? data.startDate.toISOString() : undefined,
-            contactEmail: user.email,
-        };
+      const pageDataToSave = {
+        ...data,
+        startDate: data.startDate ? data.startDate.toISOString() : undefined,
+        contactEmail: user.email,
+      };
 
-        const pageId = await savePageData(pageDataToSave as any, user.uid);
-        
-        if (data.plan === 'essencial') {
-            toast({
-              title: "Página salva com sucesso!",
-              description: "Você será redirecionado para a tela de pagamento.",
-            });
-            router.push(`/criar/sucesso/${pageId}`);
-        } else {
-             toast({
-              title: "Solicitação enviada!",
-              description: "Seu pedido de orçamento foi enviado com sucesso.",
-            });
-            router.push(`/criar/sucesso-orcamento`);
-        }
+      const pageId = await savePageData(pageDataToSave as any, user.uid);
+
+      if (data.plan === 'essencial') {
+        toast({
+          title: "Página salva com sucesso!",
+          description: "Você será redirecionado para a tela de pagamento.",
+        });
+        router.push(`/criar/sucesso/${pageId}`);
+      } else {
+        toast({
+          title: "Solicitação enviada!",
+          description: "Seu pedido de orçamento foi enviado com sucesso.",
+        });
+        router.push(`/criar/sucesso-orcamento`);
+      }
     } catch (error: any) {
       console.error("Failed to process page:", error);
       toast({
