@@ -17,20 +17,22 @@ const toJSON = (data: any) => {
   const isObject = (val: any) => val && typeof val === 'object' && !Array.isArray(val);
 
   const convertTimestamps = (obj: any): any => {
-    if (!isObject(obj)) return obj;
+    if (!obj || typeof obj !== 'object') return obj;
+    if (obj instanceof Timestamp) return obj.toDate().toISOString();
 
     const newObj: { [key: string]: any } = {};
     for (const key in obj) {
-      const value = obj[key];
-      if (value && typeof value.seconds === 'number' && typeof value.nanoseconds === 'number') {
-        // It's a Firestore Timestamp-like object
-        newObj[key] = new Timestamp(value.seconds, value.nanoseconds).toDate().toISOString();
-      } else if (isObject(value)) {
-        newObj[key] = convertTimestamps(value);
-      } else if (Array.isArray(value)) {
-         newObj[key] = value.map(item => convertTimestamps(item));
-      } else {
-        newObj[key] = value;
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          const value = obj[key];
+          if (value instanceof Timestamp) {
+            newObj[key] = value.toDate().toISOString();
+          } else if (isObject(value)) {
+            newObj[key] = convertTimestamps(value); // Recurse for nested objects
+          } else if (Array.isArray(value)) {
+            newObj[key] = value.map(item => convertTimestamps(item)); // Recurse for arrays
+          } else {
+            newObj[key] = value;
+          }
       }
     }
     return newObj;
@@ -184,10 +186,7 @@ export async function getPagesByUserId(userId: string) {
     const querySnapshot = await getDocs(q);
     const pages: any[] = [];
     querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      // Convert any Firebase Timestamps to serializable strings
-      const serializableData = toJSON(data);
-      pages.push({ id: doc.id, ...serializableData });
+      pages.push({ id: doc.id, ...toJSON(doc.data()) });
     });
     return pages;
   } catch (error) {
