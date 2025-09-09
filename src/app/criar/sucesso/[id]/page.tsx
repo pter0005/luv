@@ -319,7 +319,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                         {isProcessingCheckout ? 'Processando...' : (
                             <>
                                 <Wallet className="mr-2 h-5 w-5" />
-                                Pagar com Mercado Pago - R$ {FIXED_PRICE.toFixed(2).replace('.', ',')}
+                                Pagar agora - R$ {FIXED_PRICE.toFixed(2).replace('.', ',')}
                             </>
                         )}
                     </Button>
