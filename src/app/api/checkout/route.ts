@@ -34,7 +34,15 @@ export async function POST(req: NextRequest) {
         
         const expirationDate = new Date();
         expirationDate.setMinutes(expirationDate.getMinutes() + 30);
-        const expirationDateISO = expirationDate.toISOString().replace(/\.\d{3}Z$/, 'Z');
+        
+        const pad = (num: number) => num.toString().padStart(2, '0');
+        const timezoneOffset = -expirationDate.getTimezoneOffset();
+        const offsetHours = pad(Math.floor(Math.abs(timezoneOffset) / 60));
+        const offsetMinutes = pad(Math.abs(timezoneOffset) % 60);
+        const timezoneSign = timezoneOffset >= 0 ? '+' : '-';
+
+        const expirationDateFormatted = `${expirationDate.getFullYear()}-${pad(expirationDate.getMonth() + 1)}-${pad(expirationDate.getDate())}T${pad(expirationDate.getHours())}:${pad(expirationDate.getMinutes())}:${pad(expirationDate.getSeconds())}.${expirationDate.getMilliseconds().toString().padStart(3, '0')}${timezoneSign}${offsetHours}:${offsetMinutes}`;
+
 
         const nameParts = name.trim().split(' ');
         const firstName = nameParts.shift() || '';
@@ -49,7 +57,7 @@ export async function POST(req: NextRequest) {
                 first_name: firstName,
                 last_name: lastName,
                 identification: {
-                    type: 'CPF', // ou CNPJ se for o caso, mas CPF é mais comum aqui
+                    type: 'CPF',
                     number: docNumber,
                 },
             },
@@ -57,7 +65,7 @@ export async function POST(req: NextRequest) {
             metadata: {
                 page_id: pageId,
             },
-            date_of_expiration: expirationDateISO,
+            date_of_expiration: expirationDateFormatted,
         };
 
         const result = await payment.create({ 
