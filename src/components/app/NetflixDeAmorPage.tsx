@@ -84,7 +84,7 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
             
              <header className="absolute top-0 left-0 w-full z-20 bg-gradient-to-b from-black/80 to-transparent p-4 md:p-6">
                  <div className="flex items-center justify-center">
-                   <Image src="https://i.imgur.com/L4QSoTw.png" alt="Luvflix Logo" width={140} height={50} className="w-28 md:w-36" />
+                   
                 </div>
             </header>
             
@@ -133,7 +133,7 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
                 </div>
 
                 {/* Categories */}
-                <div className="py-8 relative z-10 md:pt-12 -mt-12 md:-mt-24">
+                <div className="py-8 relative z-10 md:pt-4 md:-mt-16">
                     {data.categories?.map((category: any, index: number) => (
                         <CategoryRow key={index} category={category} />
                     ))}
@@ -142,3 +142,5 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
         </div>
     );
 }
+
+    

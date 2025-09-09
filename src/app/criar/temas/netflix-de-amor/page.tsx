@@ -280,7 +280,6 @@ function NetflixCreatorPage() {
             <div className="p-4 md:p-8 overflow-y-auto md:h-screen md:scrollbar-hide">
                 <div className="max-w-xl mx-auto">
                     <header className="text-center mb-12">
-                        <Image src="https://i.imgur.com/EMwsRdt.png" alt="Luv Logo" width={100} height={100} className="mx-auto w-24 h-24" />
                         <h1 className="text-4xl font-bold tracking-tighter mt-4">Netflix de Amor</h1>
                         <p className="text-muted-foreground mt-2">Preencha os campos para criar sua experiência de streaming romântica.</p>
                     </header>
@@ -489,22 +488,13 @@ function NetflixCreatorPage() {
             </div>
             
             {/* Preview Section */}
-            <div className="md:sticky top-0 h-[80vh] md:h-screen p-2 md:p-8">
-                <div className="w-full h-full bg-zinc-950 rounded-2xl flex flex-col shadow-2xl overflow-hidden">
-                    <div className="bg-zinc-800 rounded-t-lg p-2 flex items-center gap-1.5 border-b border-zinc-700">
-                        <div className="flex items-center gap-1.5">
-                            <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                            <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                        </div>
-                        <div className="flex-grow bg-zinc-700 rounded-sm px-2 py-1 text-xs text-zinc-400 text-center truncate">
-                            https://luv.com/p/preview
-                        </div>
-                    </div>
-                    <div className="flex-grow rounded-b-lg overflow-y-auto scrollbar-hide">
+            <div className="w-full h-auto md:h-screen p-4 md:p-8 bg-black md:sticky md:top-0 order-1 md:order-2 flex items-center justify-center">
+                 <div className="w-full h-full max-w-full md:max-w-md aspect-auto md:aspect-[9/16] mx-auto bg-zinc-900 rounded-[2.5rem] border-[10px] border-zinc-800 shadow-2xl overflow-hidden relative">
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-zinc-800 rounded-b-xl z-10"></div>
+                     <div className="w-full h-full">
                         <NetflixDeAmorPage data={watchedData} isPreview={true} />
                     </div>
-                </div>
+                 </div>
             </div>
         </div>
     </div>
