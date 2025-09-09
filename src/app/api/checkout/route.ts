@@ -73,9 +73,19 @@ export async function POST(req: NextRequest) {
                 idempotencyKey: idempotencyKey
             }
         });
+        
+        const qrCodeBase64 = result.point_of_interaction?.transaction_data?.qr_code_base64;
+        
+        if (!qrCodeBase64) {
+             console.error("Mercado Pago API response missing QR Code:", result);
+             return NextResponse.json({ 
+                error: "A API do Mercado Pago retornou uma resposta OK, mas sem o QR Code. Resposta completa abaixo.",
+                details: result 
+            }, { status: 500 });
+        }
 
         const pixData = {
-            qrCodeBase64: result.point_of_interaction?.transaction_data?.qr_code_base64,
+            qrCodeBase64: qrCodeBase64,
             qrCode: result.point_of_interaction?.transaction_data?.qr_code,
         };
 
@@ -83,8 +93,10 @@ export async function POST(req: NextRequest) {
 
     } catch (error: any) {
         console.error('Mercado Pago API error:', error.cause ? error.cause : error);
-        // Improved error handling to return specific message from Mercado Pago
         const errorMessage = error?.cause?.error?.message || error?.message || 'Failed to create payment preference';
-        return NextResponse.json({ error: `Erro do Mercado Pago: ${errorMessage}` }, { status: 500 });
+        return NextResponse.json({ 
+            error: `Erro do Mercado Pago: ${errorMessage}`,
+            details: error.cause || error 
+        }, { status: 500 });
     }
 }

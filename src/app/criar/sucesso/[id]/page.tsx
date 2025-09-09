@@ -23,7 +23,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   const [pageData, setPageData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [checkoutStatus, setCheckoutStatus] = useState<'idle' | 'loading' | 'error' | 'success'>('idle');
-  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [checkoutError, setCheckoutError] = useState<any>(null);
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
   const [pixData, setPixData] = useState<{qrCodeBase64: string, qrCode: string} | null>(null);
   const { Canvas } = useQRCode();
@@ -118,7 +118,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
       const responseData = await response.json();
 
       if (!response.ok) {
-        throw new Error(responseData.error || 'Falha ao iniciar pagamento.');
+        throw responseData;
       }
       
       if (responseData.pixData?.qrCodeBase64) {
@@ -131,11 +131,11 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     } catch (error: any) {
       console.error("Checkout error:", error);
       setCheckoutStatus('error');
-      setCheckoutError(error.message);
+      setCheckoutError(error);
       toast({
         variant: "destructive",
         title: "Erro no Checkout",
-        description: error.message || "Não foi possível preparar o pagamento.",
+        description: error.error || "Não foi possível preparar o pagamento.",
       });
     }
   };
@@ -359,9 +359,14 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                     )}
                    
                      {checkoutStatus === 'error' && checkoutError && (
-                        <div className="bg-destructive/20 border border-destructive/50 text-destructive-foreground p-4 rounded-lg text-sm mt-4">
+                        <div className="bg-destructive/20 border border-destructive/50 text-destructive-foreground p-4 rounded-lg text-sm mt-4 text-left">
                             <h4 className="font-bold mb-2">Ocorreu um erro:</h4>
-                            <p className="font-mono text-xs">{checkoutError}</p>
+                            <p className="font-mono text-xs whitespace-pre-wrap">{checkoutError.error}</p>
+                            {checkoutError.details && (
+                                <pre className="mt-2 text-xs bg-black/30 p-2 rounded-md overflow-x-auto">
+                                    {JSON.stringify(checkoutError.details, null, 2)}
+                                </pre>
+                            )}
                         </div>
                     )}
                 </CardContent>
