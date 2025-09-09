@@ -32,6 +32,11 @@ export async function POST(req: NextRequest) {
         
         const baseUrl = 'https://criarcomluv.site';
 
+        // Definir a data de expiração para 30 minutos a partir de agora
+        const expirationDate = new Date();
+        expirationDate.setMinutes(expirationDate.getMinutes() + 30);
+        const expirationDateISO = expirationDate.toISOString().replace(/\.\d{3}Z$/, 'Z');
+
         const result = await preference.create({
             body: {
                 items: [
@@ -54,8 +59,9 @@ export async function POST(req: NextRequest) {
                         { id: "credit_card" },
                     ],
                     installments: 1,
-                    default_payment_method_id: "pix",
                 },
+                 purpose: 'wallet_purchase',
+                 date_of_expiration: expirationDateISO,
                 back_urls: {
                     success: `${baseUrl}/criar/sucesso/${pageId}`,
                     failure: `${baseUrl}/criar/sucesso/${pageId}`,
@@ -77,8 +83,8 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ pixData });
 
     } catch (error: any) {
-        console.error('Mercado Pago API error:', error);
-        const errorMessage = error?.cause?.message || 'Failed to create payment preference';
+        console.error('Mercado Pago API error:', error.cause ? error.cause : error);
+        const errorMessage = error?.cause?.error || error?.message || 'Failed to create payment preference';
         return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
 }
