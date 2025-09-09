@@ -113,6 +113,51 @@ export default function CreatorPage() {
         </div>
       </section>
 
+      {/* Themes Section */}
+      <section id="temas" className="section-padding bg-background/80 backdrop-blur-sm">
+          <div className="container text-center">
+              <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Comece com um <span className="gradient-text">Modelo</span></h2>
+              <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16">Escolha um de nossos temas exclusivos e personalize com sua história. Ou, se preferir, comece do zero e crie algo totalmente seu.</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <Link href="/criar/temas/netflix-de-amor">
+                      <Card className="bg-card/80 border-border text-left overflow-hidden group h-full">
+                          <div className="relative aspect-video overflow-hidden">
+                              <Image
+                                  src="https://i.imgur.com/Cixp2cO.png"
+                                  alt="Tema Netflix de Amor"
+                                  fill
+                                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                  data-ai-hint="streaming interface couple"
+                              />
+                          </div>
+                          <CardHeader>
+                              <CardTitle>Netflix de Amor</CardTitle>
+                              <CardDescription>Transforme sua história de amor em uma série da Netflix. Adicione suas fotos e momentos como se fossem filmes e episódios.</CardDescription>
+                          </CardHeader>
+                      </Card>
+                  </Link>
+                   <Link href="/criar/fazer-eu-mesmo">
+                      <Card className="bg-card/80 border-border text-left overflow-hidden group h-full">
+                          <div className="relative aspect-video overflow-hidden">
+                              <Image
+                                  src="https://picsum.photos/800/450?random=40"
+                                  alt="Crie do seu jeito"
+                                  fill
+                                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                  data-ai-hint="blank canvas"
+                              />
+                          </div>
+                          <CardHeader>
+                              <CardTitle>Comece do Zero</CardTitle>
+                              <CardDescription>Use sua criatividade e construa uma página única, com todos os recursos que você tem direito, totalmente do seu jeito.</CardDescription>
+                          </CardHeader>
+                      </Card>
+                  </Link>
+              </div>
+          </div>
+      </section>
+
+
        {/* Features Section */}
       <section id="recursos" className="section-padding bg-background/80 backdrop-blur-sm">
         <div className="container text-center">
@@ -209,3 +254,5 @@ export default function CreatorPage() {
     </>
   );
 }
+
+    
