@@ -1,3 +1,4 @@
+
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
@@ -6,12 +7,12 @@ import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDwjaNVSNsdZBTBt2fhUYZoY3QP45y_jZA",
-  authDomain: "forever-yours-rbprw.firebaseapp.com",
-  projectId: "forever-yours-rbprw",
-  storageBucket: "forever-yours-rbprw.appspot.com",
-  messagingSenderId: "152834179796",
-  appId: "1:152834179796:web:b4fa05440070aa77997141"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 
 

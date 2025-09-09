@@ -478,5 +478,3 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
-
-    

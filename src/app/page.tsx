@@ -3,16 +3,8 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, Globe, QrCode, PlayCircle, Puzzle, Mic } from "lucide-react";
+import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, QrCode, PlayCircle, Puzzle, Mic } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import {
   Accordion,
   AccordionContent,
@@ -254,5 +246,3 @@ export default function CreatorPage() {
     </>
   );
 }
-
-    

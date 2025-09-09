@@ -247,8 +247,7 @@ function NetflixCreatorPage() {
     try {
         const pageDataForDb = { 
             ...data, 
-            title: data.heroTitle,
-            contactName: "Pedro Henrique Oliveira de Paula",
+            title: data.heroTitle, // Use heroTitle as main title for dashboard etc.
             contactEmail: user.email,
         };
         const pageId = await savePageData(pageDataForDb as any, user.uid);

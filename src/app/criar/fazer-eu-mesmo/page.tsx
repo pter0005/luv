@@ -67,6 +67,7 @@ import { JigsawPuzzle } from "@/components/app/JigsawPuzzle";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
+import { Label } from "@/components/ui/label";
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
@@ -88,6 +89,8 @@ const formSchema = z.object({
   puzzleTitle: z.string().optional(),
   puzzleDescription: z.string().optional(),
   plan: z.string().min(1, "Você deve escolher uma opção."),
+  contactName: z.string().optional(), // Removed required for now
+  contactCpf: z.string().optional(), // Removed required for now
 });
 
 export type FormData = z.infer<typeof formSchema>;
@@ -195,10 +198,12 @@ function CreatorStudioPage() {
       puzzleTitle: "Um Quebra-Cabeça Especial",
       puzzleDescription: "Resolva o enigma para revelar a surpresa!",
       plan: "essencial",
+      contactName: "",
+      contactCpf: "",
     },
   });
 
-  const { formState: { isSubmitting } } = form;
+  const { formState } = form;
   const watchedData = form.watch();
 
   const startRecording = async () => {
@@ -377,6 +382,7 @@ function CreatorStudioPage() {
     const currentField = steps[currentStep - 1].name;
     let fieldsToValidate: (keyof FormData)[] = [currentField];
     
+    // Add specific validation logic for steps if needed
     if (currentField === 'plan') {
         fieldsToValidate = ['plan'];
     }
@@ -527,8 +533,8 @@ function CreatorStudioPage() {
                   <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
               ) : (
-                <Button type="submit" size="lg" className="w-full" form="main-form" disabled={isSubmitting}>
-                  {isSubmitting ? (
+                <Button type="submit" size="lg" className="w-full" form="main-form" disabled={formState.isSubmitting}>
+                  {formState.isSubmitting ? (
                       <Loader className="mr-2 h-4 w-4 animate-spin"/>
                   ) : (
                       watchedData.plan === 'orcamento' ? 'Solicitar Orçamento' : 'Finalizar e Pagar'
@@ -1062,5 +1068,3 @@ function CreatorStudioPage() {
 }
 
 export default CreatorStudioPage;
-
-    
