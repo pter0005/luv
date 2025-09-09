@@ -96,7 +96,7 @@ export function Header() {
     )}>
       <div className="container flex items-center justify-between h-24">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="https://i.imgur.com/EMwsRdt.png" alt="Luv Logo" width={112} height={112} className="w-24 h-24 md:w-28 md:h-28" />
+          <Image src="https://i.imgur.com/wHnsdGw.png" alt="Luv Logo" width={140} height={140} className="w-28 h-28 md:w-32 md:h-32" />
         </Link>
         
         {/* Desktop Navigation */}
@@ -126,7 +126,7 @@ export function Header() {
                      <div className="flex flex-col h-full p-4">
                         <div className="mb-8">
                              <Link href="/" className="flex items-center gap-2">
-                                <Image src="https://i.imgur.com/EMwsRdt.png" alt="Luv Logo" width={112} height={112} className="w-24 h-24" />
+                                <Image src="https://i.imgur.com/wHnsdGw.png" alt="Luv Logo" width={140} height={140} className="w-32 h-32" />
                             </Link>
                         </div>
                         <nav className="flex flex-col gap-4">
