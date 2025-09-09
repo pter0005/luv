@@ -24,7 +24,7 @@ export type SendLinkEmailInput = z.infer<typeof SendLinkEmailInputSchema>;
 // ATENÇÃO: Substitua estes valores pelos seus dados do Gmail
 const GMAIL_USER = "SEU_EMAIL_GMAIL";
 const GMAIL_PASS = "SUA_SENHA_DE_APLICATIVO_GMAIL";
-const NEXT_PUBLIC_BASE_URL = 'http://localhost:9002'; // Ou a URL do seu site em produção
+const NEXT_PUBLIC_BASE_URL = 'https://criarcomluv.site';
 
 export async function prepareAndSendEmail(
   input: SendLinkEmailInput

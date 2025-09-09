@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 
 // ATENÇÃO: Substitua este valor pela sua Chave de Acesso do Mercado Pago
-const MERCADO_PAGO_ACCESS_TOKEN = "SEU_ACCESS_TOKEN_DO_MERCADO_PAGO";
+const MERCADO_PAGO_ACCESS_TOKEN = "APP_USR-6852736876658783-090810-6549cc010089ab137d69b6827ea44e60-1450048744";
 
 if (!MERCADO_PAGO_ACCESS_TOKEN || MERCADO_PAGO_ACCESS_TOKEN === "SEU_ACCESS_TOKEN_DO_MERCADO_PAGO") {
     console.warn("MERCADO_PAGO_ACCESS_TOKEN não está configurado. O webhook não funcionará.");
