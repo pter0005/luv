@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from 'react';
@@ -387,25 +388,12 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                         </Button>
                     )}
                    
-                     <div className="relative flex py-5 items-center">
-                        <div className="flex-grow border-t border-border"></div>
-                        <span className="flex-shrink mx-4 text-muted-foreground text-xs">PARA TESTES</span>
-                        <div className="flex-grow border-t border-border"></div>
-                    </div>
-                     <Button 
-                        size="sm" 
-                        variant="secondary" 
-                        className="w-full" 
-                        onClick={handleTestPayment}
-                        disabled={isTesting || !pageData}
-                    >
-                        {isTesting ? 'Testando...' : (
-                            <>
-                                <TestTube2 className="mr-2 h-4 w-4" />
-                                Simular Pagamento e Enviar E-mail de Teste
-                            </>
-                        )}
-                    </Button>
+                     {checkoutStatus === 'error' && checkoutError && (
+                        <div className="bg-destructive/20 border border-destructive/50 text-destructive-foreground p-4 rounded-lg text-sm">
+                            <h4 className="font-bold mb-2">Ocorreu um erro:</h4>
+                            <p className="font-mono text-xs">{checkoutError}</p>
+                        </div>
+                    )}
                 </CardContent>
             </Card>
         </>
