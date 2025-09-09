@@ -1,11 +1,13 @@
 
 'use server';
 
-import { db, storage } from '@/lib/firebase';
-import { collection, addDoc, getDoc, doc, updateDoc, getDocs, query, where } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { z } from 'zod';
 import { prepareAndSendEmail } from '@/ai/flows/send-link-email';
+
+// Mock database
+const pageDataStore: { [key: string]: any } = {};
+// Mock payment store
+const paymentStore: { [key: string]: string } = {};
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
@@ -36,52 +38,32 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-
 export async function uploadVideo(file: File): Promise<string> {
-  if (!file) {
-    throw new Error("No file provided for upload.");
-  }
-  
-  const storageRef = ref(storage, `videos/${Date.now()}-${file.name}`);
-  
-  try {
-    const snapshot = await uploadBytes(storageRef, file);
-    const downloadURL = await getDownloadURL(snapshot.ref);
-    return downloadURL;
-  } catch (error) {
-    console.error("Error uploading video:", error);
-    throw new Error("Failed to upload video.");
-  }
+    // This is a mock function. In a real app, you'd upload to a service like S3 or Firebase Storage.
+    console.log(`Uploading video: ${file.name}`);
+    // Simulate a delay and return a fake URL
+    await new Promise(res => setTimeout(res, 1000));
+    const fakeUrl = `https://fake-video-storage.com/${Date.now()}-${file.name}`;
+    console.log(`Video uploaded to ${fakeUrl}`);
+    return fakeUrl;
 }
 
-export async function savePageData(data: FormData, userId: string): Promise<string> {
-  if (!userId) {
-    throw new Error('User is not authenticated.');
-  }
 
+export async function savePageData(data: FormData): Promise<string> {
   try {
+    const pageId = Date.now().toString();
     const status = data.plan === 'essencial' ? 'pending_payment' : 'pending_quote';
     
-    const pageDataForDb: { [key: string]: any } = {
+    const pageDataForDb = {
       ...data,
-      userId,
       status: status,
       createdAt: new Date(),
     };
+    
+    pageDataStore[pageId] = pageDataForDb;
+    console.log('Document written with ID: ', pageId);
+    return pageId;
 
-    // Sanitize data for Firestore: convert undefined to null
-    Object.keys(pageDataForDb).forEach(key => {
-      if (pageDataForDb[key] === undefined) {
-        pageDataForDb[key] = null;
-      }
-      if (pageDataForDb[key] === '') {
-        pageDataForDb[key] = null;
-      }
-    });
-
-    const docRef = await addDoc(collection(db, 'pages'), pageDataForDb);
-    console.log('Document written with ID: ', docRef.id);
-    return docRef.id;
   } catch (e) {
     console.error('Error adding document: ', e);
     throw new Error('Failed to save page data.');
@@ -90,22 +72,19 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
 
 export async function confirmPaymentAndSendEmail(pageId: string) {
     try {
-        const pageDocRef = doc(db, 'pages', pageId);
-        const docSnap = await getDoc(pageDocRef);
+        const pageData = pageDataStore[pageId];
 
-        if (!docSnap.exists()) {
+        if (!pageData) {
             console.error(`Page with ID ${pageId} not found.`);
             return { success: false, message: 'Page not found.' };
         }
         
-        const pageData = docSnap.data();
-
         if (pageData.status === 'paid') {
             console.log(`Payment for page ${pageId} has already been confirmed.`);
             return { success: true, message: 'Already paid.' };
         }
         
-        await updateDoc(pageDocRef, { status: 'paid' });
+        pageDataStore[pageId].status = 'paid';
         console.log(`Page ${pageId} status updated to paid.`);
 
         if (pageData.contactEmail) {
@@ -131,18 +110,8 @@ export async function confirmPaymentAndSendEmail(pageId: string) {
 
 export async function getPageData(id: string) {
     try {
-        const docRef = doc(db, 'pages', id);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-            const data = docSnap.data();
-            // Firestore Timestamps need to be converted to JS Date objects
-            if (data.startDate && typeof data.startDate.toDate === 'function') {
-                data.startDate = data.startDate.toDate();
-            }
-             if (data.createdAt && typeof data.createdAt.toDate === 'function') {
-                data.createdAt = data.createdAt.toDate();
-            }
+        const data = pageDataStore[id];
+        if (data) {
             return data;
         } else {
             console.log("No such document!");
@@ -154,25 +123,7 @@ export async function getPageData(id: string) {
     }
 }
 
+// This function is no longer relevant as there are no users.
 export async function getPagesByUserId(userId: string) {
-  if (!userId) {
-    return [];
-  }
-  try {
-    const q = query(collection(db, 'pages'), where('userId', '==', userId));
-    const querySnapshot = await getDocs(q);
-    const pages: any[] = [];
-    querySnapshot.forEach((doc) => {
-      const pageData = doc.data();
-      pages.push({ 
-        id: doc.id, 
-        ...pageData,
-        createdAt: pageData.createdAt?.toDate ? pageData.createdAt.toDate() : pageData.createdAt,
-      });
-    });
-    return pages;
-  } catch (error) {
-    console.error("Error getting user pages:", error);
-    return [];
-  }
+  return [];
 }

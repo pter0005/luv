@@ -7,7 +7,6 @@ import { ArrowLeft, Brush, Files } from "lucide-react";
 import Link from "next/link";
 import { HeartsBackground } from "@/components/app/HeartsBackground";
 import { AnimatedBackground } from "@/components/app/AnimatedBackground";
-import { withAuth } from "@/contexts/AuthContext";
 
 function CriarPage() {
     return (
@@ -60,4 +59,4 @@ function CriarPage() {
     )
 }
 
-export default withAuth(CriarPage);
+export default CriarPage;

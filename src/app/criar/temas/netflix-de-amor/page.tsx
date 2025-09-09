@@ -20,7 +20,6 @@ import { ArrowLeft, ChevronRight, Loader, PlusCircle, Trash2, Upload, Video, Ima
 import { useToast } from "@/hooks/use-toast";
 import { savePageData, uploadVideo } from "@/actions/page";
 import { useRouter } from "next/navigation";
-import { useAuth, withAuth } from "@/contexts/AuthContext";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import { NetflixDeAmorPage } from "@/components/app/NetflixDeAmorPage";
@@ -170,7 +169,6 @@ function ItemsFieldArray({ categoryIndex, control, setValue }: { categoryIndex: 
 function NetflixCreatorPage() {
   const { toast } = useToast();
   const router = useRouter();
-  const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const heroFileInputRef = React.useRef<HTMLInputElement>(null);
   const heroVideoInputRef = React.useRef<HTMLInputElement>(null);
@@ -191,7 +189,7 @@ function NetflixCreatorPage() {
         { title: "Filmes em Alta", items: [] },
       ],
       contactName: "",
-      contactEmail: user?.email || "",
+      contactEmail: "",
       contactPhone: "",
       plan: "essencial",
     },
@@ -204,13 +202,6 @@ function NetflixCreatorPage() {
 
   const watchedData = form.watch();
 
-  React.useEffect(() => {
-    if (user) {
-        form.setValue('contactEmail', user.email || '');
-        form.setValue('contactName', user.displayName || '');
-    }
-  }, [user, form]);
-  
   const handleHeroImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -247,14 +238,10 @@ function NetflixCreatorPage() {
 
 
   async function onSubmit(data: NetflixFormData) {
-    if (!user) {
-         toast({ variant: "destructive", title: "Usuário não autenticado."});
-         return;
-    }
     setIsSubmitting(true);
     try {
         const pageDataForDb = { ...data, plan: 'essencial', title: data.heroTitle };
-        const pageId = await savePageData(pageDataForDb as any, user.uid);
+        const pageId = await savePageData(pageDataForDb as any);
         
         toast({
           title: "Sua Netflix de Amor foi salva!",
@@ -454,7 +441,7 @@ function NetflixCreatorPage() {
                                         <FormItem>
                                             <FormLabel>Seu E-mail de Contato</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="seu.email@exemplo.com" {...field} disabled className="bg-zinc-800 border-zinc-700"/>
+                                                <Input placeholder="seu.email@exemplo.com" {...field} className="bg-zinc-800 border-zinc-700"/>
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -514,6 +501,4 @@ function NetflixCreatorPage() {
   )
 }
 
-export default withAuth(NetflixCreatorPage);
-
-    
+export default NetflixCreatorPage;

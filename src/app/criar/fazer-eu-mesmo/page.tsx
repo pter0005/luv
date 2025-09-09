@@ -68,7 +68,6 @@ import {
 } from "@/components/ui/dialog";
 import { JigsawPuzzle } from "@/components/app/JigsawPuzzle";
 import { Textarea } from "@/components/ui/textarea";
-import { useAuth, withAuth } from "@/contexts/AuthContext";
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
@@ -166,7 +165,6 @@ const processImage = (file: File, maxSize = 1280): Promise<string> => {
 function CreatorStudioPage() {
   const { toast } = useToast();
   const router = useRouter();
-  const { user } = useAuth();
   const [currentStep, setCurrentStep] = React.useState(1);
   const totalSteps = 8;
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -204,8 +202,8 @@ function CreatorStudioPage() {
       puzzleImage: "",
       puzzleTitle: "Um Quebra-Cabeça Especial",
       puzzleDescription: "Resolva o enigma para revelar a surpresa!",
-      contactName: user?.displayName || "",
-      contactEmail: user?.email || "",
+      contactName: "",
+      contactEmail: "",
       contactPhone: "",
       contactDoc: "",
       plan: "essencial",
@@ -214,14 +212,7 @@ function CreatorStudioPage() {
 
   const watchedData = form.watch();
 
-  React.useEffect(() => {
-    if (user) {
-        form.setValue('contactEmail', user.email || '');
-        form.setValue('contactName', user.displayName || '');
-    }
-  }, [user, form])
-
-    const startRecording = async () => {
+  const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorderRef.current = new MediaRecorder(stream);
@@ -309,13 +300,9 @@ function CreatorStudioPage() {
 
 
   async function onSubmit(data: FormData) {
-    if (!user) {
-         toast({ variant: "destructive", title: "Usuário não autenticado."});
-         return;
-    }
     setIsSubmitting(true);
     try {
-        const pageId = await savePageData(data as any, user.uid);
+        const pageId = await savePageData(data as any);
         
         if (data.plan === 'essencial') {
             toast({
@@ -426,7 +413,7 @@ function CreatorStudioPage() {
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+      setCurrentStep(currentStep + 1);
     }
   };
 
@@ -1014,7 +1001,7 @@ function CreatorStudioPage() {
                               <FormItem>
                                   <FormLabel>Seu E-mail de Contato</FormLabel>
                                   <FormControl>
-                                      <Input placeholder="seu.email@exemplo.com" {...field} disabled/>
+                                      <Input placeholder="seu.email@exemplo.com" {...field} />
                                   </FormControl>
                                   <FormMessage />
                               </FormItem>
@@ -1101,7 +1088,4 @@ function CreatorStudioPage() {
   );
 }
 
-export default withAuth(CreatorStudioPage);
-
-    
-    
+export default CreatorStudioPage;

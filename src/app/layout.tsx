@@ -5,7 +5,6 @@ import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import { Header } from '@/components/app/Header';
 import { Footer } from '@/components/app/Footer';
-import { AuthProvider } from '@/contexts/AuthContext';
 
 export const metadata: Metadata = {
   title: 'Luv ©',
@@ -39,7 +38,6 @@ export default function RootLayout({
           'antialiased overflow-x-hidden bg-background min-h-screen'
         )}
       >
-        <AuthProvider>
           <div className="relative w-full h-full">
             <div className="relative z-10 flex flex-col min-h-screen">
               <Header />
@@ -48,7 +46,6 @@ export default function RootLayout({
             </div>
           </div>
           <Toaster />
-        </AuthProvider>
       </body>
     </html>
   );
