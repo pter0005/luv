@@ -5,14 +5,15 @@ import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  projectId: "forever-yours-rbprw",
-  appId: "1:152834179796:web:b4fa05440070aa77997141",
-  storageBucket: "forever-yours-rbprw.appspot.com",
-  apiKey: "AIzaSyDwjaNVSNsdZBTBt2fhUYZoY3QP45y_jZA",
-  authDomain: "forever-yours-rbprw.firebaseapp.com",
-  measurementId: "",
-  messagingSenderId: "152834179796"
+  apiKey: "AIzaSyA41c7j6S5Y-yVIiC-dI0xUnzAnY4A23S4",
+  authDomain: "luv-419015.firebaseapp.com",
+  projectId: "luv-419015",
+  storageBucket: "luv-419015.appspot.com",
+  messagingSenderId: "339396349926",
+  appId: "1:339396349926:web:6e3a6428459b6b7c53931b",
+  measurementId: "G-GZ3J1K3FPE"
 };
+
 
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
