@@ -111,7 +111,7 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
                              )
                         )}
                     </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/50 to-transparent"></div>
                      <div className="relative z-10 p-4 md:p-10 text-left space-y-4">
                          <div className="flex items-center gap-2">
                              <Image src="https://i.imgur.com/YWU5u37.png" alt="Netflix N Logo" width={20} height={36} className="w-4 h-7 md:w-5 md:h-9" />
@@ -133,7 +133,7 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
                 </div>
 
                 {/* Categories */}
-                <div className="py-8 relative z-10">
+                <div className="py-8 relative z-10 -mt-16 md:-mt-24">
                     {data.categories?.map((category: any, index: number) => (
                         <CategoryRow key={index} category={category} />
                     ))}
