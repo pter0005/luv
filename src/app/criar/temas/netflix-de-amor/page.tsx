@@ -36,7 +36,6 @@ const categorySchema = z.object({
 
 const formSchema = z.object({
   template: z.literal("netflix-de-amor"),
-  profileName: z.string().min(1, "O nome do perfil é obrigatório."),
   heroImage: z.string().min(1, "A imagem de destaque é obrigatória."),
   heroTitle: z.string().min(1, "O título de destaque é obrigatório."),
   heroDescription: z.string().min(1, "A sinopse é obrigatória."),
@@ -168,7 +167,6 @@ function NetflixCreatorPage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       template: "netflix-de-amor",
-      profileName: "Você & Eu",
       heroImage: "",
       heroTitle: "Nossa História de Cinema",
       heroDescription: "Das pequenas risadas aos grandes momentos, nossa história é a minha favorita. Prepare a pipoca para a maratona do nosso amor.",
@@ -256,17 +254,6 @@ function NetflixCreatorPage() {
 
                             <div className="space-y-6 bg-zinc-900/50 p-6 rounded-lg">
                                 <h2 className="text-2xl font-bold border-b border-red-600 pb-2">Filme em Destaque</h2>
-                                <FormField
-                                    control={form.control}
-                                    name="profileName"
-                                    render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Nome do Perfil</FormLabel>
-                                        <FormControl><Input placeholder="Ex: Você & Eu" {...field} className="bg-zinc-800 border-zinc-700" /></FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                    )}
-                                />
                                 <FormField
                                     control={form.control}
                                     name="heroImage"

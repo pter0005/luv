@@ -35,12 +35,8 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
     return (
         <div className="bg-[#141414] text-white min-h-screen">
             <header className="absolute top-0 left-0 w-full p-4 z-20 bg-gradient-to-b from-black/80 to-transparent">
-                <div className="container mx-auto flex justify-between items-center">
+                <div className="container mx-auto flex justify-center items-center">
                     <Image src="https://i.imgur.com/EMwsRdt.png" alt="Luv Logo" width={80} height={80} className="w-16 h-16 md:w-20 md:h-20" />
-                    <div className="flex items-center gap-4">
-                        <span className="font-semibold">{data.profileName}</span>
-                         <Image src={`https://avatar.vercel.sh/${data.profileName || 'default'}.png`} alt="Profile" width={40} height={40} className="rounded-md w-8 h-8 md:w-10 md:h-10" />
-                    </div>
                 </div>
             </header>
 
