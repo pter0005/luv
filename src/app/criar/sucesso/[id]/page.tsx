@@ -13,6 +13,8 @@ import { useQRCode } from 'next-qrcode';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
 import Script from 'next/script';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 const NEXT_PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
@@ -37,6 +39,11 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   const { Canvas } = useQRCode();
   const [hasTrackedCheckout, setHasTrackedCheckout] = useState(false);
   const [hasTrackedPurchase, setHasTrackedPurchase] = useState(false);
+
+  // State for payment form
+  const [contactName, setContactName] = useState('');
+  const [contactCpf, setContactCpf] = useState('');
+  const [formError, setFormError] = useState('');
 
 
   // Effect to handle initial page load and payment confirmation from URL params
@@ -149,6 +156,12 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
 
   const handleGeneratePix = async () => {
     if (!pageData) return;
+    
+    if (!contactName || contactCpf.length < 14) {
+      setFormError('Por favor, preencha seu nome completo e CPF corretamente.');
+      return;
+    }
+    setFormError('');
 
     setCheckoutStatus('loading');
     setCheckoutError(null);
@@ -161,8 +174,8 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
           pageId: params.id,
           title: pageData.title || pageData.heroTitle,
           email: pageData.contactEmail,
-          name: pageData.contactName,
-          cpf: pageData.contactCpf,
+          name: contactName,
+          cpf: contactCpf,
         }),
       });
 
@@ -325,15 +338,10 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                 </p>
                 <Button 
                     size="lg" 
-                    onClick={handleGeneratePix}
+                    onClick={() => { setPixData(null); setCheckoutStatus('idle');}}
                     disabled={checkoutStatus === 'loading' || !pageData}
                 >
-                    {checkoutStatus === 'loading' ? 'Gerando Pix...' : (
-                        <>
-                            <Wallet className="mr-2 h-5 w-5" />
-                            Tentar Novamente - R$ {FIXED_PRICE.toFixed(2).replace('.', ',')}
-                        </>
-                    )}
+                    Tentar Novamente
                 </Button>
             </>
         )
@@ -394,6 +402,35 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                              <p className="text-xs text-muted-foreground text-center pt-2">Aguardando pagamento... A página irá atualizar sozinha após a confirmação.</p>
                         </div>
                     ) : (
+                      <div className='space-y-4'>
+                        <div className="space-y-2">
+                          <Label htmlFor="contactName">Nome Completo do Titular</Label>
+                          <Input 
+                            id="contactName" 
+                            placeholder="Seu nome completo" 
+                            value={contactName}
+                            onChange={(e) => setContactName(e.target.value)}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="contactCpf">CPF do Titular</Label>
+                          <Input 
+                            id="contactCpf"
+                            placeholder="000.000.000-00" 
+                            value={contactCpf}
+                            onChange={(e) => {
+                                const { value } = e.target;
+                                const formattedValue = value
+                                    .replace(/\D/g, '')
+                                    .replace(/(\d{3})(\d)/, '$1.$2')
+                                    .replace(/(\d{3})(\d)/, '$1.$2')
+                                    .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                                setContactCpf(formattedValue);
+                            }}
+                            maxLength={14}
+                          />
+                        </div>
+                        {formError && <p className="text-sm text-destructive">{formError}</p>}
                          <Button 
                             size="lg" 
                             className="w-full" 
@@ -407,6 +444,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                                 </>
                             )}
                         </Button>
+                      </div>
                     )}
                    
                      {checkoutStatus === 'error' && checkoutError && (
@@ -440,3 +478,5 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
+
+    
