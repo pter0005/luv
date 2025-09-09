@@ -492,7 +492,7 @@ function CreatorStudioPage() {
       </div>
       
       {/* Form Section */}
-      <div className="w-full flex flex-col items-center p-4 md:p-8 relative bg-card md:bg-transparent -mt-12 md:mt-0 rounded-t-3xl md:rounded-none border-t border-border md:border-none">
+      <div className="w-full flex flex-col items-center p-4 md:p-8 relative bg-card md:bg-transparent -mt-12 md:mt-0 rounded-t-3xl md:rounded-none border-t border-border md:border-l">
         <div className="w-full max-w-md">
           <div className="mb-8">
             <Progress value={(currentStep / totalSteps) * 100} className="h-2" />
@@ -1081,3 +1081,5 @@ function CreatorStudioPage() {
 }
 
 export default withAuth(CreatorStudioPage);
+
+    
