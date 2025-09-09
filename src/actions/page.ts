@@ -56,33 +56,48 @@ export async function uploadVideo(file: File): Promise<string> {
 export async function savePageData(data: FormData, userId: string): Promise<string> {
   try {
     const pageId = Date.now().toString();
-    const status = data && data.plan === 'essencial' ? 'pending_payment' : 'pending_quote';
+    const status = data.plan === 'essencial' ? 'pending_payment' : 'pending_quote';
     
-    // Create a mutable copy to avoid modifying the original data object
-    const pageDataForDb = { ...data };
-
-    // Remove fields that are not part of the page's data model
-    // but might be present from the form submission.
-    delete pageDataForDb.contactName;
-    delete pageDataForDb.contactCpf;
+    // Create a new, clean object with only the expected fields to prevent serialization errors.
+    const pageDataForDb: { [key: string]: any } = {
+      userId: userId,
+      status: status,
+      createdAt: Timestamp.now(),
+      title: data.title,
+      titleColor: data.titleColor,
+      message: data.message,
+      messageFontSize: data.messageFontSize,
+      photos: data.photos || [],
+      photoDisplayType: data.photoDisplayType,
+      musicChoice: data.musicChoice,
+      musicUrl: data.musicUrl,
+      customAudio: data.customAudio,
+      backgroundAnimation: data.backgroundAnimation,
+      heartColor: data.heartColor,
+      loveLightColor: data.loveLightColor,
+      unlockType: data.unlockType,
+      puzzleImage: data.puzzleImage,
+      puzzleTitle: data.puzzleTitle,
+      puzzleDescription: data.puzzleDescription,
+      plan: data.plan,
+      contactEmail: data.contactEmail,
+      // Include template-specific data if available
+      template: data.template,
+      heroType: data.heroType,
+      heroImage: data.heroImage,
+      heroVideoUrl: data.heroVideoUrl,
+      heroTitle: data.heroTitle,
+      heroDescription: data.heroDescription,
+      categories: data.categories,
+    };
 
     // Safely handle date conversion
-    if (pageDataForDb.startDate && typeof pageDataForDb.startDate === 'string') {
-      const date = new Date(pageDataForDb.startDate);
-      // Check if the date is valid before converting
+    if (data.startDate && typeof data.startDate === 'string') {
+      const date = new Date(data.startDate);
       if (!isNaN(date.getTime())) {
         pageDataForDb.startDate = Timestamp.fromDate(date);
-      } else {
-        // If date is invalid, remove it to prevent Firestore errors
-        console.warn(`Invalid startDate received: ${pageDataForDb.startDate}. Removing from data.`);
-        delete pageDataForDb.startDate;
       }
     }
-
-    // Add server-side data
-    pageDataForDb.userId = userId;
-    pageDataForDb.status = status;
-    pageDataForDb.createdAt = Timestamp.now(); // Use Firestore timestamp for creation
     
     await setDoc(doc(db, "pages", pageId), pageDataForDb);
     
@@ -93,7 +108,6 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
     console.error('CRITICAL: Error adding document in savePageData. Raw Error:', e);
     console.error('Error Details (if available):', e.details);
     console.error('Data that failed:', JSON.stringify(data, null, 2));
-    // Throw the original error message for better debugging on the client
     throw new Error(e.message || 'Failed to save page data due to a server error.');
   }
 }
