@@ -17,7 +17,7 @@ const client = new MercadoPagoConfig({
 
 export async function POST(req: NextRequest) {
     if (!MERCADO_PAGO_ACCESS_TOKEN || MERCADO_PAGO_ACCESS_TOKEN === "SEU_TOKEN_AQUI") {
-        return NextResponse.json({ error: 'Credenciais do Mercado Pago não configuradas.' }, { status: 500 });
+        return NextResponse.json({ error: 'Credenciais do Mercado Pago não configuradas no servidor.' }, { status: 500 });
     }
 
     try {
@@ -77,11 +77,29 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ pixData });
 
     } catch (error: any) {
-        console.error('Mercado Pago API error:', error.cause ? error.cause : error);
-        const errorMessage = error?.cause?.error?.message || error?.message || 'Failed to create payment';
+        // Log detalhado no servidor para depuração
+        console.error('Falha crítica na API de checkout:', JSON.stringify(error, null, 2));
+
+        // Verifica se é um erro da API do Mercado Pago
+        if (error.cause && typeof error.cause === 'object') {
+            const cause = error.cause as Record<string, any>;
+            const errorMessage = cause.error?.message || 'Erro desconhecido da API do Mercado Pago.';
+            const errorStatus = cause.status || 500;
+            
+            return NextResponse.json({ 
+                error: `Erro da API do Mercado Pago: ${errorMessage}`,
+                details: {
+                    status: errorStatus,
+                    error: cause.error?.error || 'N/A',
+                    cause: cause.error?.cause || []
+                }
+            }, { status: errorStatus });
+        }
+
+        // Erro genérico
         return NextResponse.json({ 
-            error: `Erro do Mercado Pago: ${errorMessage}`,
-            details: error.cause || error 
+            error: 'Ocorreu um erro inesperado no servidor ao processar o pagamento.',
+            details: error.message 
         }, { status: 500 });
     }
 }
