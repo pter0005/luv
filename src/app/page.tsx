@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, Globe, QrCode, PlayCircle, Puzzle } from "lucide-react";
+import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, Globe, QrCode, PlayCircle, Puzzle, Mic } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -62,11 +62,11 @@ export default function CreatorPage() {
       imageHint: "music player"
     },
     {
-      icon: Globe,
-      title: "Acesso Global",
-      description: "Sua página acessível de qualquer lugar do mundo, com um link exclusivo.",
+      icon: Mic,
+      title: "Gravação de Áudio Personalizada",
+      description: "Deixe uma mensagem com sua própria voz para tocar ao fundo da página, tornando a experiência ainda mais pessoal e emocionante.",
       image: "https://picsum.photos/800/600?random=24",
-      imageHint: "world map"
+      imageHint: "audio recording"
     },
     {
       icon: QrCode,
@@ -254,3 +254,5 @@ export default function CreatorPage() {
     </>
   );
 }
+
+    
