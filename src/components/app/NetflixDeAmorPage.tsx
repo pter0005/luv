@@ -82,8 +82,8 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
                 </div>
             )}
             
-             <header className="absolute top-0 left-0 w-full z-20 bg-gradient-to-b from-black/80 to-transparent p-4 md:p-6 flex justify-center items-center gap-6">
-                 <Image src="https://imgur.com/wHnsdGw.png" alt="Netflix Luv Logo" width={120} height={120} className="h-10 w-auto md:h-12" />
+             <header className="absolute top-0 left-0 w-full z-20 bg-gradient-to-b from-black/80 to-transparent pt-4 flex justify-center items-start">
+                 <Image src="https://imgur.com/wHnsdGw.png" alt="Netflix Luv Logo" width={160} height={160} className="h-16 w-auto md:h-20" />
             </header>
             
             <main className={isPreview ? 'scrollbar-hide' : ''}>
@@ -110,10 +110,10 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
                         )}
                     </div>
                     <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/50 to-transparent"></div>
-                     <div className="relative z-10 px-4 md:px-10 pb-16 md:pb-24 text-left space-y-4">
+                     <div className="relative z-10 px-8 md:px-12 pb-16 md:pb-24 text-left space-y-4">
                         <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter max-w-2xl" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.8)' }}>{data.heroTitle}</h1>
-                        <p className="max-w-xl text-base md:text-lg text-zinc-200">{data.heroDescription}</p>
-                        <div className="flex items-center gap-4 pt-2">
+                        <p className="max-w-xl text-lg md:text-xl text-zinc-200">{data.heroDescription}</p>
+                        <div className="flex items-center gap-4 pt-4">
                             <Button size="lg" className="bg-white text-black hover:bg-white/80" onClick={handlePlay}>
                                 <Play className="w-6 h-6 mr-2 fill-black" />
                                 Assistir
@@ -127,7 +127,7 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
                 </div>
 
                 {/* Categories */}
-                <div className="-mt-20 md:-mt-24 py-8 relative z-10">
+                <div className="-mt-16 md:-mt-20 py-8 relative z-10">
                     {data.categories?.map((category: any, index: number) => (
                         <CategoryRow key={index} category={category} />
                     ))}
