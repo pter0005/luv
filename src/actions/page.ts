@@ -66,13 +66,14 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
     delete pageDataForDb.contactName;
     delete pageDataForDb.contactCpf;
 
-    // Firestore cannot store JavaScript Date objects or invalid date strings directly. They must be converted to Firestore Timestamps.
-    // The data now arrives as a string from the client.
+    // Safely handle date conversion
     if (pageDataForDb.startDate && typeof pageDataForDb.startDate === 'string') {
       const date = new Date(pageDataForDb.startDate);
+      // Check if the date is valid before converting
       if (!isNaN(date.getTime())) {
         pageDataForDb.startDate = Timestamp.fromDate(date);
       } else {
+        // If date is invalid, remove it to prevent Firestore errors
         console.warn(`Invalid startDate received: ${pageDataForDb.startDate}. Removing from data.`);
         delete pageDataForDb.startDate;
       }
@@ -194,5 +195,3 @@ export async function getPagesByUserId(userId: string) {
     return [];
   }
 }
-
-    
