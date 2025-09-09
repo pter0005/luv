@@ -3,7 +3,7 @@
 
 import { z } from 'zod';
 import { prepareAndSendEmail } from '@/ai/flows/send-link-email';
-import { doc, setDoc, getDoc, collection, getDocs, query, where } from 'firebase/firestore';
+import { doc, setDoc, getDoc, collection, getDocs, query, where, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
 const formSchema = z.object({
@@ -41,6 +41,19 @@ const formSchema = z.object({
 });
 
 type FormData = z.infer<typeof formSchema>;
+
+// Helper to convert Firebase Timestamps to serializable strings
+const toJSON = (data: any) => {
+  if (!data) return data;
+  return JSON.parse(JSON.stringify(data, (key, value) => {
+    if (value && value.seconds !== undefined && value.nanoseconds !== undefined) {
+      // Check if it's a Firebase Timestamp-like object
+      const date = new Timestamp(value.seconds, value.nanoseconds).toDate();
+      return date.toISOString();
+    }
+    return value;
+  }));
+};
 
 export async function uploadVideo(file: File): Promise<string> {
     // This is a mock function. In a real app, you'd upload to a service like S3 or Firebase Storage.
@@ -146,7 +159,9 @@ export async function getPageData(id: string) {
         const pageDoc = await getDoc(pageRef);
 
         if (pageDoc.exists()) {
-            return pageDoc.data();
+            const data = pageDoc.data();
+            // Convert any Firebase Timestamps to serializable strings before returning
+            return toJSON(data);
         } else {
             console.log("No such document!");
             return null;
@@ -163,7 +178,10 @@ export async function getPagesByUserId(userId: string) {
     const querySnapshot = await getDocs(q);
     const pages: any[] = [];
     querySnapshot.forEach((doc) => {
-      pages.push({ id: doc.id, ...doc.data() });
+      const data = doc.data();
+      // Convert any Firebase Timestamps to serializable strings
+      const serializableData = toJSON(data);
+      pages.push({ id: doc.id, ...serializableData });
     });
     return pages;
   } catch (error) {
