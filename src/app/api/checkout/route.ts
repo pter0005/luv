@@ -15,6 +15,16 @@ const client = new MercadoPagoConfig({
     options: { timeout: 5000, idempotencyKey: randomUUID() }
 });
 
+// Helper function to generate a random CPF-like number string
+const generateRandomCpfLike = (): string => {
+    let num = '';
+    for (let i = 0; i < 11; i++) {
+        num += Math.floor(Math.random() * 10);
+    }
+    return num;
+};
+
+
 export async function POST(req: NextRequest) {
     if (!MERCADO_PAGO_ACCESS_TOKEN || MERCADO_PAGO_ACCESS_TOKEN === "SEU_TOKEN_AQUI") {
         return NextResponse.json({ error: 'Credenciais do Mercado Pago não configuradas no servidor.' }, { status: 500 });
@@ -48,8 +58,8 @@ export async function POST(req: NextRequest) {
         const firstName = nameParts.shift() || '';
         const lastName = nameParts.join(' ') || firstName;
 
-        // CPF genérico para cumprir requisito da API do Mercado Pago
-        const genericCpf = "54625872502";
+        // Use a randomly generated CPF-like number for each transaction
+        const randomCpf = generateRandomCpfLike();
 
         const paymentData = {
             transaction_amount: FIXED_PRICE,
@@ -61,7 +71,7 @@ export async function POST(req: NextRequest) {
                 last_name: lastName,
                 identification: {
                     type: 'CPF',
-                    number: genericCpf,
+                    number: randomCpf,
                 },
             },
             notification_url: `${baseUrl}/api/webhook/mercado-pago`,
