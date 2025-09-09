@@ -496,9 +496,30 @@ function CreatorStudioPage() {
             <h2 className="text-3xl font-bold">{steps[currentStep - 1].title}</h2>
             <p className="mt-2 text-muted-foreground">{steps[currentStep - 1].description}</p>
           </div>
+          
+           <div className="flex items-center gap-4 my-8">
+              <Button type="button" variant="secondary" onClick={handlePrevStep} disabled={currentStep === 1}>
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Voltar
+              </Button>
+              {currentStep < totalSteps ? (
+                <Button type="button" onClick={handleNextStep} className="w-full">
+                  Próxima Etapa
+                  <ChevronRight className="ml-2 h-4 w-4" />
+                </Button>
+              ) : (
+                <Button type="submit" size="lg" className="w-full" form="main-form" disabled={isSubmitting}>
+                  {isSubmitting ? (
+                      <Loader className="mr-2 h-4 w-4 animate-spin"/>
+                  ) : (
+                      watchedData.plan === 'orcamento' ? 'Solicitar Orçamento' : 'Finalizar e Pagar'
+                  )}
+                </Button>
+              )}
+            </div>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} id="main-form" className="mt-8 space-y-8">
               <div className="min-h-[350px]">
                 {currentStep === 1 && (
                   <div className="space-y-8">
@@ -1043,26 +1064,6 @@ function CreatorStudioPage() {
                           )}
                       />
                   </div>
-                )}
-              </div>
-              <div className="flex items-center gap-4 mt-8">
-                <Button type="button" variant="secondary" onClick={handlePrevStep} disabled={currentStep === 1}>
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Voltar
-                </Button>
-                {currentStep < totalSteps ? (
-                  <Button type="button" onClick={handleNextStep} className="w-full">
-                    Próxima Etapa
-                    <ChevronRight className="ml-2 h-4 w-4" />
-                  </Button>
-                ) : (
-                  <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
-                    {isSubmitting ? (
-                        <Loader className="mr-2 h-4 w-4 animate-spin"/>
-                    ) : (
-                        watchedData.plan === 'orcamento' ? 'Solicitar Orçamento' : 'Finalizar e Pagar'
-                    )}
-                  </Button>
                 )}
               </div>
             </form>
