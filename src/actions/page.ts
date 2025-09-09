@@ -61,13 +61,13 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
     // Create a mutable copy to avoid modifying the original data object
     const pageDataForDb = { ...data };
 
-    // Firestore cannot store JavaScript Date objects directly. They must be converted to Firestore Timestamps.
+    // Firestore cannot store JavaScript Date objects or invalid date strings directly. They must be converted to Firestore Timestamps.
     if (pageDataForDb.startDate) {
         let date: Date;
         if (pageDataForDb.startDate instanceof Date) {
             date = pageDataForDb.startDate;
         } else {
-            // It might be a string from JSON serialization
+            // It might be a string from JSON serialization, try to parse it.
             date = new Date(pageDataForDb.startDate);
         }
         
@@ -76,6 +76,7 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
             pageDataForDb.startDate = Timestamp.fromDate(date);
         } else {
             // If the date is invalid, remove it to prevent Firestore errors
+            console.warn(`Invalid startDate received: ${pageDataForDb.startDate}. Removing from data.`);
             delete pageDataForDb.startDate;
         }
     }
@@ -95,7 +96,7 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
     console.error('Error Details (if available):', e.details);
     console.error('Data that failed:', JSON.stringify(data, null, 2));
     // Throw the original error message for better debugging on the client
-    throw new Error(e.message || 'Failed to save page data.');
+    throw new Error(e.message || 'Failed to save page data due to a server error.');
   }
 }
 
