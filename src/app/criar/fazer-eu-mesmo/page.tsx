@@ -1072,7 +1072,7 @@ function CreatorStudioPage() {
 
        {/* Preview Section */}
       <div className="w-full h-auto md:h-screen p-4 md:p-8 bg-background md:sticky md:top-0 order-1 md:order-2 flex items-center justify-center">
-          <div className="w-full h-full max-w-full md:max-w-sm aspect-auto md:aspect-[9/16] mx-auto">
+          <div className="w-full h-full max-w-full md:max-w-md aspect-auto md:aspect-[9/16] mx-auto">
               <PreviewContent data={watchedData} />
           </div>
       </div>
@@ -1082,4 +1082,5 @@ function CreatorStudioPage() {
 
 export default withAuth(CreatorStudioPage);
 
+    
     
