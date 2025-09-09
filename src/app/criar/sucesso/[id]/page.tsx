@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, use } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { confirmPaymentAndSendEmail, getPageData, updatePageStatus } from '@/actions/page';
 import { Button } from '@/components/ui/button';
@@ -91,7 +91,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
            trackPixelEvent('Purchase', {
               value: FIXED_PRICE,
               currency: 'BRL',
-              content_name: data.title,
+              content_name: data.title || data.heroTitle,
               content_ids: [params.id],
             });
             setHasTrackedPurchase(true);
@@ -122,7 +122,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                 trackPixelEvent('Purchase', {
                   value: FIXED_PRICE,
                   currency: 'BRL',
-                  content_name: data.title,
+                  content_name: data.title || data.heroTitle,
                   content_ids: [params.id],
                 });
                 setHasTrackedPurchase(true);

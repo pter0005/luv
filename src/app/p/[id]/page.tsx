@@ -19,8 +19,13 @@ export default function Page({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!pageId) {
+          setError("ID da página inválido.");
+          setLoading(false);
+          return;
+      }
       try {
-        const data = await getPageData(pageId);
+        const data = await getPageData(pageId as string);
         if (data) {
           setPageData(data);
           // Check if the logged-in user is the owner of the page

@@ -6,40 +6,9 @@ import { prepareAndSendEmail } from '@/ai/flows/send-link-email';
 import { doc, setDoc, getDoc, collection, getDocs, query, where, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
-const formSchema = z.object({
-  title: z.string().min(1, "O título é obrigatório."),
-  titleColor: z.string().optional(),
-  message: z.string().optional(),
-  messageFontSize: z.string().optional(),
-  startDate: z.date().optional(),
-  dateDisplayType: z.string().optional(),
-  photos: z.array(z.string()).optional(),
-  photoDisplayType: z.string().optional(),
-  musicChoice: z.string().optional(),
-  musicUrl: z.string().url("URL inválida.").optional().or(z.literal('')),
-  customAudio: z.string().optional(),
-  backgroundAnimation: z.string().optional(),
-  heartColor: z.string().optional(),
-  loveLightColor: z.string().optional(),
-  unlockType: z.string().optional(),
-  puzzleImage: z.string().optional(),
-  puzzleTitle: z.string().optional(),
-  puzzleDescription: z.string().optional(),
-  contactName: z.string().min(1, "O nome é obrigatório."),
-  contactEmail: z.string().email("Email inválido.").min(1, "O e-mail é obrigatório."),
-  contactPhone: z.string().optional(),
-  plan: z.string().min(1, "Você deve escolher uma opção."),
-  heroVideoUrl: z.string().optional(),
-  // For templates
-  template: z.string().optional(),
-  heroType: z.string().optional(),
-  heroImage: z.string().optional(),
-  heroTitle: z.string().optional(),
-  heroDescription: z.string().optional(),
-  categories: z.array(z.any()).optional(),
-});
-
-type FormData = z.infer<typeof formSchema>;
+// This schema is no longer needed on the server-side as validation is handled on the client forms.
+// Keeping it was causing a mismatch and preventing data from being saved.
+type FormData = any;
 
 // Helper to convert Firebase Timestamps to serializable strings
 const toJSON = (data: any) => {
@@ -140,7 +109,7 @@ export async function confirmPaymentAndSendEmail(pageId: string) {
                 name: pageData.contactName || 'Criador(a)',
                 email: pageData.contactEmail,
                 pageId: pageId,
-                pageTitle: pageData.title!,
+                pageTitle: pageData.title || pageData.heroTitle,
             });
             console.log('Email process initiated for:', pageData.contactEmail);
             return { success: true, message: 'Payment confirmed and email sent.' };
