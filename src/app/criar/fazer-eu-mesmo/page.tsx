@@ -89,8 +89,8 @@ const formSchema = z.object({
   puzzleTitle: z.string().optional(),
   puzzleDescription: z.string().optional(),
   plan: z.string().min(1, "Você deve escolher uma opção."),
-  contactName: z.string().optional(), // Removed required for now
-  contactCpf: z.string().optional(), // Removed required for now
+  contactName: z.string().optional(), 
+  contactCpf: z.string().optional(), 
 });
 
 export type FormData = z.infer<typeof formSchema>;
@@ -1068,5 +1068,3 @@ function CreatorStudioPage() {
 }
 
 export default CreatorStudioPage;
-
-    

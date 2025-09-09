@@ -61,6 +61,12 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
     // Create a mutable copy to avoid modifying the original data object
     const pageDataForDb = { ...data };
 
+    // Remove fields that are not part of the page's data model
+    // but might be present from the form submission.
+    delete pageDataForDb.contactName;
+    delete pageDataForDb.contactCpf;
+
+
     // Firestore cannot store JavaScript Date objects or invalid date strings directly. They must be converted to Firestore Timestamps.
     // The data now arrives as a string from the client.
     if (pageDataForDb.startDate && typeof pageDataForDb.startDate === 'string') {
