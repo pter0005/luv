@@ -56,8 +56,8 @@ export async function POST(req: NextRequest) {
                 payment_methods: {
                     installments: 1,
                 },
-                 purpose: 'wallet_purchase',
-                 date_of_expiration: expirationDateISO,
+                purpose: 'wallet_purchase',
+                date_of_expiration: expirationDateISO,
                 back_urls: {
                     success: `${baseUrl}/criar/sucesso/${pageId}`,
                     failure: `${baseUrl}/criar/sucesso/${pageId}`,

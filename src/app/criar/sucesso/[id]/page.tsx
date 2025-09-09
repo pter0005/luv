@@ -7,7 +7,7 @@ import { confirmPaymentAndSendEmail, getPageData } from '@/actions/page';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, CheckCircle, Clock, Copy, Download, Share2, Wallet, TestTube2, XCircle, AlertTriangle, QrCode } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Clock, Copy, Download, Share2, Wallet, XCircle, AlertTriangle, QrCode } from 'lucide-react';
 import Link from 'next/link';
 import { useQRCode } from 'next-qrcode';
 import { useToast } from '@/hooks/use-toast';
@@ -25,7 +25,6 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   const [checkoutStatus, setCheckoutStatus] = useState<'idle' | 'loading' | 'error' | 'success'>('idle');
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
-  const [isTesting, setIsTesting] = useState(false);
   const [pixData, setPixData] = useState<{qrCodeBase64: string, qrCode: string} | null>(null);
   const { Canvas } = useQRCode();
 
@@ -119,7 +118,6 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
       const responseData = await response.json();
 
       if (!response.ok) {
-        // This will now throw the exact error message from the API
         throw new Error(responseData.error || 'Falha ao iniciar pagamento.');
       }
       
@@ -127,8 +125,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
         setPixData(responseData.pixData);
         setCheckoutStatus('success');
       } else {
-        // This is a fallback error if the API responds 200 OK but without pixData
-        throw new Error('Não foi possível obter os dados do QR Code do Pix da resposta da API.');
+        throw new Error('A API retornou uma resposta OK, mas não incluiu os dados do QR Code. Verifique o painel do Mercado Pago.');
       }
 
     } catch (error: any) {
@@ -149,33 +146,6 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
         toast({ title: "Código Pix copiado para a área de transferência!" });
     }
   }
-  
-  const handleTestPayment = async () => {
-    setIsTesting(true);
-    try {
-        const result = await confirmPaymentAndSendEmail(params.id);
-        if (result.success) {
-            toast({ 
-                title: "Pagamento de Teste Aprovado!", 
-                description: `O e-mail de teste foi enviado para ${pageData?.contactEmail}. Verifique sua caixa de entrada.`
-            });
-            const updatedData = await getPageData(params.id);
-            setPageData(updatedData);
-            setPaymentStatus('approved');
-        } else {
-            throw new Error(result.message || "Falha ao simular pagamento e enviar e-mail.");
-        }
-    } catch (error: any) {
-        toast({
-            variant: "destructive",
-            title: "Erro no Teste",
-            description: error.message || "Não foi possível simular o pagamento.",
-        });
-    } finally {
-        setIsTesting(false);
-    }
-  }
-
 
   const pageUrl = `${NEXT_PUBLIC_BASE_URL}/p/${params.id}`;
 
@@ -389,7 +359,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                     )}
                    
                      {checkoutStatus === 'error' && checkoutError && (
-                        <div className="bg-destructive/20 border border-destructive/50 text-destructive-foreground p-4 rounded-lg text-sm">
+                        <div className="bg-destructive/20 border border-destructive/50 text-destructive-foreground p-4 rounded-lg text-sm mt-4">
                             <h4 className="font-bold mb-2">Ocorreu um erro:</h4>
                             <p className="font-mono text-xs">{checkoutError}</p>
                         </div>
