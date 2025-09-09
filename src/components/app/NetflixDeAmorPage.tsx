@@ -83,10 +83,8 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
             )}
             
              <header className="absolute top-0 left-0 w-full z-20 bg-gradient-to-b from-black/80 to-transparent p-4 md:p-6">
-                <div className="flex items-center justify-center">
-                    <svg width="40" height="50" viewBox="0 0 32 50" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-8 h-10 md:w-10 md:h-12 text-red-600">
-                        <path d="M21.5781 49.5312H32V0.46875H21.5781V16.8984L15.3203 5.71094V21.7656L3.82812 0.46875V49.5312H15.3203L27.1094 26.5312V49.5312H21.5781Z" fill="currentColor"/>
-                    </svg>
+                <div className="flex items-center">
+                   <Image src="https://i.imgur.com/YWU5u37.png" alt="Netflix N Logo" width={20} height={36} className="w-5 h-9" />
                 </div>
             </header>
             
@@ -107,9 +105,7 @@ export function NetflixDeAmorPage({ data, isPreview = false }: NetflixDeAmorPage
                     <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/50 to-transparent"></div>
                     <div className="relative z-10 flex flex-col justify-end h-full p-4 md:p-10 text-left">
                          <div className="flex items-center gap-2">
-                             <svg width="24" height="40" viewBox="0 0 24 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-4 h-6 md:w-5 md:h-8 text-red-600">
-                                <path d="M14.2422 39.8438H23.5V0.46875H14.2422V13.8984L9.38281 4.71094V17.7656L0.59375 0.46875V39.8438H9.38281L18.4219 22.0312V39.8438H14.2422Z" fill="currentColor"/>
-                            </svg>
+                             <Image src="https://i.imgur.com/YWU5u37.png" alt="Netflix N Logo" width={20} height={36} className="w-4 h-7 md:w-5 md:h-9" />
                             <span className="text-base tracking-[0.2em] text-zinc-300 font-semibold">FILME</span>
                         </div>
                         <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter max-w-2xl mt-2" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.8)' }}>{data.heroTitle}</h1>
