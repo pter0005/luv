@@ -56,7 +56,7 @@ export async function uploadVideo(file: File): Promise<string> {
 export async function savePageData(data: FormData, userId: string): Promise<string> {
   try {
     const pageId = Date.now().toString();
-    const status = data.plan === 'essencial' ? 'pending_payment' : 'pending_quote';
+    const status = data && data.plan === 'essencial' ? 'pending_payment' : 'pending_quote';
     
     // Create a mutable copy to avoid modifying the original data object
     const pageDataForDb = { ...data };
@@ -198,5 +198,6 @@ export async function getPagesByUserId(userId: string) {
     return [];
   }
 }
+    
 
     
