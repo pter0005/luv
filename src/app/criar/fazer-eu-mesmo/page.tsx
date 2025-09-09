@@ -168,7 +168,6 @@ function CreatorStudioPage() {
   const debouncedMusicSearchQuery = useDebounce(musicSearchQuery, 500);
   const [musicSearchResult, setMusicSearchResult] = React.useState<{ title: string; videoId: string } | null>(null);
   const [isSearchingMusic, setIsSearchingMusic] = React.useState(false);
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   // Audio recording state
   const [isRecording, setIsRecording] = React.useState(false);
@@ -199,6 +198,7 @@ function CreatorStudioPage() {
     },
   });
 
+  const { formState: { isSubmitting } } = form;
   const watchedData = form.watch();
 
   const startRecording = async () => {
@@ -296,9 +296,8 @@ function CreatorStudioPage() {
         });
         return;
     }
-    setIsSubmitting(true);
+
     try {
-        // Hardcode contact info for checkout
         const pageDataToSave = {
             ...data,
             contactName: "Pedro Henrique Oliveira de Paula",
@@ -327,8 +326,6 @@ function CreatorStudioPage() {
         title: "Erro ao criar página",
         description: error.message || "Não foi possível salvar sua página. Tente novamente.",
       });
-    } finally {
-        setIsSubmitting(false);
     }
   }
 
@@ -1064,5 +1061,3 @@ function CreatorStudioPage() {
 }
 
 export default CreatorStudioPage;
-
-    
