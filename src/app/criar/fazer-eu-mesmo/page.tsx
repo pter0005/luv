@@ -484,15 +484,8 @@ function CreatorStudioPage() {
 
   return (
     <div className="flex flex-col md:grid md:grid-cols-2 w-full min-h-screen">
-      {/* Preview Section */}
-      <div className="w-full h-[60vh] md:h-screen p-4 md:p-8 bg-background md:sticky md:top-0">
-          <div className="w-full h-full max-w-4xl mx-auto">
-              <PreviewContent data={watchedData} />
-          </div>
-      </div>
-      
-      {/* Form Section */}
-      <div className="w-full flex flex-col items-center p-4 md:p-8 relative bg-card md:bg-transparent -mt-12 md:mt-0 rounded-t-3xl md:rounded-none border-t border-border md:border-l">
+       {/* Form Section */}
+      <div className="w-full flex flex-col items-center p-4 md:p-8 relative bg-card md:bg-transparent -mt-12 md:mt-0 rounded-t-3xl md:rounded-none border-t border-border md:border-t-0 md:border-r order-2 md:order-1">
         <div className="w-full max-w-md">
           <div className="mb-8">
             <Progress value={(currentStep / totalSteps) * 100} className="h-2" />
@@ -1075,6 +1068,13 @@ function CreatorStudioPage() {
             </form>
           </Form>
         </div>
+      </div>
+
+       {/* Preview Section */}
+      <div className="w-full h-[60vh] md:h-screen p-4 md:p-8 bg-background md:sticky md:top-0 order-1 md:order-2">
+          <div className="w-full h-full max-w-4xl mx-auto">
+              <PreviewContent data={watchedData} />
+          </div>
       </div>
     </div>
   );
