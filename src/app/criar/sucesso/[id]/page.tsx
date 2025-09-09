@@ -74,13 +74,18 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
 
   // Polling effect to check payment status after generating PIX
   useEffect(() => {
-    if (pixData && pageData?.status !== 'paid') {
+    if (pixData && paymentStatus !== 'approved') {
       const interval = setInterval(async () => {
         try {
           const updatedPageData = await getPageData(params.id);
           if (updatedPageData && updatedPageData.status === 'paid') {
             setPageData(updatedPageData);
             setPaymentStatus('approved');
+            toast({
+                title: "Pagamento Aprovado!",
+                description: "Sua página foi ativada com sucesso.",
+                className: "bg-green-600 border-green-600 text-white"
+            })
             clearInterval(interval);
           }
         } catch (error) {
@@ -89,14 +94,17 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
       }, 5000); // Check every 5 seconds
 
       // Clear interval after 5 minutes to avoid infinite polling
-      const timeout = setTimeout(() => clearInterval(interval), 300000);
+      const timeout = setTimeout(() => {
+        clearInterval(interval);
+        console.log("Polling stopped after 5 minutes.");
+      }, 300000);
 
       return () => {
         clearInterval(interval);
         clearTimeout(timeout);
       };
     }
-  }, [pixData, pageData, params.id]);
+  }, [pixData, paymentStatus, params.id, toast]);
 
 
   const handleGeneratePix = async () => {
@@ -400,5 +408,3 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
-
-    

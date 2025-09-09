@@ -3,11 +3,39 @@
 
 import { z } from 'zod';
 import { prepareAndSendEmail } from '@/ai/flows/send-link-email';
+import fs from 'fs/promises';
+import path from 'path';
 
-// Mock database
-const pageDataStore: { [key: string]: any } = {};
-// Mock payment store
-const paymentStore: { [key: string]: string } = {};
+const dbPath = path.join(process.cwd(), 'db');
+
+// Helper para garantir que o diretório do 'banco de dados' exista
+async function ensureDbDirectory(): Promise<void> {
+  try {
+    await fs.access(dbPath);
+  } catch {
+    await fs.mkdir(dbPath, { recursive: true });
+  }
+}
+
+// Helper para ler o arquivo de uma página
+async function readPageFile(pageId: string): Promise<any | null> {
+  await ensureDbDirectory();
+  const filePath = path.join(dbPath, `${pageId}.json`);
+  try {
+    const fileContent = await fs.readFile(filePath, 'utf-8');
+    return JSON.parse(fileContent);
+  } catch (error) {
+    return null; // Arquivo não existe
+  }
+}
+
+// Helper para escrever no arquivo de uma página
+async function writePageFile(pageId: string, data: any): Promise<void> {
+  await ensureDbDirectory();
+  const filePath = path.join(dbPath, `${pageId}.json`);
+  await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
+}
+
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
@@ -30,7 +58,7 @@ const formSchema = z.object({
   puzzleDescription: z.string().optional(),
   contactName: z.string().min(1, "O nome é obrigatório."),
   contactEmail: z.string().email("Email inválido.").min(1, "O e-mail é obrigatório."),
-  contactPhone: z.string().min(1, "O telefone é obrigatório."),
+  contactDoc: z.string().min(11, "O CPF/CNPJ é obrigatório."),
   plan: z.string().min(1, "Você deve escolher uma opção."),
   heroVideoUrl: z.string().optional(),
 });
@@ -60,7 +88,7 @@ export async function savePageData(data: FormData): Promise<string> {
       createdAt: new Date(),
     };
     
-    pageDataStore[pageId] = pageDataForDb;
+    await writePageFile(pageId, pageDataForDb);
     console.log('Document written with ID: ', pageId);
     return pageId;
 
@@ -70,9 +98,32 @@ export async function savePageData(data: FormData): Promise<string> {
   }
 }
 
+export async function updatePageStatus(pageId: string, status: 'paid' | 'pending_payment' | 'pending_quote'): Promise<boolean> {
+    try {
+        const pageData = await readPageFile(pageId);
+        if (!pageData) {
+            console.error(`Page with ID ${pageId} not found for status update.`);
+            return false;
+        }
+
+        if (pageData.status === status) {
+            return true; // No change needed
+        }
+
+        pageData.status = status;
+        await writePageFile(pageId, pageData);
+        console.log(`Page ${pageId} status updated to ${status}.`);
+        return true;
+    } catch (error) {
+        console.error(`Error updating status for page ${pageId}:`, error);
+        return false;
+    }
+}
+
+
 export async function confirmPaymentAndSendEmail(pageId: string) {
     try {
-        const pageData = pageDataStore[pageId];
+        const pageData = await readPageFile(pageId);
 
         if (!pageData) {
             console.error(`Page with ID ${pageId} not found.`);
@@ -80,12 +131,12 @@ export async function confirmPaymentAndSendEmail(pageId: string) {
         }
         
         if (pageData.status === 'paid') {
-            console.log(`Payment for page ${pageId} has already been confirmed.`);
+            console.log(`Payment for page ${pageId} has already been processed.`);
+            // Even if paid, maybe email failed. Let's try sending again if needed, but for now, we'll assume it's done.
             return { success: true, message: 'Already paid.' };
         }
         
-        pageDataStore[pageId].status = 'paid';
-        console.log(`Page ${pageId} status updated to paid.`);
+        await updatePageStatus(pageId, 'paid');
 
         if (pageData.contactEmail) {
             console.log(`Attempting to send email for page ${pageId} to ${pageData.contactEmail}`);
@@ -110,7 +161,7 @@ export async function confirmPaymentAndSendEmail(pageId: string) {
 
 export async function getPageData(id: string) {
     try {
-        const data = pageDataStore[id];
+        const data = await readPageFile(id);
         if (data) {
             return data;
         } else {

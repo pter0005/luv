@@ -33,6 +33,7 @@ export async function POST(req: NextRequest) {
                 const pageId = paymentInfo.metadata.page_id;
                 if (pageId) {
                     console.log(`Processing payment for pageId: ${pageId}`);
+                    // The confirmPaymentAndSendEmail function already updates the status
                     await confirmPaymentAndSendEmail(pageId);
                     console.log(`Successfully processed pageId: ${pageId}`);
                 } else {
