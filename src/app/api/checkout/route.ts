@@ -15,16 +15,6 @@ const client = new MercadoPagoConfig({
     options: { timeout: 5000, idempotencyKey: randomUUID() }
 });
 
-// Helper function to generate a random CPF-like number string
-const generateRandomCpfLike = (): string => {
-    let num = '';
-    for (let i = 0; i < 11; i++) {
-        num += Math.floor(Math.random() * 10);
-    }
-    return num;
-};
-
-
 export async function POST(req: NextRequest) {
     if (!MERCADO_PAGO_ACCESS_TOKEN || MERCADO_PAGO_ACCESS_TOKEN === "SEU_TOKEN_AQUI") {
         return NextResponse.json({ error: 'Credenciais do Mercado Pago não configuradas no servidor.' }, { status: 500 });
@@ -32,10 +22,10 @@ export async function POST(req: NextRequest) {
 
     try {
         const body = await req.json();
-        const { pageId, title, email, name } = body;
+        const { pageId, title, email, name, cpf } = body;
 
-        if (!pageId || !title || !email || !name) {
-            return NextResponse.json({ error: 'Todos os campos são obrigatórios: pageId, title, email, name' }, { status: 400 });
+        if (!pageId || !title || !email || !name || !cpf) {
+            return NextResponse.json({ error: 'Todos os campos são obrigatórios: pageId, title, email, name, cpf' }, { status: 400 });
         }
         
         const payment = new Payment(client);
@@ -53,13 +43,9 @@ export async function POST(req: NextRequest) {
 
         const expirationDateFormatted = `${expirationDate.getFullYear()}-${pad(expirationDate.getMonth() + 1)}-${pad(expirationDate.getDate())}T${pad(expirationDate.getHours())}:${pad(expirationDate.getMinutes())}:${pad(expirationDate.getSeconds())}.${expirationDate.getMilliseconds().toString().padStart(3, '0')}${timezoneSign}${offsetHours}:${offsetMinutes}`;
 
-
         const nameParts = name.trim().split(' ');
         const firstName = nameParts.shift() || '';
         const lastName = nameParts.join(' ') || firstName;
-
-        // Use a randomly generated CPF-like number for each transaction
-        const randomCpf = generateRandomCpfLike();
 
         const paymentData = {
             transaction_amount: FIXED_PRICE,
@@ -71,7 +57,7 @@ export async function POST(req: NextRequest) {
                 last_name: lastName,
                 identification: {
                     type: 'CPF',
-                    number: randomCpf,
+                    number: cpf,
                 },
             },
             notification_url: `${baseUrl}/api/webhook/mercado-pago`,
@@ -121,3 +107,5 @@ export async function POST(req: NextRequest) {
         }, { status: 500 });
     }
 }
+
+    

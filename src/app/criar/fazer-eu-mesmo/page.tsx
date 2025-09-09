@@ -87,9 +87,6 @@ const formSchema = z.object({
   puzzleImage: z.string().optional().or(z.literal('')),
   puzzleTitle: z.string().optional(),
   puzzleDescription: z.string().optional(),
-  contactName: z.string().min(1, "O nome é obrigatório."),
-  contactEmail: z.string().email("Email inválido.").min(1, "O e-mail é obrigatório."),
-  contactPhone: z.string().optional(),
   plan: z.string().min(1, "Você deve escolher uma opção."),
 });
 
@@ -198,20 +195,9 @@ function CreatorStudioPage() {
       puzzleImage: "",
       puzzleTitle: "Um Quebra-Cabeça Especial",
       puzzleDescription: "Resolva o enigma para revelar a surpresa!",
-      contactName: "",
-      contactEmail: user?.email || "",
-      contactPhone: "",
       plan: "essencial",
     },
   });
-
-  React.useEffect(() => {
-    if (user) {
-      form.setValue('contactEmail', user.email || '');
-      form.setValue('contactName', user.displayName || '');
-    }
-  }, [user, form]);
-
 
   const watchedData = form.watch();
 
@@ -312,7 +298,15 @@ function CreatorStudioPage() {
     }
     setIsSubmitting(true);
     try {
-        const pageId = await savePageData(data, user.uid);
+        // Hardcode contact info for checkout
+        const pageDataToSave = {
+            ...data,
+            contactName: "Pedro Henrique Oliveira de Paula",
+            contactEmail: user.email,
+            contactCpf: "58954844847",
+        };
+
+        const pageId = await savePageData(pageDataToSave, user.uid);
         
         if (data.plan === 'essencial') {
             toast({
@@ -375,9 +369,9 @@ function CreatorStudioPage() {
       description: "Escolha como a pessoa irá descobrir o conteúdo da página.",
     },
     {
-      name: "contactName" as const,
+      name: "plan" as const,
       title: "Finalização",
-      description: "Preencha seus dados para finalizar e escolher o tipo de criação.",
+      description: "Escolha o tipo de criação para finalizar sua página.",
     },
   ];
 
@@ -385,8 +379,8 @@ function CreatorStudioPage() {
     const currentField = steps[currentStep - 1].name;
     let fieldsToValidate: (keyof FormData)[] = [currentField];
     
-    if (currentField === 'contactName') {
-        fieldsToValidate = ['contactName', 'contactEmail', 'plan'];
+    if (currentField === 'plan') {
+        fieldsToValidate = ['plan'];
     }
 
     if (currentField === 'musicChoice') {
@@ -1015,47 +1009,6 @@ function CreatorStudioPage() {
                 )}
                 {currentStep === 8 && (
                    <div className="space-y-4">
-                      <FormField
-                          control={form.control}
-                          name="contactName"
-                          render={({ field }) => (
-                              <FormItem>
-                                  <FormLabel>Seu Nome Completo</FormLabel>
-                                  <FormControl>
-                                      <Input placeholder="Seu nome completo" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                              </FormItem>
-                          )}
-                      />
-                      <FormField
-                          control={form.control}
-                          name="contactEmail"
-                          render={({ field }) => (
-                              <FormItem>
-                                  <FormLabel>Seu E-mail de Contato</FormLabel>
-                                  <FormControl>
-                                      <Input placeholder="seu.email@exemplo.com" {...field} />
-                                  </FormControl>
-                                  <FormDescription>Essencial para o envio do link da sua página.</FormDescription>
-                                  <FormMessage />
-                              </FormItem>
-                          )}
-                      />
-                        <FormField
-                          control={form.control}
-                          name="contactPhone"
-                          render={({ field }) => (
-                              <FormItem>
-                                  <FormLabel>Seu Telefone (Opcional)</FormLabel>
-                                  <FormControl>
-                                      <Input placeholder="(99) 99999-9999" {...field} />
-                                  </FormControl>
-                                   <FormDescription>Caso a gente precise entrar em contato sobre seu pedido.</FormDescription>
-                                  <FormMessage />
-                              </FormItem>
-                          )}
-                      />
                        <FormField
                           control={form.control}
                           name="plan"
@@ -1111,3 +1064,5 @@ function CreatorStudioPage() {
 }
 
 export default CreatorStudioPage;
+
+    

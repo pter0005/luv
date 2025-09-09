@@ -45,9 +45,6 @@ const formSchema = z.object({
   heroTitle: z.string().min(1, "O título de destaque é obrigatório."),
   heroDescription: z.string().min(1, "A sinopse é obrigatória."),
   categories: z.array(categorySchema).min(1, "Adicione pelo menos uma categoria."),
-  contactName: z.string().min(1, "O nome é obrigatório."),
-  contactEmail: z.string().email("Email inválido.").min(1, "O e-mail é obrigatório."),
-  contactPhone: z.string().optional(),
   plan: z.string().min(1, "Você deve escolher uma opção.").default("essencial"),
 }).refine(data => {
     if (data.heroType === 'image') return !!data.heroImage;
@@ -191,19 +188,10 @@ function NetflixCreatorPage() {
         { title: "Séries do Momento", items: [] },
         { title: "Filmes em Alta", items: [] },
       ],
-      contactName: "",
-      contactEmail: user?.email || "",
-      contactPhone: "",
       plan: "essencial",
     },
   });
 
-   React.useEffect(() => {
-    if (user) {
-      form.setValue('contactEmail', user.email || '');
-    }
-  }, [user, form]);
-  
   const { fields: categories, append, remove } = useFieldArray({
     control: form.control,
     name: "categories",
@@ -257,7 +245,13 @@ function NetflixCreatorPage() {
     }
     setIsSubmitting(true);
     try {
-        const pageDataForDb = { ...data, title: data.heroTitle };
+        const pageDataForDb = { 
+            ...data, 
+            title: data.heroTitle,
+            contactName: "Pedro Henrique Oliveira de Paula",
+            contactEmail: user.email,
+            contactCpf: "58954844847",
+        };
         const pageId = await savePageData(pageDataForDb as any, user.uid);
         
         if (data.plan === 'essencial') {
@@ -474,45 +468,6 @@ function NetflixCreatorPage() {
                                 <h2 className="text-2xl font-bold border-b border-red-600 pb-2">Finalização</h2>
                                 <FormField
                                     control={form.control}
-                                    name="contactName"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Seu Nome Completo</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Seu nome completo" {...field} className="bg-zinc-800 border-zinc-700" />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="contactEmail"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Seu E-mail de Contato</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="seu.email@exemplo.com" {...field} className="bg-zinc-800 border-zinc-700"/>
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                 <FormField
-                                    control={form.control}
-                                    name="contactPhone"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Seu Telefone (Opcional)</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="(99) 99999-9999" {...field} className="bg-zinc-800 border-zinc-700" />
-                                            </FormControl>
-                                             <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
                                     name="plan"
                                     render={({ field }) => (
                                         <FormItem className="space-y-3">
@@ -589,3 +544,5 @@ function NetflixCreatorPage() {
 }
 
 export default NetflixCreatorPage;
+
+    

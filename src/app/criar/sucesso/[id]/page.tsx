@@ -162,6 +162,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
           title: pageData.title || pageData.heroTitle,
           email: pageData.contactEmail,
           name: pageData.contactName,
+          cpf: pageData.contactCpf,
         }),
       });
 
@@ -439,3 +440,5 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
+
+    
