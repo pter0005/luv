@@ -1,5 +1,5 @@
 
-import { confirmPaymentAndSendEmail } from '@/actions/page';
+import { confirmPaymentAndSendEmail, updatePageStatus } from '@/actions/page';
 import { NextRequest, NextResponse } from 'next/server';
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 
@@ -33,9 +33,8 @@ export async function POST(req: NextRequest) {
                 const pageId = paymentInfo.metadata.page_id;
                 if (pageId) {
                     console.log(`Processing payment for pageId: ${pageId}`);
-                    // The confirmPaymentAndSendEmail function already updates the status
-                    await confirmPaymentAndSendEmail(pageId);
-                    console.log(`Successfully processed pageId: ${pageId}`);
+                    const result = await confirmPaymentAndSendEmail(pageId);
+                    console.log(`Successfully processed pageId: ${pageId}`, result);
                 } else {
                     console.error("page_id not found in payment metadata");
                 }

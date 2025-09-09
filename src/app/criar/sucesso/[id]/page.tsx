@@ -1,9 +1,9 @@
 
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { confirmPaymentAndSendEmail, getPageData } from '@/actions/page';
+import { confirmPaymentAndSendEmail, getPageData, updatePageStatus } from '@/actions/page';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -30,47 +30,73 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   const contactDoc = searchParams.get('doc'); // Get doc from URL
 
   // Effect to handle initial page load and payment confirmation from URL params
-  useEffect(() => {
-    const status = searchParams.get('status');
-    const paymentId = searchParams.get('payment_id');
-    
-    const checkPageAndPayment = async () => {
-        setLoading(true);
-        try {
-            const data = await getPageData(params.id);
-            if (!data) {
-                toast({ variant: "destructive", title: "Página não encontrada" });
-                setLoading(false);
-                return;
-            }
-            
-            setPageData(data);
-
-            if (data.status === 'paid') {
-                setPaymentStatus('approved');
-            } else if (status === 'approved' && paymentId) {
-                const result = await confirmPaymentAndSendEmail(params.id);
-                if (result.success) {
-                    const updatedData = await getPageData(params.id);
-                    setPageData(updatedData);
-                    setPaymentStatus('approved');
-                } else {
-                    setPaymentStatus('failure');
-                    toast({ variant: "destructive", title: "Erro de Confirmação", description: result.message || "Ocorreu um erro ao ativar a página. Tente recarregar ou contate o suporte."});
-                }
-            } else if (status) {
-              setPaymentStatus(status);
-            }
-        } catch (error) {
-            console.error("Error fetching page data:", error);
-            toast({ variant: "destructive", title: "Erro ao buscar dados da página." });
-        } finally {
+  const checkPageAndPayment = useCallback(async () => {
+    setLoading(true);
+    try {
+        const data = await getPageData(params.id);
+        if (!data) {
+            toast({ variant: "destructive", title: "Página não encontrada" });
             setLoading(false);
+            return;
         }
-    };
-    
-    checkPageAndPayment();
+        
+        setPageData(data);
+        setPaymentStatus(data.status);
+        
+        const mpStatus = searchParams.get('status');
+        const paymentId = searchParams.get('payment_id');
+
+        // This happens when the user is redirected from Mercado Pago
+        if (mpStatus === 'approved' && paymentId && data.status !== 'paid') {
+            const result = await confirmPaymentAndSendEmail(params.id);
+            if (result.success) {
+                const updatedData = await getPageData(params.id);
+                setPageData(updatedData);
+                setPaymentStatus('paid');
+            } else {
+                toast({ variant: "destructive", title: "Erro de Confirmação", description: result.message || "Ocorreu um erro ao ativar a página. Tente recarregar ou contate o suporte."});
+            }
+        }
+    } catch (error) {
+        console.error("Error fetching page data:", error);
+        toast({ variant: "destructive", title: "Erro ao buscar dados da página." });
+    } finally {
+        setLoading(false);
+    }
   }, [params.id, toast, searchParams]);
+
+  useEffect(() => {
+    checkPageAndPayment();
+  }, [checkPageAndPayment]);
+
+  // Polling effect
+  useEffect(() => {
+    // Only start polling if PIX has been generated and payment is not yet approved
+    if (pixData && paymentStatus !== 'paid') {
+      const interval = setInterval(async () => {
+        try {
+          const data = await getPageData(params.id);
+          if (data && data.status === 'paid') {
+            setPageData(data);
+            setPaymentStatus('paid');
+            clearInterval(interval); // Stop polling once paid
+          }
+        } catch (error) {
+          console.error("Polling error:", error);
+        }
+      }, 5000); // Poll every 5 seconds
+
+      // Set a timeout to stop polling after 5 minutes
+      const timeout = setTimeout(() => {
+        clearInterval(interval);
+      }, 300000);
+
+      return () => {
+        clearInterval(interval);
+        clearTimeout(timeout);
+      };
+    }
+  }, [pixData, params.id, paymentStatus]);
 
 
   const handleGeneratePix = async () => {
@@ -180,7 +206,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
       )
     }
 
-    if (paymentStatus === 'approved' || pageData?.status === 'paid') {
+    if (paymentStatus === 'paid') {
        return (
           <>
             <div className="p-4 bg-green-500/10 rounded-full mb-6 ring-4 ring-green-500/20">
@@ -245,7 +271,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
        )
     }
     
-    if (paymentStatus === 'failure' || searchParams.get('collection_status') === 'failure') {
+    if (searchParams.get('status') === 'failure') {
         return (
             <>
                 <div className="p-4 bg-red-500/10 rounded-full mb-6 ring-4 ring-red-500/20">
@@ -272,9 +298,9 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
             </>
         )
     }
-
-    if (paymentStatus === 'pending') {
-        return (
+    
+    if (searchParams.get('status') === 'pending') {
+         return (
             <>
                 <div className="p-4 bg-yellow-500/10 rounded-full mb-6 ring-4 ring-yellow-500/20">
                     <AlertTriangle className="w-10 h-10 md:w-12 md:h-12 text-yellow-500" />
@@ -283,7 +309,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                 Pagamento <span className="text-yellow-500">Pendente</span>
                 </h1>
                 <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-                    Seu pagamento está sendo processado. Assim que for aprovado, sua página será ativada e você receberá um e-mail. Você pode recarregar a página para verificar.
+                    Seu pagamento está sendo processado. Assim que for aprovado, esta página será atualizada automaticamente e você receberá um e-mail de confirmação.
                 </p>
             </>
         )
@@ -325,7 +351,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                                 <Copy className="mr-2 h-4 w-4" />
                                 Copiar Código Pix
                             </Button>
-                             <p className="text-xs text-muted-foreground text-center pt-2">Aguardando pagamento... Você será notificado por e-mail quando for confirmado.</p>
+                             <p className="text-xs text-muted-foreground text-center pt-2">Aguardando pagamento... A página irá atualizar sozinha após a confirmação.</p>
                         </div>
                     ) : (
                          <Button 
@@ -374,5 +400,3 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
-
-    

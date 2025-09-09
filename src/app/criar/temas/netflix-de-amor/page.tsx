@@ -16,7 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { ArrowLeft, ChevronRight, Loader, PlusCircle, Trash2, Upload, Video, Image as ImageIcon, FileVideo } from "lucide-react";
+import { ArrowLeft, ChevronRight, Loader, LogIn, PlusCircle, Trash2, Upload, Video, Image as ImageIcon, FileVideo } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { savePageData, uploadVideo } from "@/actions/page";
 import { useRouter } from "next/navigation";
@@ -24,7 +24,9 @@ import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import { NetflixDeAmorPage } from "@/components/app/NetflixDeAmorPage";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Progress } from "@/components/ui/progress";
+import { useAuth } from "@/contexts/AuthContext";
+import Link from "next/link";
+
 
 const categorySchema = z.object({
   title: z.string().min(1, "O título da categoria é obrigatório."),
@@ -45,7 +47,7 @@ const formSchema = z.object({
   categories: z.array(categorySchema).min(1, "Adicione pelo menos uma categoria."),
   contactName: z.string().min(1, "O nome é obrigatório."),
   contactEmail: z.string().email("Email inválido.").min(1, "O e-mail é obrigatório."),
-  contactPhone: z.string().min(1, "O telefone é obrigatório."),
+  contactDoc: z.string().min(11, "O CPF/CNPJ é obrigatório."),
   plan: z.string().min(1, "Você deve escolher uma opção.").default("essencial"),
 }).refine(data => {
     if (data.heroType === 'image') return !!data.heroImage;
@@ -167,12 +169,13 @@ function ItemsFieldArray({ categoryIndex, control, setValue }: { categoryIndex: 
 
 
 function NetflixCreatorPage() {
+  const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const heroFileInputRef = React.useRef<HTMLInputElement>(null);
   const heroVideoInputRef = React.useRef<HTMLInputElement>(null);
-  const [uploadProgress, setUploadProgress] = React.useState<number | null>(null);
+  const [uploadProgress] = React.useState<number | null>(null);
 
 
   const form = useForm<NetflixFormData>({
@@ -190,7 +193,7 @@ function NetflixCreatorPage() {
       ],
       contactName: "",
       contactEmail: "",
-      contactPhone: "",
+      contactDoc: "",
       plan: "essencial",
     },
   });
@@ -219,7 +222,7 @@ function NetflixCreatorPage() {
   const handleHeroVideoChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setUploadProgress(0);
+      //setUploadProgress(0);
       toast({ title: 'Enviando vídeo...', description: 'Isso pode levar alguns minutos dependendo do tamanho do arquivo.'});
       try {
         // Here you would typically use a progress callback from your upload function
@@ -227,27 +230,35 @@ function NetflixCreatorPage() {
         // In a real scenario, `uploadVideo` would need to support progress reporting.
         const videoUrl = await uploadVideo(file);
         form.setValue('heroVideoUrl', videoUrl);
-        setUploadProgress(100);
+        //setUploadProgress(100);
         toast({ title: 'Vídeo enviado com sucesso!' });
       } catch (error) {
          toast({ variant: "destructive", title: "Erro ao enviar vídeo.", description: "Tente novamente ou verifique sua conexão." });
-         setUploadProgress(null);
+         //setUploadProgress(null);
       }
     }
   };
 
 
   async function onSubmit(data: NetflixFormData) {
+     if (!user) {
+        toast({
+            variant: "destructive",
+            title: "Usuário não autenticado",
+            description: "Por favor, faça login para criar uma página.",
+        });
+        return;
+    }
     setIsSubmitting(true);
     try {
-        const pageDataForDb = { ...data, plan: 'essencial', title: data.heroTitle };
-        const pageId = await savePageData(pageDataForDb as any);
+        const pageDataForDb = { ...data, title: data.heroTitle };
+        const pageId = await savePageData(pageDataForDb as any, user.uid);
         
         toast({
           title: "Sua Netflix de Amor foi salva!",
           description: "Você será redirecionado para a tela de pagamento.",
         });
-        router.push(`/criar/sucesso/${pageId}`);
+        router.push(`/criar/sucesso/${pageId}?doc=${encodeURIComponent(data.contactDoc)}`);
     } catch (error) {
       console.error("Failed to process page:", error);
       toast({
@@ -259,6 +270,32 @@ function NetflixCreatorPage() {
         setIsSubmitting(false);
     }
   }
+  
+    if (authLoading) {
+      return <div className="w-full h-screen flex items-center justify-center bg-[#141414] text-white"><Loader className="animate-spin" /></div>
+    }
+
+    if (!user) {
+        return (
+        <div className="w-full h-screen flex flex-col items-center justify-center text-center p-4 bg-[#141414] text-white">
+            <h2 className="text-3xl font-bold mb-4 font-display">Acesso Restrito</h2>
+            <p className="text-muted-foreground mb-8 max-w-md">Você precisa estar logado para criar com este tema. Faça login ou crie uma conta para continuar.</p>
+            <div className="flex gap-4">
+            <Link href="/login">
+                <Button size="lg" className="bg-red-600 hover:bg-red-700">
+                <LogIn className="mr-2 h-4 w-4" />
+                Entrar
+                </Button>
+            </Link>
+            <Link href="/cadastro">
+                <Button size="lg" variant="outline">
+                Criar Conta
+                </Button>
+            </Link>
+            </div>
+        </div>
+        )
+    }
 
   return (
     <div className="bg-[#141414] text-white min-h-screen">
@@ -357,11 +394,11 @@ function NetflixCreatorPage() {
                                                 </FormControl>
                                                 {uploadProgress !== null && uploadProgress < 100 && (
                                                   <div className="space-y-2 mt-2">
-                                                    <Progress value={uploadProgress} className="h-2" />
+                                                    {/* <Progress value={uploadProgress} className="h-2" /> */}
                                                     <p className="text-xs text-muted-foreground text-center">Enviando... {uploadProgress}%</p>
                                                   </div>
                                                 )}
-                                                {field.value && uploadProgress === 100 && (
+                                                {field.value && (
                                                   <p className="text-sm text-green-400 p-2 bg-green-950/50 rounded-md mt-2">✔️ Vídeo anexado com sucesso!</p>
                                                 )}
                                                 <FormMessage />
@@ -449,13 +486,14 @@ function NetflixCreatorPage() {
                                 />
                                 <FormField
                                     control={form.control}
-                                    name="contactPhone"
+                                    name="contactDoc"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Seu Telefone</FormLabel>
+                                            <FormLabel>Seu CPF/CNPJ</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="(99) 99999-9999" {...field} className="bg-zinc-800 border-zinc-700"/>
+                                                <Input placeholder="Apenas números" {...field} className="bg-zinc-800 border-zinc-700"/>
                                             </FormControl>
+                                            <FormDescription>Necessário para gerar a cobrança PIX.</FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}

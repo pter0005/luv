@@ -36,6 +36,7 @@ import {
   Puzzle,
   FileText,
   Gem,
+  LogIn
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Editor } from "@/components/ui/editor";
@@ -57,17 +58,15 @@ import { VortexBackground } from "@/components/app/VortexBackground";
 import { savePageData } from "@/actions/page";
 import { useRouter } from "next/navigation";
 import { PagePreview } from "@/components/app/PagePreview";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { JigsawPuzzle } from "@/components/app/JigsawPuzzle";
 import { Textarea } from "@/components/ui/textarea";
+import { useAuth } from "@/contexts/AuthContext";
+import Link from "next/link";
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
@@ -162,6 +161,7 @@ const processImage = (file: File, maxSize = 1280): Promise<string> => {
 
 
 function CreatorStudioPage() {
+  const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
   const [currentStep, setCurrentStep] = React.useState(1);
@@ -177,7 +177,6 @@ function CreatorStudioPage() {
 
   // Audio recording state
   const [isRecording, setIsRecording] = React.useState(false);
-  const [audioUrl, setAudioUrl] = React.useState<string | null>(null);
   const mediaRecorderRef = React.useRef<MediaRecorder | null>(null);
   const audioChunksRef = React.useRef<Blob[]>([]);
 
@@ -227,7 +226,6 @@ function CreatorStudioPage() {
         reader.onloadend = () => {
           const base64Audio = reader.result as string;
           form.setValue('customAudio', base64Audio);
-          setAudioUrl(base64Audio);
         };
       };
 
@@ -298,9 +296,17 @@ function CreatorStudioPage() {
 
 
   async function onSubmit(data: FormData) {
+    if (!user) {
+        toast({
+            variant: "destructive",
+            title: "Usuário não autenticado",
+            description: "Por favor, faça login para criar uma página.",
+        });
+        return;
+    }
     setIsSubmitting(true);
     try {
-        const pageId = await savePageData(data as any);
+        const pageId = await savePageData(data as any, user.uid);
         
         if (data.plan === 'essencial') {
             toast({
@@ -471,6 +477,31 @@ function CreatorStudioPage() {
     { value: 'vortex', label: 'Vórtice Púrpura'},
   ];
 
+  if (authLoading) {
+    return <div className="w-full h-screen flex items-center justify-center"><Loader className="animate-spin" /></div>
+  }
+
+  if (!user) {
+    return (
+      <div className="w-full h-screen flex flex-col items-center justify-center text-center p-4">
+        <h2 className="text-3xl font-bold mb-4 font-display">Acesso Restrito</h2>
+        <p className="text-muted-foreground mb-8 max-w-md">Você precisa estar logado para criar uma página. Faça login ou crie uma conta para continuar.</p>
+        <div className="flex gap-4">
+          <Link href="/login">
+            <Button size="lg">
+              <LogIn className="mr-2 h-4 w-4" />
+              Entrar
+            </Button>
+          </Link>
+           <Link href="/cadastro">
+            <Button size="lg" variant="outline">
+              Criar Conta
+            </Button>
+          </Link>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col-reverse md:grid md:grid-cols-2 w-full min-h-screen">
@@ -1074,5 +1105,3 @@ function CreatorStudioPage() {
 }
 
 export default CreatorStudioPage;
-
-    

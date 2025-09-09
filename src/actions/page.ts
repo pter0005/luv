@@ -3,39 +3,8 @@
 
 import { z } from 'zod';
 import { prepareAndSendEmail } from '@/ai/flows/send-link-email';
-import fs from 'fs/promises';
-import path from 'path';
-
-const dbPath = path.join(process.cwd(), 'db');
-
-// Helper para garantir que o diretório do 'banco de dados' exista
-async function ensureDbDirectory(): Promise<void> {
-  try {
-    await fs.access(dbPath);
-  } catch {
-    await fs.mkdir(dbPath, { recursive: true });
-  }
-}
-
-// Helper para ler o arquivo de uma página
-async function readPageFile(pageId: string): Promise<any | null> {
-  await ensureDbDirectory();
-  const filePath = path.join(dbPath, `${pageId}.json`);
-  try {
-    const fileContent = await fs.readFile(filePath, 'utf-8');
-    return JSON.parse(fileContent);
-  } catch (error) {
-    return null; // Arquivo não existe
-  }
-}
-
-// Helper para escrever no arquivo de uma página
-async function writePageFile(pageId: string, data: any): Promise<void> {
-  await ensureDbDirectory();
-  const filePath = path.join(dbPath, `${pageId}.json`);
-  await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
-}
-
+import { doc, setDoc, getDoc, collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
@@ -61,8 +30,15 @@ const formSchema = z.object({
   contactDoc: z.string().min(11, "O CPF/CNPJ é obrigatório."),
   plan: z.string().min(1, "Você deve escolher uma opção."),
   heroVideoUrl: z.string().optional(),
+  // For templates
+  template: z.string().optional(),
+  heroType: z.string().optional(),
+  heroImage: z.string().optional(),
+  heroTitle: z.string().optional(),
+  heroDescription: z.string().optional(),
+  categories: z.array(z.any()).optional(),
+  contactPhone: z.string().optional(),
 });
-
 
 type FormData = z.infer<typeof formSchema>;
 
@@ -77,18 +53,20 @@ export async function uploadVideo(file: File): Promise<string> {
 }
 
 
-export async function savePageData(data: FormData): Promise<string> {
+export async function savePageData(data: FormData, userId: string): Promise<string> {
   try {
     const pageId = Date.now().toString();
     const status = data.plan === 'essencial' ? 'pending_payment' : 'pending_quote';
     
     const pageDataForDb = {
       ...data,
+      userId: userId,
       status: status,
       createdAt: new Date(),
     };
     
-    await writePageFile(pageId, pageDataForDb);
+    await setDoc(doc(db, "pages", pageId), pageDataForDb);
+    
     console.log('Document written with ID: ', pageId);
     return pageId;
 
@@ -100,18 +78,19 @@ export async function savePageData(data: FormData): Promise<string> {
 
 export async function updatePageStatus(pageId: string, status: 'paid' | 'pending_payment' | 'pending_quote'): Promise<boolean> {
     try {
-        const pageData = await readPageFile(pageId);
-        if (!pageData) {
+        const pageRef = doc(db, "pages", pageId);
+        const pageDoc = await getDoc(pageRef);
+        if (!pageDoc.exists()) {
             console.error(`Page with ID ${pageId} not found for status update.`);
             return false;
         }
 
+        const pageData = pageDoc.data();
         if (pageData.status === status) {
             return true; // No change needed
         }
 
-        pageData.status = status;
-        await writePageFile(pageId, pageData);
+        await setDoc(pageRef, { status: status }, { merge: true });
         console.log(`Page ${pageId} status updated to ${status}.`);
         return true;
     } catch (error) {
@@ -123,16 +102,18 @@ export async function updatePageStatus(pageId: string, status: 'paid' | 'pending
 
 export async function confirmPaymentAndSendEmail(pageId: string) {
     try {
-        const pageData = await readPageFile(pageId);
+        const pageRef = doc(db, "pages", pageId);
+        const pageDoc = await getDoc(pageRef);
 
-        if (!pageData) {
+        if (!pageDoc.exists()) {
             console.error(`Page with ID ${pageId} not found.`);
             return { success: false, message: 'Page not found.' };
         }
         
+        const pageData = pageDoc.data();
+
         if (pageData.status === 'paid') {
             console.log(`Payment for page ${pageId} has already been processed.`);
-            // Even if paid, maybe email failed. Let's try sending again if needed, but for now, we'll assume it's done.
             return { success: true, message: 'Already paid.' };
         }
         
@@ -147,7 +128,7 @@ export async function confirmPaymentAndSendEmail(pageId: string) {
                 pageTitle: pageData.title!,
             });
             console.log('Email process initiated for:', pageData.contactEmail);
-            return { success: true };
+            return { success: true, message: 'Payment confirmed and email sent.' };
         } else {
              return { success: false, message: 'No contact email found.' };
         }
@@ -161,9 +142,11 @@ export async function confirmPaymentAndSendEmail(pageId: string) {
 
 export async function getPageData(id: string) {
     try {
-        const data = await readPageFile(id);
-        if (data) {
-            return data;
+        const pageRef = doc(db, "pages", id);
+        const pageDoc = await getDoc(pageRef);
+
+        if (pageDoc.exists()) {
+            return pageDoc.data();
         } else {
             console.log("No such document!");
             return null;
@@ -174,7 +157,17 @@ export async function getPageData(id: string) {
     }
 }
 
-// This function is no longer relevant as there are no users.
 export async function getPagesByUserId(userId: string) {
-  return [];
+  try {
+    const q = query(collection(db, "pages"), where("userId", "==", userId));
+    const querySnapshot = await getDocs(q);
+    const pages: any[] = [];
+    querySnapshot.forEach((doc) => {
+      pages.push({ id: doc.id, ...doc.data() });
+    });
+    return pages;
+  } catch (error) {
+    console.error("Error getting pages by user ID:", error);
+    return [];
+  }
 }
