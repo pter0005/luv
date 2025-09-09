@@ -16,7 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { ArrowLeft, ChevronRight, Loader, PlusCircle, Trash2, Upload } from "lucide-react";
+import { ArrowLeft, ChevronRight, Loader, PlusCircle, Trash2, Upload, Video, Image as ImageIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { savePageData } from "@/actions/page";
 import { useRouter } from "next/navigation";
@@ -24,6 +24,7 @@ import { useAuth, withAuth } from "@/contexts/AuthContext";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import { NetflixDeAmorPage } from "@/components/app/NetflixDeAmorPage";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const categorySchema = z.object({
   title: z.string().min(1, "O título da categoria é obrigatório."),
@@ -36,7 +37,9 @@ const categorySchema = z.object({
 
 const formSchema = z.object({
   template: z.literal("netflix-de-amor"),
-  heroImage: z.string().min(1, "A imagem de destaque é obrigatória."),
+  heroType: z.string().default("image"),
+  heroImage: z.string().optional(),
+  heroVideoUrl: z.string().url("URL inválida.").optional().or(z.literal('')),
   heroTitle: z.string().min(1, "O título de destaque é obrigatório."),
   heroDescription: z.string().min(1, "A sinopse é obrigatória."),
   categories: z.array(categorySchema).min(1, "Adicione pelo menos uma categoria."),
@@ -44,7 +47,19 @@ const formSchema = z.object({
   contactEmail: z.string().email("Email inválido.").min(1, "O e-mail é obrigatório."),
   contactPhone: z.string().min(1, "O telefone é obrigatório."),
   plan: z.string().min(1, "Você deve escolher uma opção.").default("essencial"),
+}).refine(data => {
+    if (data.heroType === 'image') {
+        return !!data.heroImage;
+    }
+    if (data.heroType === 'video') {
+        return !!data.heroVideoUrl;
+    }
+    return false;
+}, {
+    message: "Você precisa fornecer uma imagem ou um vídeo de destaque.",
+    path: ["heroType"],
 });
+
 
 export type NetflixFormData = z.infer<typeof formSchema>;
 
@@ -75,15 +90,13 @@ const processImage = (file: File, maxSize = 1280): Promise<string> => {
     });
 };
 
-function ItemsFieldArray({ categoryIndex, control }: { categoryIndex: number, control: any }) {
+function ItemsFieldArray({ categoryIndex, control, setValue }: { categoryIndex: number, control: any, setValue: any }) {
   const { fields, append, remove } = useFieldArray({
     control,
     name: `categories.${categoryIndex}.items`,
   });
   const fileInputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
   const { toast } = useToast();
-  const { setValue } = useForm<NetflixFormData>();
-
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>, itemIndex: number) => {
     const file = event.target.files?.[0];
@@ -167,7 +180,9 @@ function NetflixCreatorPage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       template: "netflix-de-amor",
+      heroType: "image",
       heroImage: "",
+      heroVideoUrl: "",
       heroTitle: "Nossa História de Cinema",
       heroDescription: "Das pequenas risadas aos grandes momentos, nossa história é a minha favorita. Prepare a pipoca para a maratona do nosso amor.",
       categories: [
@@ -241,7 +256,7 @@ function NetflixCreatorPage() {
     <div className="bg-[#141414] text-white min-h-screen">
         <div className="grid md:grid-cols-2">
             {/* Form Section */}
-            <div className="section-padding overflow-y-auto h-screen">
+            <div className="section-padding overflow-y-auto h-screen scrollbar-hide">
                 <div className="max-w-xl mx-auto">
                     <header className="text-center mb-12">
                         <Image src="https://i.imgur.com/EMwsRdt.png" alt="Luv Logo" width={100} height={100} className="mx-auto w-24 h-24" />
@@ -256,27 +271,63 @@ function NetflixCreatorPage() {
                                 <h2 className="text-2xl font-bold border-b border-red-600 pb-2">Filme em Destaque</h2>
                                 <FormField
                                     control={form.control}
-                                    name="heroImage"
+                                    name="heroType"
                                     render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Imagem de Capa Principal (16:9)</FormLabel>
-                                            <FormControl>
-                                                <div className="w-full aspect-video bg-zinc-800 rounded-md flex items-center justify-center border-2 border-dashed border-zinc-700 cursor-pointer hover:border-red-600" onClick={() => heroFileInputRef.current?.click()}>
-                                                    {field.value ? (
-                                                        <Image src={field.value} alt="Imagem de destaque" width={1920} height={1080} className="w-full h-full object-cover rounded-md"/>
-                                                    ) : (
-                                                        <div className="text-center">
-                                                            <Upload className="mx-auto h-10 w-10 text-muted-foreground mb-2" />
-                                                            <p>Clique para enviar a imagem de destaque</p>
-                                                        </div>
-                                                    )}
-                                                    <input type="file" ref={heroFileInputRef} accept="image/*" className="hidden" onChange={(e) => handleFileChange(e, field.onChange)} />
-                                                </div>
-                                            </FormControl>
-                                            <FormMessage />
+                                        <FormItem className="space-y-3">
+                                        <FormLabel>Tipo de Mídia de Destaque</FormLabel>
+                                        <FormControl>
+                                            <RadioGroup
+                                                onValueChange={field.onChange}
+                                                defaultValue={field.value}
+                                                className="grid grid-cols-2 gap-4"
+                                            >
+                                                <RadioGroupItem value="image" id="type-image"><ImageIcon className="mr-2"/> Imagem</RadioGroupItem>
+                                                <RadioGroupItem value="video" id="type-video"><Video className="mr-2"/> Vídeo (YouTube)</RadioGroupItem>
+                                            </RadioGroup>
+                                        </FormControl>
+                                        <FormMessage />
                                         </FormItem>
                                     )}
                                 />
+
+                                {watchedData.heroType === "image" && (
+                                    <FormField
+                                        control={form.control}
+                                        name="heroImage"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Imagem de Capa Principal (16:9)</FormLabel>
+                                                <FormControl>
+                                                    <div className="w-full aspect-video bg-zinc-800 rounded-md flex items-center justify-center border-2 border-dashed border-zinc-700 cursor-pointer hover:border-red-600" onClick={() => heroFileInputRef.current?.click()}>
+                                                        {field.value ? (
+                                                            <Image src={field.value} alt="Imagem de destaque" width={1920} height={1080} className="w-full h-full object-cover rounded-md"/>
+                                                        ) : (
+                                                            <div className="text-center">
+                                                                <Upload className="mx-auto h-10 w-10 text-muted-foreground mb-2" />
+                                                                <p>Clique para enviar a imagem de destaque</p>
+                                                            </div>
+                                                        )}
+                                                        <input type="file" ref={heroFileInputRef} accept="image/*" className="hidden" onChange={(e) => handleFileChange(e, field.onChange)} />
+                                                    </div>
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                )}
+                                 {watchedData.heroType === "video" && (
+                                    <FormField
+                                        control={form.control}
+                                        name="heroVideoUrl"
+                                        render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>URL do Vídeo do YouTube</FormLabel>
+                                            <FormControl><Input placeholder="https://www.youtube.com/watch?v=..." {...field} className="bg-zinc-800 border-zinc-700" /></FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                        )}
+                                    />
+                                )}
                                 <FormField
                                     control={form.control}
                                     name="heroTitle"
@@ -316,7 +367,7 @@ function NetflixCreatorPage() {
                                             </FormItem>
                                             )}
                                         />
-                                        <ItemsFieldArray categoryIndex={categoryIndex} control={form.control} />
+                                        <ItemsFieldArray categoryIndex={categoryIndex} control={form.control} setValue={form.setValue} />
                                         <Button type="button" variant="destructive" size="sm" onClick={() => remove(categoryIndex)} className="absolute -top-3 -right-3">
                                             <Trash2 className="w-4 h-4"/>
                                         </Button>
@@ -395,7 +446,7 @@ function NetflixCreatorPage() {
                             https://luv.com/p/preview
                         </div>
                     </div>
-                    <div className="flex-grow rounded-b-lg overflow-y-auto">
+                    <div className="flex-grow rounded-b-lg overflow-y-auto scrollbar-hide">
                         <NetflixDeAmorPage data={watchedData} isPreview={true} />
                     </div>
                 </div>
