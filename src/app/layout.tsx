@@ -35,7 +35,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
         
-        {/* <!-- SEU PIXEL AQUI (Exemplo: Meta Pixel - Carregamento Base) --> */}
+        {/* <!-- Meta Pixel Code --> */}
         <Script id="meta-pixel-base" strategy="afterInteractive">
           {`
             !function(f,b,e,v,n,t,s)
@@ -47,18 +47,23 @@ export default function RootLayout({
             s.parentNode.insertBefore(t,s)}(window, document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
             
-            // Substitua 'SEU_PIXEL_ID' pelo ID do seu pixel
+            // IMPORTANTE: Substitua 'SEU_PIXEL_ID' pelo ID real que você pegou do Gerenciador de Eventos da Meta.
             fbq('init', 'SEU_PIXEL_ID'); 
             fbq('track', 'PageView');
           `}
         </Script>
         <noscript>
-          {/* Imagem de fallback para o Meta Pixel */}
-          {/* <img height="1" width="1" style={{display:'none'}}
+          {/* 
+            IMPORTANTE: Se você substituir o ID do pixel no script acima, 
+            lembre-se de substituir aqui também.
+          */}
+          {/* 
+          <img height="1" width="1" style={{display:'none'}}
             src="https://www.facebook.com/tr?id=SEU_PIXEL_ID&ev=PageView&noscript=1"
-          /> */}
+          />
+          */}
         </noscript>
-        {/* <!-- FIM DO PIXEL --> */}
+        {/* <!-- End Meta Pixel Code --> */}
 
       </head>
       <body
