@@ -324,7 +324,7 @@ function CreatorStudioPage() {
       toast({
         variant: "destructive",
         title: "Erro ao criar página",
-        description: error.message || "Não foi possível salvar sua página. Tente novamente.",
+        description: `Falha na operação do servidor: ${error.message}`,
       });
     }
   }

@@ -91,7 +91,9 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
     return pageId;
 
   } catch (e: any) {
-    console.error('Error adding document: ', e);
+    console.error('CRITICAL: Error adding document in savePageData. Raw Error:', e);
+    console.error('Error Details (if available):', e.details);
+    console.error('Data that failed:', JSON.stringify(data, null, 2));
     // Throw the original error message for better debugging on the client
     throw new Error(e.message || 'Failed to save page data.');
   }
