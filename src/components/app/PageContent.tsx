@@ -185,7 +185,7 @@ const PhotoGallery = ({ photos, displayType }: { photos?: string[]; displayType?
                 alt={`User photo ${index + 1}`}
                 fill
                 sizes="(max-width: 640px) 80vw, 300px"
-                className="object-contain" // Changed from object-cover to object-contain
+                className="object-cover"
               />
             </div>
           </SwiperSlide>
