@@ -84,16 +84,17 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
         }),
       });
 
+      const responseData = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Falha ao iniciar pagamento.');
+        throw new Error(responseData.error || 'Falha ao iniciar pagamento.');
       }
       
-      const { pixData } = await response.json();
+      const { pixData } = responseData;
       if (pixData?.qrCodeBase64) {
         setPixData(pixData);
       } else {
-        throw new Error('Não foi possível gerar o QR Code do Pix.');
+        throw new Error('Não foi possível obter os dados do QR Code do Pix da resposta da API.');
       }
     } catch (error: any) {
       toast({
@@ -390,3 +391,5 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
+
+    
