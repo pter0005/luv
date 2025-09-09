@@ -83,9 +83,10 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
     console.log('Document written with ID: ', pageId);
     return pageId;
 
-  } catch (e) {
+  } catch (e: any) {
     console.error('Error adding document: ', e);
-    throw new Error('Failed to save page data.');
+    // Throw the original error message for better debugging on the client
+    throw new Error(e.message || 'Failed to save page data.');
   }
 }
 

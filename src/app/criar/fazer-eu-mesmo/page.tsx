@@ -321,14 +321,15 @@ function CreatorStudioPage() {
             });
             router.push(`/criar/sucesso-orcamento`);
         }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to process page:", error);
       toast({
         variant: "destructive",
         title: "Erro ao criar página",
-        description: "Não foi possível salvar sua página. Tente novamente.",
+        description: error.message || "Não foi possível salvar sua página. Tente novamente.",
       });
-      setIsSubmitting(false);
+    } finally {
+        setIsSubmitting(false);
     }
   }
 
@@ -1064,5 +1065,3 @@ function CreatorStudioPage() {
 }
 
 export default CreatorStudioPage;
-
-    
