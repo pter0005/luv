@@ -309,7 +309,7 @@ function CreatorStudioPage() {
         contactEmail: user.email,
       };
 
-      const pageId = await savePageData(pageDataToSave as any, user.uid);
+      const pageId = await savePageData(pageDataToSave, user.uid);
 
       if (data.plan === 'essencial') {
         toast({

@@ -89,6 +89,7 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
       heroTitle: data.heroTitle,
       heroDescription: data.heroDescription,
       categories: data.categories,
+      dateDisplayType: data.dateDisplayType,
     };
 
     // Safely handle date conversion
@@ -209,3 +210,5 @@ export async function getPagesByUserId(userId: string) {
     return [];
   }
 }
+
+    
