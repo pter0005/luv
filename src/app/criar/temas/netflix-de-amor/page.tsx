@@ -260,11 +260,19 @@ function NetflixCreatorPage() {
         const pageDataForDb = { ...data, title: data.heroTitle };
         const pageId = await savePageData(pageDataForDb as any, user.uid);
         
-        toast({
-          title: "Sua Netflix de Amor foi salva!",
-          description: "Você será redirecionado para a tela de pagamento.",
-        });
-        router.push(`/criar/sucesso/${pageId}`);
+        if (data.plan === 'essencial') {
+            toast({
+              title: "Sua Netflix de Amor foi salva!",
+              description: "Você será redirecionado para a tela de pagamento.",
+            });
+            router.push(`/criar/sucesso/${pageId}`);
+        } else {
+            toast({
+              title: "Solicitação de orçamento enviada!",
+              description: "Em breve nossa equipe entrará em contato.",
+            });
+            router.push('/criar/sucesso-orcamento');
+        }
     } catch (error) {
       console.error("Failed to process page:", error);
       toast({
