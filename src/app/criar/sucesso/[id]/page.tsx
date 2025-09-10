@@ -107,54 +107,8 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     checkPageAndPayment();
   }, [checkPageAndPayment]);
   
-  useEffect(() => {
-    // Only generate PIX if we have the necessary data and haven't started the process
-    if (pageData && pageData.contactName && pageData.contactCpf && !pixData && checkoutStatus === 'idle') {
-      handleGeneratePix();
-    }
-  }, [pageData, pixData, checkoutStatus]);
-
-
-  // Polling effect
-  useEffect(() => {
-    // Only start polling if PIX has been generated and payment is not yet approved
-    if (pixData && paymentStatus !== 'paid') {
-      const interval = setInterval(async () => {
-        try {
-          const data = await getPageData(params.id);
-          if (data && data.status === 'paid') {
-            setPageData(data);
-            setPaymentStatus('paid');
-             if (!hasTrackedPurchase) {
-                trackPixelEvent('Purchase', {
-                  value: FIXED_PRICE,
-                  currency: 'BRL',
-                  content_name: data.title || data.heroTitle,
-                  content_ids: [params.id],
-                });
-                setHasTrackedPurchase(true);
-              }
-            clearInterval(interval); // Stop polling once paid
-          }
-        } catch (error) {
-          console.error("Polling error:", error);
-        }
-      }, 5000); // Poll every 5 seconds
-
-      // Set a timeout to stop polling after 5 minutes
-      const timeout = setTimeout(() => {
-        clearInterval(interval);
-      }, 300000);
-
-      return () => {
-        clearInterval(interval);
-        clearTimeout(timeout);
-      };
-    }
-  }, [pixData, params.id, paymentStatus, hasTrackedPurchase]);
-
-
-  const handleGeneratePix = async () => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleGeneratePix = useCallback(async () => {
     if (!pageData || !pageData.contactName || !pageData.contactCpf) {
       toast({ variant: 'destructive', title: 'Dados incompletos', description: 'Nome e CPF são necessários para o pagamento.'});
       return;
@@ -199,7 +153,56 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
         description: error.error || "Não foi possível preparar o pagamento.",
       });
     }
-  };
+  }, [pageData, params.id, toast]);
+  
+  useEffect(() => {
+    // Only generate PIX if we have the necessary data and haven't started the process
+    if (pageData && pageData.contactName && pageData.contactCpf && !pixData && checkoutStatus === 'idle') {
+      handleGeneratePix();
+    }
+  }, [pageData, pixData, checkoutStatus, handleGeneratePix]);
+
+
+  // Polling effect
+  useEffect(() => {
+    // Only start polling if PIX has been generated and payment is not yet approved
+    if (pixData && paymentStatus !== 'paid') {
+      const interval = setInterval(async () => {
+        try {
+          const data = await getPageData(params.id);
+          if (data && data.status === 'paid') {
+            setPageData(data);
+            setPaymentStatus('paid');
+             if (!hasTrackedPurchase) {
+                trackPixelEvent('Purchase', {
+                  value: FIXED_PRICE,
+                  currency: 'BRL',
+                  content_name: data.title || data.heroTitle,
+                  content_ids: [params.id],
+                });
+                setHasTrackedPurchase(true);
+              }
+            clearInterval(interval); // Stop polling once paid
+          }
+        } catch (error) {
+          console.error("Polling error:", error);
+        }
+      }, 5000); // Poll every 5 seconds
+
+      // Set a timeout to stop polling after 5 minutes
+      const timeout = setTimeout(() => {
+        clearInterval(interval);
+      }, 300000);
+
+      return () => {
+        clearInterval(interval);
+        clearTimeout(timeout);
+      };
+    }
+  }, [pixData, params.id, paymentStatus, hasTrackedPurchase]);
+
+
+
 
   const handleCopyPixCode = () => {
     if (pixData?.qrCode) {

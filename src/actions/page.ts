@@ -99,6 +99,7 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
       }
     }
     
+    // Remove undefined fields before saving
     Object.keys(pageDataForDb).forEach(key => {
       if (pageDataForDb[key] === undefined) {
         delete pageDataForDb[key];
