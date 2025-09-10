@@ -63,38 +63,10 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
     const status = data.plan === 'essencial' ? 'pending_payment' : 'pending_quote';
     
     const pageDataForDb: { [key: string]: any } = {
+      ...data,
       userId: userId,
       status: status,
       createdAt: Timestamp.now(),
-      title: data.title,
-      titleColor: data.titleColor,
-      message: data.message,
-      messageFontSize: data.messageFontSize,
-      photos: data.photos || [],
-      photoDisplayType: data.photoDisplayType,
-      musicChoice: data.musicChoice,
-      musicUrl: data.musicUrl,
-      customAudio: data.customAudio,
-      backgroundAnimation: data.backgroundAnimation,
-      heartColor: data.heartColor,
-      loveLightColor: data.loveLightColor,
-      unlockType: data.unlockType,
-      puzzleImage: data.puzzleImage,
-      puzzleTitle: data.puzzleTitle,
-      puzzleDescription: data.puzzleDescription,
-      plan: data.plan,
-      contactEmail: data.contactEmail,
-      contactName: data.contactName,
-      contactDoc: data.contactDoc,
-      contactPhone: data.contactPhone,
-      template: data.template,
-      heroType: data.heroType,
-      heroImage: data.heroImage,
-      heroVideoUrl: data.heroVideoUrl,
-      heroTitle: data.heroTitle,
-      heroDescription: data.heroDescription,
-      categories: data.categories,
-      dateDisplayType: data.dateDisplayType,
     };
 
     if (data.startDate && typeof data.startDate === 'string') {
@@ -221,5 +193,3 @@ export async function getPagesByUserId(userId: string) {
     return [];
   }
 }
-
-    

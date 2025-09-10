@@ -311,13 +311,8 @@ function CreatorStudioPage() {
       return;
     }
 
-    const pageDataToSave = {
-      ...data,
-      startDate: data.startDate ? data.startDate.toISOString() : undefined,
-    };
-
     try {
-      const pageId = await savePageData(pageDataToSave, user.uid);
+      const pageId = await savePageData(data, user.uid);
 
       if (data.plan === 'essencial') {
         toast({
@@ -1141,5 +1136,3 @@ function CreatorStudioPage() {
 }
 
 export default CreatorStudioPage;
-
-    
