@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    allowedDevOrigins: [
+        "https://*.cluster-mdgxqvvkkbfpqrfigfiuugu5pk.cloudworkstations.dev",
+    ]
+  },
   images: {
     remotePatterns: [
       {
