@@ -94,17 +94,9 @@ const formSchema = z.object({
   contactName: z.string().min(1, "O nome é obrigatório.").refine(value => value.trim().split(' ').length >= 2, {
     message: "Por favor, informe seu nome completo.",
   }),
-  contactCpf: z.string().min(14, "O CPF é obrigatório."),
+  contactDoc: z.string().min(1, "O CPF/CNPJ é obrigatório."),
   contactEmail: z.string().email("Email inválido."),
   contactPhone: z.string().min(1, "O telefone é obrigatório."),
-}).superRefine((data, ctx) => {
-    if (data.plan === 'orcamento') {
-        // For 'orcamento', we don't need to validate contact details as strictly,
-        // so we can clear errors for them if they exist from a previous selection.
-        // This logic is complex with superRefine. A better approach is conditional schemas
-        // or handling this in the form logic itself. For now, we will require them
-        // but rely on UI to hide them.
-    }
 });
 
 
@@ -214,7 +206,7 @@ function CreatorStudioPage() {
       puzzleDescription: "Resolva o enigma para revelar a surpresa!",
       plan: "essencial",
       contactName: "",
-      contactCpf: "",
+      contactDoc: "",
       contactEmail: "",
       contactPhone: "",
     },
@@ -319,12 +311,12 @@ function CreatorStudioPage() {
       return;
     }
 
-    try {
-      const pageDataToSave = {
-        ...data,
-        startDate: data.startDate ? data.startDate.toISOString() : undefined,
-      };
+    const pageDataToSave = {
+      ...data,
+      startDate: data.startDate ? data.startDate.toISOString() : undefined,
+    };
 
+    try {
       const pageId = await savePageData(pageDataToSave, user.uid);
 
       if (data.plan === 'essencial') {
@@ -401,7 +393,7 @@ function CreatorStudioPage() {
     if (currentField === 'plan') {
         const plan = form.getValues('plan');
         if (plan === 'essencial') {
-            fieldsToValidate = ['contactName', 'contactCpf', 'contactEmail', 'contactPhone', 'plan'];
+            fieldsToValidate = ['contactName', 'contactDoc', 'contactEmail', 'contactPhone', 'plan'];
         } else {
              fieldsToValidate = ['plan'];
         }
@@ -441,7 +433,7 @@ function CreatorStudioPage() {
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep + 1);
+      setCurrentStep(currentStep - 1);
     }
   };
 
@@ -1077,8 +1069,9 @@ function CreatorStudioPage() {
                                 name="contactName"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Nome Completo do Titular</FormLabel>
-                                        <FormControl><Input placeholder="Seu nome como no documento" {...field} /></FormControl>
+                                        <FormLabel>Seu Nome e Sobrenome</FormLabel>
+                                        <FormControl><Input placeholder="Seu nome completo" {...field} /></FormControl>
+                                        <FormDescription>Essencial para o processamento do pagamento.</FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -1088,7 +1081,7 @@ function CreatorStudioPage() {
                                 name="contactEmail"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>E-mail de Contato</FormLabel>
+                                        <FormLabel>Seu E-mail de Contato</FormLabel>
                                         <FormControl><Input placeholder="seu.email@exemplo.com" {...field} /></FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -1096,26 +1089,17 @@ function CreatorStudioPage() {
                             />
                             <FormField
                                 control={form.control}
-                                name="contactCpf"
+                                name="contactDoc"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>CPF do Titular</FormLabel>
+                                        <FormLabel>Seu CPF ou CNPJ</FormLabel>
                                         <FormControl>
                                             <Input 
-                                                placeholder="000.000.000-00" 
+                                                placeholder="Apenas números" 
                                                 {...field}
-                                                onChange={(e) => {
-                                                    const { value } = e.target;
-                                                    const formattedValue = value
-                                                        .replace(/\D/g, '')
-                                                        .replace(/(\d{3})(\d)/, '$1.$2')
-                                                        .replace(/(\d{3})(\d)/, '$1.$2')
-                                                        .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-                                                    field.onChange(formattedValue);
-                                                }}
-                                                maxLength={14}
                                             />
                                         </FormControl>
+                                        <FormDescription>Obrigatório para gerar o PIX.</FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -1125,7 +1109,7 @@ function CreatorStudioPage() {
                                 name="contactPhone"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Telefone (WhatsApp)</FormLabel>
+                                        <FormLabel>Seu Telefone</FormLabel>
                                         <FormControl>
                                             <Input 
                                                 placeholder="(99) 99999-9999" 

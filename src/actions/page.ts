@@ -85,7 +85,7 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
       plan: data.plan,
       contactEmail: data.contactEmail,
       contactName: data.contactName,
-      contactCpf: data.contactCpf,
+      contactDoc: data.contactDoc,
       contactPhone: data.contactPhone,
       template: data.template,
       heroType: data.heroType,

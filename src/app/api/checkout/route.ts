@@ -22,10 +22,10 @@ export async function POST(req: NextRequest) {
 
     try {
         const body = await req.json();
-        const { pageId, title, email, name, cpf, phone } = body;
+        const { pageId, title, email, name, doc: contactDoc, phone } = body;
 
-        if (!pageId || !title || !email || !name || !cpf || !phone) {
-            return NextResponse.json({ error: 'Todos os campos são obrigatórios: pageId, title, email, name, cpf, phone' }, { status: 400 });
+        if (!pageId || !title || !email || !name || !contactDoc || !phone) {
+            return NextResponse.json({ error: 'Todos os campos são obrigatórios: pageId, title, email, name, doc, phone' }, { status: 400 });
         }
         
         const payment = new Payment(client);
@@ -56,8 +56,8 @@ export async function POST(req: NextRequest) {
                 first_name: firstName,
                 last_name: lastName,
                 identification: {
-                    type: 'CPF',
-                    number: cpf.replace(/\D/g, ''),
+                    type: contactDoc.length === 11 ? 'CPF' : 'CNPJ',
+                    number: contactDoc.replace(/\D/g, ''),
                 },
                  address: {},
             },

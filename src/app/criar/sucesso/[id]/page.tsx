@@ -109,7 +109,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleGeneratePix = useCallback(async () => {
-    if (!pageData || !pageData.contactName || !pageData.contactCpf || !pageData.contactEmail || !pageData.contactPhone) {
+    if (!pageData || !pageData.contactName || !pageData.contactDoc || !pageData.contactEmail || !pageData.contactPhone) {
       toast({ variant: 'destructive', title: 'Dados incompletos', description: 'Dados de contato são necessários para o pagamento.'});
       return;
     };
@@ -126,7 +126,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
           title: pageData.title || pageData.heroTitle,
           email: pageData.contactEmail,
           name: pageData.contactName,
-          cpf: pageData.contactCpf,
+          doc: pageData.contactDoc,
           phone: pageData.contactPhone,
         }),
       });
@@ -158,7 +158,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   
   useEffect(() => {
     // Only generate PIX if we have the necessary data and haven't started the process
-    if (pageData && pageData.contactName && pageData.contactCpf && pageData.contactEmail && pageData.contactPhone && !pixData && checkoutStatus === 'idle') {
+    if (pageData && pageData.contactName && pageData.contactDoc && pageData.contactEmail && pageData.contactPhone && !pixData && checkoutStatus === 'idle') {
       handleGeneratePix();
     }
   }, [pageData, pixData, checkoutStatus, handleGeneratePix]);
