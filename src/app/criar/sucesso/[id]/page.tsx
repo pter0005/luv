@@ -150,7 +150,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
       toast({
         variant: "destructive",
         title: "Erro no Checkout",
-        description: error.error || "Não foi possível preparar o pagamento.",
+        description: error.error || "Não foi possível preparar o pagamento. Verifique seus dados e tente novamente.",
       });
     }
   }, [pageData, params.id, toast]);
