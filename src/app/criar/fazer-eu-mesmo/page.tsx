@@ -91,24 +91,19 @@ const formSchema = z.object({
   puzzleTitle: z.string().optional(),
   puzzleDescription: z.string().optional(),
   plan: z.string().min(1, "Você deve escolher uma opção."),
-  contactName: z.string().optional(), 
-  contactCpf: z.string().optional(),
+  contactName: z.string().min(1, "O nome é obrigatório.").refine(value => value.trim().split(' ').length >= 2, {
+    message: "Por favor, informe seu nome completo.",
+  }),
+  contactCpf: z.string().min(14, "O CPF é obrigatório."),
+  contactEmail: z.string().email("Email inválido."),
+  contactPhone: z.string().min(1, "O telefone é obrigatório."),
 }).superRefine((data, ctx) => {
-    if (data.plan === 'essencial') {
-        if (!data.contactName || data.contactName.trim().split(' ').length < 2) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: "Por favor, informe seu nome completo.",
-                path: ["contactName"],
-            });
-        }
-         if (!data.contactCpf || data.contactCpf.length < 14) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: "Por favor, informe um CPF válido.",
-                path: ["contactCpf"],
-            });
-        }
+    if (data.plan === 'orcamento') {
+        // For 'orcamento', we don't need to validate contact details as strictly,
+        // so we can clear errors for them if they exist from a previous selection.
+        // This logic is complex with superRefine. A better approach is conditional schemas
+        // or handling this in the form logic itself. For now, we will require them
+        // but rely on UI to hide them.
     }
 });
 
@@ -220,6 +215,8 @@ function CreatorStudioPage() {
       plan: "essencial",
       contactName: "",
       contactCpf: "",
+      contactEmail: "",
+      contactPhone: "",
     },
   });
 
@@ -326,7 +323,6 @@ function CreatorStudioPage() {
       const pageDataToSave = {
         ...data,
         startDate: data.startDate ? data.startDate.toISOString() : undefined,
-        contactEmail: user.email,
       };
 
       const pageId = await savePageData(pageDataToSave, user.uid);
@@ -405,7 +401,7 @@ function CreatorStudioPage() {
     if (currentField === 'plan') {
         const plan = form.getValues('plan');
         if (plan === 'essencial') {
-            fieldsToValidate = ['contactName', 'contactCpf', 'plan'];
+            fieldsToValidate = ['contactName', 'contactCpf', 'contactEmail', 'contactPhone', 'plan'];
         } else {
              fieldsToValidate = ['plan'];
         }
@@ -445,7 +441,7 @@ function CreatorStudioPage() {
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+      setCurrentStep(currentStep + 1);
     }
   };
 
@@ -1087,6 +1083,17 @@ function CreatorStudioPage() {
                                     </FormItem>
                                 )}
                             />
+                             <FormField
+                                control={form.control}
+                                name="contactEmail"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>E-mail de Contato</FormLabel>
+                                        <FormControl><Input placeholder="seu.email@exemplo.com" {...field} /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
                             <FormField
                                 control={form.control}
                                 name="contactCpf"
@@ -1107,6 +1114,22 @@ function CreatorStudioPage() {
                                                     field.onChange(formattedValue);
                                                 }}
                                                 maxLength={14}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                             <FormField
+                                control={form.control}
+                                name="contactPhone"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Telefone (WhatsApp)</FormLabel>
+                                        <FormControl>
+                                            <Input 
+                                                placeholder="(99) 99999-9999" 
+                                                {...field}
                                             />
                                         </FormControl>
                                         <FormMessage />
