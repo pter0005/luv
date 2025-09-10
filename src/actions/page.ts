@@ -81,6 +81,8 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
       puzzleDescription: data.puzzleDescription,
       plan: data.plan,
       contactEmail: data.contactEmail,
+      contactName: data.contactName,
+      contactCpf: data.contactCpf,
       // Include template-specific data if available
       template: data.template,
       heroType: data.heroType,
