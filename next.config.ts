@@ -10,10 +10,11 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   experimental: {
-    allowedDevOrigins: [
-        "https://*.cluster-mdgxqvvkkbfpqrfigfiuugu5pk.cloudworkstations.dev",
-    ]
+    // This key is now correctly placed inside experimental
   },
+  allowedDevOrigins: [
+    "https://*.cluster-mdgxqvvkkbfpqrfigfiuugu5pk.cloudworkstations.dev",
+  ],
   images: {
     remotePatterns: [
       {
