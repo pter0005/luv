@@ -22,10 +22,10 @@ export async function POST(req: NextRequest) {
 
     try {
         const body = await req.json();
-        const { pageId, title, email, name, docNumber } = body;
+        const { pageId, title, email, name, cpf } = body;
 
-        if (!pageId || !title || !email || !name || !docNumber) {
-            return NextResponse.json({ error: 'Todos os campos são obrigatórios: pageId, title, email, name, docNumber' }, { status: 400 });
+        if (!pageId || !title || !email || !name || !cpf) {
+            return NextResponse.json({ error: 'Todos os campos são obrigatórios: pageId, title, email, name, cpf' }, { status: 400 });
         }
         
         const payment = new Payment(client);
@@ -43,7 +43,6 @@ export async function POST(req: NextRequest) {
 
         const expirationDateFormatted = `${expirationDate.getFullYear()}-${pad(expirationDate.getMonth() + 1)}-${pad(expirationDate.getDate())}T${pad(expirationDate.getHours())}:${pad(expirationDate.getMinutes())}:${pad(expirationDate.getSeconds())}.${expirationDate.getMilliseconds().toString().padStart(3, '0')}${timezoneSign}${offsetHours}:${offsetMinutes}`;
 
-
         const nameParts = name.trim().split(' ');
         const firstName = nameParts.shift() || '';
         const lastName = nameParts.join(' ') || firstName;
@@ -58,7 +57,7 @@ export async function POST(req: NextRequest) {
                 last_name: lastName,
                 identification: {
                     type: 'CPF',
-                    number: docNumber,
+                    number: cpf.replace(/\D/g, ''),
                 },
             },
             notification_url: `${baseUrl}/api/webhook/mercado-pago`,
@@ -108,3 +107,5 @@ export async function POST(req: NextRequest) {
         }, { status: 500 });
     }
 }
+
+    

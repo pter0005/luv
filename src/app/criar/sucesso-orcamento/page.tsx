@@ -1,12 +1,28 @@
 
 "use client";
 
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, CheckCircle, Mail } from 'lucide-react';
 import Link from 'next/link';
 
+// Função para disparar eventos de pixel
+const trackPixelEvent = (eventName: string, data: any = {}) => {
+  if (typeof window !== 'undefined' && (window as any).fbq) {
+    (window as any).fbq('track', eventName, data);
+  }
+};
+
 export default function SucessoOrcamentoPage() {
+
+  useEffect(() => {
+    // Dispara o evento de "Lead" quando a página é carregada
+    trackPixelEvent('Lead', {
+      content_name: 'Solicitação de Orçamento',
+      content_category: 'Projeto Sob Medida',
+    });
+  }, []);
 
   return (
     <div className="relative min-h-screen">

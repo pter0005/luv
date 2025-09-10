@@ -67,6 +67,7 @@ import { JigsawPuzzle } from "@/components/app/JigsawPuzzle";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
+import { Label } from "@/components/ui/label";
 
 const formSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
@@ -87,12 +88,9 @@ const formSchema = z.object({
   puzzleImage: z.string().optional().or(z.literal('')),
   puzzleTitle: z.string().optional(),
   puzzleDescription: z.string().optional(),
-  contactName: z.string().min(1, "O nome é obrigatório.").refine(s => s.trim().split(' ').length >= 2, {
-    message: "Por favor, insira nome e sobrenome."
-  }),
-  contactEmail: z.string().email("Email inválido.").min(1, "O e-mail é obrigatório."),
-  contactDoc: z.string().min(11, "O CPF/CNPJ é obrigatório."),
   plan: z.string().min(1, "Você deve escolher uma opção."),
+  contactName: z.string().optional(), 
+  contactCpf: z.string().optional(), 
 });
 
 export type FormData = z.infer<typeof formSchema>;
@@ -173,7 +171,6 @@ function CreatorStudioPage() {
   const debouncedMusicSearchQuery = useDebounce(musicSearchQuery, 500);
   const [musicSearchResult, setMusicSearchResult] = React.useState<{ title: string; videoId: string } | null>(null);
   const [isSearchingMusic, setIsSearchingMusic] = React.useState(false);
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   // Audio recording state
   const [isRecording, setIsRecording] = React.useState(false);
@@ -200,13 +197,13 @@ function CreatorStudioPage() {
       puzzleImage: "",
       puzzleTitle: "Um Quebra-Cabeça Especial",
       puzzleDescription: "Resolva o enigma para revelar a surpresa!",
-      contactName: "",
-      contactEmail: "",
-      contactDoc: "",
       plan: "essencial",
+      contactName: "",
+      contactCpf: "",
     },
   });
 
+  const { formState } = form;
   const watchedData = form.watch();
 
   const startRecording = async () => {
@@ -297,38 +294,43 @@ function CreatorStudioPage() {
 
   async function onSubmit(data: FormData) {
     if (!user) {
-        toast({
-            variant: "destructive",
-            title: "Usuário não autenticado",
-            description: "Por favor, faça login para criar uma página.",
-        });
-        return;
+      toast({
+        variant: "destructive",
+        title: "Usuário não autenticado",
+        description: "Por favor, faça login para criar uma página.",
+      });
+      return;
     }
-    setIsSubmitting(true);
+
     try {
-        const pageId = await savePageData(data as any, user.uid);
-        
-        if (data.plan === 'essencial') {
-            toast({
-              title: "Página salva com sucesso!",
-              description: "Você será redirecionado para a tela de pagamento.",
-            });
-            router.push(`/criar/sucesso/${pageId}?doc=${encodeURIComponent(data.contactDoc)}`);
-        } else {
-             toast({
-              title: "Solicitação enviada!",
-              description: "Seu pedido de orçamento foi enviado com sucesso.",
-            });
-            router.push(`/criar/sucesso-orcamento`);
-        }
-    } catch (error) {
+      const pageDataToSave = {
+        ...data,
+        startDate: data.startDate ? data.startDate.toISOString() : undefined,
+        contactEmail: user.email,
+      };
+
+      const pageId = await savePageData(pageDataToSave, user.uid);
+
+      if (data.plan === 'essencial') {
+        toast({
+          title: "Página salva com sucesso!",
+          description: "Você será redirecionado para a tela de pagamento.",
+        });
+        router.push(`/criar/sucesso/${pageId}`);
+      } else {
+        toast({
+          title: "Solicitação enviada!",
+          description: "Seu pedido de orçamento foi enviado com sucesso.",
+        });
+        router.push(`/criar/sucesso-orcamento`);
+      }
+    } catch (error: any) {
       console.error("Failed to process page:", error);
       toast({
         variant: "destructive",
         title: "Erro ao criar página",
-        description: "Não foi possível salvar sua página. Tente novamente.",
+        description: `Falha na operação do servidor: ${error.message}`,
       });
-      setIsSubmitting(false);
     }
   }
 
@@ -369,9 +371,9 @@ function CreatorStudioPage() {
       description: "Escolha como a pessoa irá descobrir o conteúdo da página.",
     },
     {
-      name: "contactName" as const,
+      name: "plan" as const,
       title: "Finalização",
-      description: "Preencha seus dados para finalizar e escolher o tipo de criação.",
+      description: "Escolha o tipo de criação para finalizar sua página.",
     },
   ];
 
@@ -379,8 +381,9 @@ function CreatorStudioPage() {
     const currentField = steps[currentStep - 1].name;
     let fieldsToValidate: (keyof FormData)[] = [currentField];
     
-    if (currentField === 'contactName') {
-        fieldsToValidate = ['contactName', 'contactEmail', 'contactDoc', 'plan'];
+    // Add specific validation logic for steps if needed
+    if (currentField === 'plan') {
+        fieldsToValidate = ['plan'];
     }
 
     if (currentField === 'musicChoice') {
@@ -529,8 +532,8 @@ function CreatorStudioPage() {
                   <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
               ) : (
-                <Button type="submit" size="lg" className="w-full" form="main-form" disabled={isSubmitting}>
-                  {isSubmitting ? (
+                <Button type="submit" size="lg" className="w-full" form="main-form" disabled={formState.isSubmitting}>
+                  {formState.isSubmitting ? (
                       <Loader className="mr-2 h-4 w-4 animate-spin"/>
                   ) : (
                       watchedData.plan === 'orcamento' ? 'Solicitar Orçamento' : 'Finalizar e Pagar'
@@ -1009,47 +1012,6 @@ function CreatorStudioPage() {
                 )}
                 {currentStep === 8 && (
                    <div className="space-y-4">
-                      <FormField
-                          control={form.control}
-                          name="contactName"
-                          render={({ field }) => (
-                              <FormItem>
-                                  <FormLabel>Seu Nome e Sobrenome</FormLabel>
-                                  <FormControl>
-                                      <Input placeholder="Seu nome completo" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                              </FormItem>
-                          )}
-                      />
-                      <FormField
-                          control={form.control}
-                          name="contactEmail"
-                          render={({ field }) => (
-                              <FormItem>
-                                  <FormLabel>Seu E-mail de Contato</FormLabel>
-                                  <FormControl>
-                                      <Input placeholder="seu.email@exemplo.com" {...field} />
-                                  </FormControl>
-                                  <FormDescription>Essencial para o envio do link da sua página.</FormDescription>
-                                  <FormMessage />
-                              </FormItem>
-                          )}
-                      />
-                       <FormField
-                          control={form.control}
-                          name="contactDoc"
-                          render={({ field }) => (
-                              <FormItem>
-                                  <FormLabel>Seu CPF ou CNPJ</FormLabel>
-                                  <FormControl>
-                                      <Input placeholder="Apenas números" {...field} />
-                                  </FormControl>
-                                   <FormDescription>Obrigatório para gerar o PIX.</FormDescription>
-                                  <FormMessage />
-                              </FormItem>
-                          )}
-                      />
                        <FormField
                           control={form.control}
                           name="plan"

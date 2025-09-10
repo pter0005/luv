@@ -2,16 +2,8 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, Globe, QrCode, PlayCircle, Puzzle } from "lucide-react";
+import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, QrCode, PlayCircle, Puzzle, Mic } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import {
   Accordion,
   AccordionContent,
@@ -62,11 +54,11 @@ export default function CreatorPage() {
       imageHint: "music player"
     },
     {
-      icon: Globe,
-      title: "Acesso Global",
-      description: "Sua página acessível de qualquer lugar do mundo, com um link exclusivo.",
+      icon: Mic,
+      title: "Gravação de Áudio Personalizada",
+      description: "Deixe uma mensagem com sua própria voz para tocar ao fundo da página, tornando a experiência ainda mais pessoal e emocionante.",
       image: "https://picsum.photos/800/600?random=24",
-      imageHint: "world map"
+      imageHint: "audio recording"
     },
     {
       icon: QrCode,
@@ -82,7 +74,7 @@ export default function CreatorPage() {
       {/* Hero Section */}
       <section className="relative section-padding flex items-center min-h-[calc(100vh-80px)] overflow-hidden">
         <AnimatedBackground />
-        <HeartsBackground color="purple" direction="rise" />
+        <HeartsBackground color="purple" direction="fall" />
         <div className="container relative z-10 grid lg:grid-cols-2 gap-12 items-center">
           <div className="text-center lg:text-left">
              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground font-display leading-tight">
@@ -90,7 +82,7 @@ export default function CreatorPage() {
               <TypingAnimation />
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 my-8">
-              Transforme seus sentimentos em uma obra de arte digital. Uma experiência exclusiva, criada para celebrar momentos que merecem ser eternos.
+              Transforme seus sentimentos em uma obra de arte digital. Uma experiência única, criada para celebrar momentos que merecem ser eternos.
             </p>
             <Link href="/criar">
                 <Button size="lg" className="h-12 text-base md:h-14 group relative w-full sm:w-auto">

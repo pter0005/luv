@@ -16,7 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { ArrowLeft, ChevronRight, Loader, LogIn, PlusCircle, Trash2, Upload, Video, Image as ImageIcon, FileVideo } from "lucide-react";
+import { ArrowLeft, ChevronRight, Loader, LogIn, PlusCircle, Trash2, Upload, Video, Image as ImageIcon, FileVideo, Gem, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { savePageData, uploadVideo } from "@/actions/page";
 import { useRouter } from "next/navigation";
@@ -45,9 +45,6 @@ const formSchema = z.object({
   heroTitle: z.string().min(1, "O título de destaque é obrigatório."),
   heroDescription: z.string().min(1, "A sinopse é obrigatória."),
   categories: z.array(categorySchema).min(1, "Adicione pelo menos uma categoria."),
-  contactName: z.string().min(1, "O nome é obrigatório."),
-  contactEmail: z.string().email("Email inválido.").min(1, "O e-mail é obrigatório."),
-  contactDoc: z.string().min(11, "O CPF/CNPJ é obrigatório."),
   plan: z.string().min(1, "Você deve escolher uma opção.").default("essencial"),
 }).refine(data => {
     if (data.heroType === 'image') return !!data.heroImage;
@@ -191,13 +188,10 @@ function NetflixCreatorPage() {
         { title: "Séries do Momento", items: [] },
         { title: "Filmes em Alta", items: [] },
       ],
-      contactName: "",
-      contactEmail: "",
-      contactDoc: "",
       plan: "essencial",
     },
   });
-  
+
   const { fields: categories, append, remove } = useFieldArray({
     control: form.control,
     name: "categories",
@@ -251,20 +245,32 @@ function NetflixCreatorPage() {
     }
     setIsSubmitting(true);
     try {
-        const pageDataForDb = { ...data, title: data.heroTitle };
+        const pageDataForDb = { 
+            ...data, 
+            title: data.heroTitle, // Use heroTitle as main title for dashboard etc.
+            contactEmail: user.email,
+        };
         const pageId = await savePageData(pageDataForDb as any, user.uid);
         
-        toast({
-          title: "Sua Netflix de Amor foi salva!",
-          description: "Você será redirecionado para a tela de pagamento.",
-        });
-        router.push(`/criar/sucesso/${pageId}?doc=${encodeURIComponent(data.contactDoc)}`);
-    } catch (error) {
+        if (data.plan === 'essencial') {
+            toast({
+              title: "Sua Netflix de Amor foi salva!",
+              description: "Você será redirecionado para a tela de pagamento.",
+            });
+            router.push(`/criar/sucesso/${pageId}`);
+        } else {
+            toast({
+              title: "Solicitação de orçamento enviada!",
+              description: "Em breve nossa equipe entrará em contato.",
+            });
+            router.push('/criar/sucesso-orcamento');
+        }
+    } catch (error: any) {
       console.error("Failed to process page:", error);
       toast({
         variant: "destructive",
         title: "Erro ao criar página",
-        description: "Não foi possível salvar sua página. Tente novamente.",
+        description: error.message || "Não foi possível salvar sua página. Tente novamente.",
       });
     } finally {
         setIsSubmitting(false);
@@ -460,41 +466,37 @@ function NetflixCreatorPage() {
                                 <h2 className="text-2xl font-bold border-b border-red-600 pb-2">Finalização</h2>
                                 <FormField
                                     control={form.control}
-                                    name="contactName"
+                                    name="plan"
                                     render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Seu Nome</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Seu nome completo" {...field} className="bg-zinc-800 border-zinc-700" />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="contactEmail"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Seu E-mail de Contato</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="seu.email@exemplo.com" {...field} className="bg-zinc-800 border-zinc-700"/>
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="contactDoc"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Seu CPF/CNPJ</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Apenas números" {...field} className="bg-zinc-800 border-zinc-700"/>
-                                            </FormControl>
-                                            <FormDescription>Necessário para gerar a cobrança PIX.</FormDescription>
-                                            <FormMessage />
+                                        <FormItem className="space-y-3">
+                                        <FormLabel className="font-semibold">Qual o próximo passo?</FormLabel>
+                                        <FormControl>
+                                            <RadioGroup
+                                                onValueChange={field.onChange}
+                                                defaultValue={field.value}
+                                                className="grid grid-cols-1 gap-4"
+                                            >
+                                                <RadioGroupItem value="essencial" id="plan-essencial">
+                                                    <div className="flex items-start gap-4">
+                                                        <Gem className="w-6 h-6 text-red-500 mt-1" />
+                                                        <div>
+                                                            <h3 className="font-bold">Plano Essencial - R$14,99</h3>
+                                                            <p className="text-sm text-muted-foreground">Finalize com os recursos deste tema e pague para ativar a página.</p>
+                                                        </div>
+                                                    </div>
+                                                </RadioGroupItem>
+                                                <RadioGroupItem value="orcamento" id="plan-orcamento">
+                                                    <div className="flex items-start gap-4">
+                                                        <FileText className="w-6 h-6 text-red-500 mt-1" />
+                                                        <div>
+                                                            <h3 className="font-bold">Projeto Sob Medida</h3>
+                                                            <p className="text-sm text-muted-foreground">Envie sua criação para nós. Entraremos em contato para um orçamento personalizado.</p>
+                                                        </div>
+                                                    </div>
+                                                </RadioGroupItem>
+                                            </RadioGroup>
+                                        </FormControl>
+                                        <FormMessage />
                                         </FormItem>
                                     )}
                                 />
@@ -503,7 +505,7 @@ function NetflixCreatorPage() {
                             <div className="flex justify-end pt-8">
                                 <Button type="submit" size="lg" className="bg-red-600 hover:bg-red-700 text-white" disabled={isSubmitting}>
                                     {isSubmitting && <Loader className="mr-2 h-4 w-4 animate-spin"/>}
-                                    Criar e ir para o Pagamento
+                                    {watchedData.plan === 'orcamento' ? 'Solicitar Orçamento' : 'Criar e ir para o Pagamento'}
                                     <ChevronRight className="ml-2 h-4 w-4"/>
                                 </Button>
                             </div>

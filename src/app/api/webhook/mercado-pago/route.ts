@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
                 const pageId = paymentInfo.metadata.page_id;
                 if (pageId) {
                     console.log(`Processing payment for pageId: ${pageId}`);
-                    const result = await confirmPaymentAndSendEmail(pageId);
+                    const result = await confirmPaymentAndSendEmail(pageId.toString());
                     console.log(`Successfully processed pageId: ${pageId}`, result);
                 } else {
                     console.error("page_id not found in payment metadata");

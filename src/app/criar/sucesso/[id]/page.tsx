@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, use } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { confirmPaymentAndSendEmail, getPageData, updatePageStatus } from '@/actions/page';
 import { Button } from '@/components/ui/button';
@@ -12,10 +12,20 @@ import Link from 'next/link';
 import { useQRCode } from 'next-qrcode';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
+import Script from 'next/script';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 const NEXT_PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
 const FIXED_PRICE = 14.99;
+
+// Função para disparar eventos de pixel
+const trackPixelEvent = (eventName: string, data: any = {}) => {
+  if (typeof window !== 'undefined' && (window as any).fbq) {
+    (window as any).fbq('track', eventName, data);
+  }
+};
 
 export default function SucessoPage({ params }: { params: { id: string } }) {
   const { toast } = useToast();
@@ -27,7 +37,14 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
   const [pixData, setPixData] = useState<{qrCodeBase64: string, qrCode: string} | null>(null);
   const { Canvas } = useQRCode();
-  const contactDoc = searchParams.get('doc'); // Get doc from URL
+  const [hasTrackedCheckout, setHasTrackedCheckout] = useState(false);
+  const [hasTrackedPurchase, setHasTrackedPurchase] = useState(false);
+
+  // State for payment form
+  const [contactName, setContactName] = useState('');
+  const [contactCpf, setContactCpf] = useState('');
+  const [formError, setFormError] = useState('');
+
 
   // Effect to handle initial page load and payment confirmation from URL params
   const checkPageAndPayment = useCallback(async () => {
@@ -42,6 +59,18 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
         
         setPageData(data);
         setPaymentStatus(data.status);
+
+        // Track "InitiateCheckout" when the page loads, but only once.
+        if (data.status === 'pending_payment' && !hasTrackedCheckout) {
+          trackPixelEvent('InitiateCheckout', {
+            content_name: data.title,
+            content_ids: [params.id],
+            content_type: 'product',
+            value: FIXED_PRICE,
+            currency: 'BRL',
+          });
+          setHasTrackedCheckout(true);
+        }
         
         const mpStatus = searchParams.get('status');
         const paymentId = searchParams.get('payment_id');
@@ -53,9 +82,26 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                 const updatedData = await getPageData(params.id);
                 setPageData(updatedData);
                 setPaymentStatus('paid');
+                 if (!hasTrackedPurchase) {
+                  trackPixelEvent('Purchase', {
+                    value: FIXED_PRICE,
+                    currency: 'BRL',
+                    content_name: updatedData.title,
+                    content_ids: [params.id],
+                  });
+                  setHasTrackedPurchase(true);
+                }
             } else {
                 toast({ variant: "destructive", title: "Erro de Confirmação", description: result.message || "Ocorreu um erro ao ativar a página. Tente recarregar ou contate o suporte."});
             }
+        } else if (data.status === 'paid' && !hasTrackedPurchase) {
+           trackPixelEvent('Purchase', {
+              value: FIXED_PRICE,
+              currency: 'BRL',
+              content_name: data.title || data.heroTitle,
+              content_ids: [params.id],
+            });
+            setHasTrackedPurchase(true);
         }
     } catch (error) {
         console.error("Error fetching page data:", error);
@@ -63,7 +109,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     } finally {
         setLoading(false);
     }
-  }, [params.id, toast, searchParams]);
+  }, [params.id, toast, searchParams, hasTrackedCheckout, hasTrackedPurchase]);
 
   useEffect(() => {
     checkPageAndPayment();
@@ -79,6 +125,15 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
           if (data && data.status === 'paid') {
             setPageData(data);
             setPaymentStatus('paid');
+             if (!hasTrackedPurchase) {
+                trackPixelEvent('Purchase', {
+                  value: FIXED_PRICE,
+                  currency: 'BRL',
+                  content_name: data.title || data.heroTitle,
+                  content_ids: [params.id],
+                });
+                setHasTrackedPurchase(true);
+              }
             clearInterval(interval); // Stop polling once paid
           }
         } catch (error) {
@@ -96,19 +151,17 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
         clearTimeout(timeout);
       };
     }
-  }, [pixData, params.id, paymentStatus]);
+  }, [pixData, params.id, paymentStatus, hasTrackedPurchase]);
 
 
   const handleGeneratePix = async () => {
     if (!pageData) return;
-     if (!contactDoc) {
-        toast({
-            variant: "destructive",
-            title: "CPF/CNPJ não encontrado",
-            description: "Por favor, volte e preencha o formulário novamente.",
-        });
-        return;
+    
+    if (!contactName || contactCpf.length < 14) {
+      setFormError('Por favor, preencha seu nome completo e CPF corretamente.');
+      return;
     }
+    setFormError('');
 
     setCheckoutStatus('loading');
     setCheckoutError(null);
@@ -119,10 +172,10 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           pageId: params.id,
-          title: pageData.title,
+          title: pageData.title || pageData.heroTitle,
           email: pageData.contactEmail,
-          name: pageData.contactName,
-          docNumber: contactDoc,
+          name: contactName,
+          cpf: contactCpf,
         }),
       });
 
@@ -285,15 +338,10 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                 </p>
                 <Button 
                     size="lg" 
-                    onClick={handleGeneratePix}
+                    onClick={() => { setPixData(null); setCheckoutStatus('idle');}}
                     disabled={checkoutStatus === 'loading' || !pageData}
                 >
-                    {checkoutStatus === 'loading' ? 'Gerando Pix...' : (
-                        <>
-                            <Wallet className="mr-2 h-5 w-5" />
-                            Tentar Novamente - R$ {FIXED_PRICE.toFixed(2).replace('.', ',')}
-                        </>
-                    )}
+                    Tentar Novamente
                 </Button>
             </>
         )
@@ -354,6 +402,35 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                              <p className="text-xs text-muted-foreground text-center pt-2">Aguardando pagamento... A página irá atualizar sozinha após a confirmação.</p>
                         </div>
                     ) : (
+                      <div className='space-y-4'>
+                        <div className="space-y-2">
+                          <Label htmlFor="contactName">Nome Completo do Titular</Label>
+                          <Input 
+                            id="contactName" 
+                            placeholder="Seu nome completo" 
+                            value={contactName}
+                            onChange={(e) => setContactName(e.target.value)}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="contactCpf">CPF do Titular</Label>
+                          <Input 
+                            id="contactCpf"
+                            placeholder="000.000.000-00" 
+                            value={contactCpf}
+                            onChange={(e) => {
+                                const { value } = e.target;
+                                const formattedValue = value
+                                    .replace(/\D/g, '')
+                                    .replace(/(\d{3})(\d)/, '$1.$2')
+                                    .replace(/(\d{3})(\d)/, '$1.$2')
+                                    .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                                setContactCpf(formattedValue);
+                            }}
+                            maxLength={14}
+                          />
+                        </div>
+                        {formError && <p className="text-sm text-destructive">{formError}</p>}
                          <Button 
                             size="lg" 
                             className="w-full" 
@@ -367,6 +444,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                                 </>
                             )}
                         </Button>
+                      </div>
                     )}
                    
                      {checkoutStatus === 'error' && checkoutError && (

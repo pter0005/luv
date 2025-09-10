@@ -1,0 +1,25 @@
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Coleção 'users': Permite que um usuário crie, leia e altere
+    // seu próprio perfil, mas não o de outros.
+    match /users/{userId} {
+      allow read, update, delete: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null;
+    }
+
+    // Coleção 'pages':
+    // - read: Qualquer pessoa pode ler uma página.
+    // - create, update, delete: Apenas o dono da página (usuário autenticado)
+    //   pode criar, atualizar ou deletar, garantindo que o userId da página
+    //   seja o mesmo do usuário logado.
+    match /pages/{pageId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null && request.auth.uid == request.resource.data.userId;
+    }
+  }
+}
+
+    

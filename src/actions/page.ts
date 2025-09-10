@@ -6,54 +6,41 @@ import { prepareAndSendEmail } from '@/ai/flows/send-link-email';
 import { doc, setDoc, getDoc, collection, getDocs, query, where, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
-const formSchema = z.object({
-  title: z.string().min(1, "O título é obrigatório."),
-  titleColor: z.string().optional(),
-  message: z.string().optional(),
-  messageFontSize: z.string().optional(),
-  startDate: z.date().optional(),
-  dateDisplayType: z.string().optional(),
-  photos: z.array(z.string()).optional(),
-  photoDisplayType: z.string().optional(),
-  musicChoice: z.string().optional(),
-  musicUrl: z.string().url("URL inválida.").optional().or(z.literal('')),
-  customAudio: z.string().optional(),
-  backgroundAnimation: z.string().optional(),
-  heartColor: z.string().optional(),
-  loveLightColor: z.string().optional(),
-  unlockType: z.string().optional(),
-  puzzleImage: z.string().optional(),
-  puzzleTitle: z.string().optional(),
-  puzzleDescription: z.string().optional(),
-  contactName: z.string().min(1, "O nome é obrigatório."),
-  contactEmail: z.string().email("Email inválido.").min(1, "O e-mail é obrigatório."),
-  contactDoc: z.string().min(11, "O CPF/CNPJ é obrigatório."),
-  plan: z.string().min(1, "Você deve escolher uma opção."),
-  heroVideoUrl: z.string().optional(),
-  // For templates
-  template: z.string().optional(),
-  heroType: z.string().optional(),
-  heroImage: z.string().optional(),
-  heroTitle: z.string().optional(),
-  heroDescription: z.string().optional(),
-  categories: z.array(z.any()).optional(),
-  contactPhone: z.string().optional(),
-});
+// This is a generic type for form data, as we have multiple form structures.
+// The validation happens on the client-side with Zod. Here, we accept a flexible object.
+type FormData = { [key: string]: any };
 
-type FormData = z.infer<typeof formSchema>;
-
-// Helper to convert Firebase Timestamps to serializable strings
+// Helper to convert Firebase Timestamps to serializable strings for client-side use.
 const toJSON = (data: any) => {
   if (!data) return data;
-  return JSON.parse(JSON.stringify(data, (key, value) => {
-    if (value && value.seconds !== undefined && value.nanoseconds !== undefined) {
-      // Check if it's a Firebase Timestamp-like object
-      const date = new Timestamp(value.seconds, value.nanoseconds).toDate();
-      return date.toISOString();
+  // Firestore data is often nested. We need a recursive conversion.
+  const isObject = (val: any) => val && typeof val === 'object' && !Array.isArray(val);
+
+  const convertTimestamps = (obj: any): any => {
+    if (!obj || typeof obj !== 'object') return obj;
+    if (obj instanceof Timestamp) return obj.toDate().toISOString();
+
+    const newObj: { [key: string]: any } = {};
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          const value = obj[key];
+          if (value instanceof Timestamp) {
+            newObj[key] = value.toDate().toISOString();
+          } else if (isObject(value)) {
+            newObj[key] = convertTimestamps(value); // Recurse for nested objects
+          } else if (Array.isArray(value)) {
+            newObj[key] = value.map(item => convertTimestamps(item)); // Recurse for arrays
+          } else {
+            newObj[key] = value;
+          }
+      }
     }
-    return value;
-  }));
+    return newObj;
+  };
+  
+  return JSON.parse(JSON.stringify(convertTimestamps(data)));
 };
+
 
 export async function uploadVideo(file: File): Promise<string> {
     // This is a mock function. In a real app, you'd upload to a service like S3 or Firebase Storage.
@@ -71,13 +58,48 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
     const pageId = Date.now().toString();
     const status = data.plan === 'essencial' ? 'pending_payment' : 'pending_quote';
     
-    const pageDataForDb: Record<string, any> = {
-      ...data,
+    // Create a new, clean object with only the expected fields to prevent serialization errors.
+    const pageDataForDb: { [key: string]: any } = {
       userId: userId,
       status: status,
-      createdAt: new Date(),
+      createdAt: Timestamp.now(),
+      title: data.title,
+      titleColor: data.titleColor,
+      message: data.message,
+      messageFontSize: data.messageFontSize,
+      photos: data.photos || [],
+      photoDisplayType: data.photoDisplayType,
+      musicChoice: data.musicChoice,
+      musicUrl: data.musicUrl,
+      customAudio: data.customAudio,
+      backgroundAnimation: data.backgroundAnimation,
+      heartColor: data.heartColor,
+      loveLightColor: data.loveLightColor,
+      unlockType: data.unlockType,
+      puzzleImage: data.puzzleImage,
+      puzzleTitle: data.puzzleTitle,
+      puzzleDescription: data.puzzleDescription,
+      plan: data.plan,
+      contactEmail: data.contactEmail,
+      // Include template-specific data if available
+      template: data.template,
+      heroType: data.heroType,
+      heroImage: data.heroImage,
+      heroVideoUrl: data.heroVideoUrl,
+      heroTitle: data.heroTitle,
+      heroDescription: data.heroDescription,
+      categories: data.categories,
+      dateDisplayType: data.dateDisplayType,
     };
 
+    // Safely handle date conversion
+    if (data.startDate && typeof data.startDate === 'string') {
+      const date = new Date(data.startDate);
+      if (!isNaN(date.getTime())) {
+        pageDataForDb.startDate = Timestamp.fromDate(date);
+      }
+    }
+    
     // Firestore does not accept 'undefined' values.
     // We must clean the object before sending it.
     Object.keys(pageDataForDb).forEach(key => {
@@ -91,9 +113,11 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
     console.log('Document written with ID: ', pageId);
     return pageId;
 
-  } catch (e) {
-    console.error('Error adding document: ', e);
-    throw new Error('Failed to save page data.');
+  } catch (e: any) {
+    console.error('CRITICAL: Error adding document in savePageData. Raw Error:', e);
+    console.error('Error Details (if available):', e.details);
+    console.error('Data that failed:', JSON.stringify(data, null, 2));
+    throw new Error(e.message || 'Failed to save page data due to a server error.');
   }
 }
 
@@ -146,7 +170,7 @@ export async function confirmPaymentAndSendEmail(pageId: string) {
                 name: pageData.contactName || 'Criador(a)',
                 email: pageData.contactEmail,
                 pageId: pageId,
-                pageTitle: pageData.title!,
+                pageTitle: pageData.title || pageData.heroTitle,
             });
             console.log('Email process initiated for:', pageData.contactEmail);
             return { success: true, message: 'Payment confirmed and email sent.' };
@@ -186,10 +210,7 @@ export async function getPagesByUserId(userId: string) {
     const querySnapshot = await getDocs(q);
     const pages: any[] = [];
     querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      // Convert any Firebase Timestamps to serializable strings
-      const serializableData = toJSON(data);
-      pages.push({ id: doc.id, ...serializableData });
+      pages.push({ id: doc.id, ...toJSON(doc.data()) });
     });
     return pages;
   } catch (error) {
@@ -197,3 +218,6 @@ export async function getPagesByUserId(userId: string) {
     return [];
   }
 }
+    
+
+    
