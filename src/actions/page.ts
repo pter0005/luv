@@ -58,7 +58,6 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
     const pageId = Date.now().toString();
     const status = data.plan === 'essencial' ? 'pending_payment' : 'pending_quote';
     
-    // Create a new, clean object with only the expected fields to prevent serialization errors.
     const pageDataForDb: { [key: string]: any } = {
       userId: userId,
       status: status,
@@ -83,7 +82,6 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
       contactEmail: data.contactEmail,
       contactName: data.contactName,
       contactCpf: data.contactCpf,
-      // Include template-specific data if available
       template: data.template,
       heroType: data.heroType,
       heroImage: data.heroImage,
@@ -94,7 +92,6 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
       dateDisplayType: data.dateDisplayType,
     };
 
-    // Safely handle date conversion
     if (data.startDate && typeof data.startDate === 'string') {
       const date = new Date(data.startDate);
       if (!isNaN(date.getTime())) {
@@ -102,8 +99,6 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
       }
     }
     
-    // Firestore does not accept 'undefined' values.
-    // We must clean the object before sending it.
     Object.keys(pageDataForDb).forEach(key => {
       if (pageDataForDb[key] === undefined) {
         delete pageDataForDb[key];
@@ -220,6 +215,5 @@ export async function getPagesByUserId(userId: string) {
     return [];
   }
 }
-    
 
     

@@ -108,7 +108,8 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   }, [checkPageAndPayment]);
   
   useEffect(() => {
-    if (pageData && !pixData && checkoutStatus === 'idle') {
+    // Only generate PIX if we have the necessary data and haven't started the process
+    if (pageData && pageData.contactName && pageData.contactCpf && !pixData && checkoutStatus === 'idle') {
       handleGeneratePix();
     }
   }, [pageData, pixData, checkoutStatus]);
@@ -154,7 +155,10 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
 
 
   const handleGeneratePix = async () => {
-    if (!pageData) return;
+    if (!pageData || !pageData.contactName || !pageData.contactCpf) {
+      toast({ variant: 'destructive', title: 'Dados incompletos', description: 'Nome e CPF são necessários para o pagamento.'});
+      return;
+    };
     
     setCheckoutStatus('loading');
     setCheckoutError(null);
@@ -441,3 +445,5 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
+
+    
