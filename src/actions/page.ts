@@ -55,6 +55,10 @@ export async function uploadVideo(file: File): Promise<string> {
 
 export async function savePageData(data: FormData, userId: string): Promise<string> {
   try {
+    if (!userId) {
+        throw new Error('User ID is missing.');
+    }
+      
     const pageId = Date.now().toString();
     const status = data.plan === 'essencial' ? 'pending_payment' : 'pending_quote';
     
@@ -216,3 +220,5 @@ export async function getPagesByUserId(userId: string) {
     return [];
   }
 }
+
+    
