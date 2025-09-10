@@ -53,47 +53,53 @@ export async function uploadVideo(file: File): Promise<string> {
 }
 
 
-export async function savePageData(data: FormData, userId: string): Promise<string> {
+export async function savePageData(data: FormData): Promise<string> {
+  const { userId, ...pageData } = data;
+
+  if (!userId) {
+    throw new Error('User ID is missing. The user must be authenticated.');
+  }
+
   try {
     const pageId = Date.now().toString();
-    const status = data.plan === 'essencial' ? 'pending_payment' : 'pending_quote';
+    const status = pageData.plan === 'essencial' ? 'pending_payment' : 'pending_quote';
     
     const pageDataForDb: { [key: string]: any } = {
       userId: userId,
       status: status,
       createdAt: Timestamp.now(),
-      title: data.title,
-      titleColor: data.titleColor,
-      message: data.message,
-      messageFontSize: data.messageFontSize,
-      photos: data.photos || [],
-      photoDisplayType: data.photoDisplayType,
-      musicChoice: data.musicChoice,
-      musicUrl: data.musicUrl,
-      customAudio: data.customAudio,
-      backgroundAnimation: data.backgroundAnimation,
-      heartColor: data.heartColor,
-      loveLightColor: data.loveLightColor,
-      unlockType: data.unlockType,
-      puzzleImage: data.puzzleImage,
-      puzzleTitle: data.puzzleTitle,
-      puzzleDescription: data.puzzleDescription,
-      plan: data.plan,
-      contactEmail: data.contactEmail,
-      contactName: data.contactName,
-      contactCpf: data.contactCpf,
-      template: data.template,
-      heroType: data.heroType,
-      heroImage: data.heroImage,
-      heroVideoUrl: data.heroVideoUrl,
-      heroTitle: data.heroTitle,
-      heroDescription: data.heroDescription,
-      categories: data.categories,
-      dateDisplayType: data.dateDisplayType,
+      title: pageData.title,
+      titleColor: pageData.titleColor,
+      message: pageData.message,
+      messageFontSize: pageData.messageFontSize,
+      photos: pageData.photos || [],
+      photoDisplayType: pageData.photoDisplayType,
+      musicChoice: pageData.musicChoice,
+      musicUrl: pageData.musicUrl,
+      customAudio: pageData.customAudio,
+      backgroundAnimation: pageData.backgroundAnimation,
+      heartColor: pageData.heartColor,
+      loveLightColor: pageData.loveLightColor,
+      unlockType: pageData.unlockType,
+      puzzleImage: pageData.puzzleImage,
+      puzzleTitle: pageData.puzzleTitle,
+      puzzleDescription: pageData.puzzleDescription,
+      plan: pageData.plan,
+      contactEmail: pageData.contactEmail,
+      contactName: pageData.contactName,
+      contactCpf: pageData.contactCpf,
+      template: pageData.template,
+      heroType: pageData.heroType,
+      heroImage: pageData.heroImage,
+      heroVideoUrl: pageData.heroVideoUrl,
+      heroTitle: pageData.heroTitle,
+      heroDescription: pageData.heroDescription,
+      categories: pageData.categories,
+      dateDisplayType: pageData.dateDisplayType,
     };
 
-    if (data.startDate && typeof data.startDate === 'string') {
-      const date = new Date(data.startDate);
+    if (pageData.startDate && typeof pageData.startDate === 'string') {
+      const date = new Date(pageData.startDate);
       if (!isNaN(date.getTime())) {
         pageDataForDb.startDate = Timestamp.fromDate(date);
       }

@@ -323,13 +323,15 @@ function CreatorStudioPage() {
     }
 
     try {
+      // Convert date to ISO string before sending to the server
       const pageDataToSave = {
         ...data,
         startDate: data.startDate ? data.startDate.toISOString() : undefined,
         contactEmail: user.email,
+        userId: user.uid, // Pass userId along with form data
       };
 
-      const pageId = await savePageData(pageDataToSave, user.uid);
+      const pageId = await savePageData(pageDataToSave);
 
       if (data.plan === 'essencial') {
         toast({
