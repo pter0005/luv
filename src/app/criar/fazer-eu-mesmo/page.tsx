@@ -36,7 +36,9 @@ import {
   Puzzle,
   FileText,
   Gem,
-  LogIn
+  LogIn,
+  User,
+  BadgeCheck
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Editor } from "@/components/ui/editor";
@@ -90,8 +92,26 @@ const formSchema = z.object({
   puzzleDescription: z.string().optional(),
   plan: z.string().min(1, "Você deve escolher uma opção."),
   contactName: z.string().optional(), 
-  contactCpf: z.string().optional(), 
+  contactCpf: z.string().optional(),
+}).superRefine((data, ctx) => {
+    if (data.plan === 'essencial') {
+        if (!data.contactName || data.contactName.trim().split(' ').length < 2) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Por favor, informe seu nome completo.",
+                path: ["contactName"],
+            });
+        }
+         if (!data.contactCpf || data.contactCpf.length < 14) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Por favor, informe um CPF válido.",
+                path: ["contactCpf"],
+            });
+        }
+    }
 });
+
 
 export type FormData = z.infer<typeof formSchema>;
 
@@ -373,7 +393,7 @@ function CreatorStudioPage() {
     {
       name: "plan" as const,
       title: "Finalização",
-      description: "Escolha o tipo de criação para finalizar sua página.",
+      description: "Confirme os detalhes e escolha o tipo de criação para finalizar sua página.",
     },
   ];
 
@@ -383,7 +403,12 @@ function CreatorStudioPage() {
     
     // Add specific validation logic for steps if needed
     if (currentField === 'plan') {
-        fieldsToValidate = ['plan'];
+        const plan = form.getValues('plan');
+        if (plan === 'essencial') {
+            fieldsToValidate = ['contactName', 'contactCpf', 'plan'];
+        } else {
+             fieldsToValidate = ['plan'];
+        }
     }
 
     if (currentField === 'musicChoice') {
@@ -1048,6 +1073,48 @@ function CreatorStudioPage() {
                               </FormItem>
                           )}
                       />
+                      {watchedData.plan === 'essencial' && (
+                        <div className="p-4 border rounded-lg space-y-4 bg-card">
+                            <h3 className="font-semibold text-lg flex items-center gap-2"><BadgeCheck className="w-5 h-5 text-primary" /> Dados para Pagamento</h3>
+                             <FormField
+                                control={form.control}
+                                name="contactName"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Nome Completo do Titular</FormLabel>
+                                        <FormControl><Input placeholder="Seu nome como no documento" {...field} /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="contactCpf"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>CPF do Titular</FormLabel>
+                                        <FormControl>
+                                            <Input 
+                                                placeholder="000.000.000-00" 
+                                                {...field}
+                                                onChange={(e) => {
+                                                    const { value } = e.target;
+                                                    const formattedValue = value
+                                                        .replace(/\D/g, '')
+                                                        .replace(/(\d{3})(\d)/, '$1.$2')
+                                                        .replace(/(\d{3})(\d)/, '$1.$2')
+                                                        .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                                                    field.onChange(formattedValue);
+                                                }}
+                                                maxLength={14}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                      )}
                   </div>
                 )}
               </div>
@@ -1067,5 +1134,3 @@ function CreatorStudioPage() {
 }
 
 export default CreatorStudioPage;
-
-    

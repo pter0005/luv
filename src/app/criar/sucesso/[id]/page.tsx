@@ -13,8 +13,6 @@ import { useQRCode } from 'next-qrcode';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
 import Script from 'next/script';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 
 const NEXT_PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
@@ -39,12 +37,6 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   const { Canvas } = useQRCode();
   const [hasTrackedCheckout, setHasTrackedCheckout] = useState(false);
   const [hasTrackedPurchase, setHasTrackedPurchase] = useState(false);
-
-  // State for payment form
-  const [contactName, setContactName] = useState('');
-  const [contactCpf, setContactCpf] = useState('');
-  const [formError, setFormError] = useState('');
-
 
   // Effect to handle initial page load and payment confirmation from URL params
   const checkPageAndPayment = useCallback(async () => {
@@ -114,6 +106,13 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   useEffect(() => {
     checkPageAndPayment();
   }, [checkPageAndPayment]);
+  
+  useEffect(() => {
+    if (pageData && !pixData && checkoutStatus === 'idle') {
+      handleGeneratePix();
+    }
+  }, [pageData, pixData, checkoutStatus]);
+
 
   // Polling effect
   useEffect(() => {
@@ -157,12 +156,6 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
   const handleGeneratePix = async () => {
     if (!pageData) return;
     
-    if (!contactName || contactCpf.length < 14) {
-      setFormError('Por favor, preencha seu nome completo e CPF corretamente.');
-      return;
-    }
-    setFormError('');
-
     setCheckoutStatus('loading');
     setCheckoutError(null);
 
@@ -174,8 +167,8 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
           pageId: params.id,
           title: pageData.title || pageData.heroTitle,
           email: pageData.contactEmail,
-          name: contactName,
-          cpf: contactCpf,
+          name: pageData.contactName,
+          cpf: pageData.contactCpf,
         }),
       });
 
@@ -338,7 +331,7 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                 </p>
                 <Button 
                     size="lg" 
-                    onClick={() => { setPixData(null); setCheckoutStatus('idle');}}
+                    onClick={() => { setPixData(null); setCheckoutStatus('idle'); handleGeneratePix();}}
                     disabled={checkoutStatus === 'loading' || !pageData}
                 >
                     Tentar Novamente
@@ -384,7 +377,14 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {pixData ? (
+                    {checkoutStatus === 'loading' && (
+                        <div className='flex flex-col items-center justify-center gap-4 p-8'>
+                            <Loader className="w-10 h-10 animate-spin text-primary"/>
+                            <p className="text-muted-foreground">Gerando QR Code...</p>
+                        </div>
+                    )}
+
+                    {checkoutStatus === 'success' && pixData && (
                         <div className="flex flex-col items-center justify-center gap-4">
                             <p className="text-sm text-center text-muted-foreground">Escaneie o QR Code com o app do seu banco ou use o Copia e Cola:</p>
                             <div className="bg-white p-2 rounded-lg">
@@ -401,53 +401,9 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                             </Button>
                              <p className="text-xs text-muted-foreground text-center pt-2">Aguardando pagamento... A página irá atualizar sozinha após a confirmação.</p>
                         </div>
-                    ) : (
-                      <div className='space-y-4'>
-                        <div className="space-y-2">
-                          <Label htmlFor="contactName">Nome Completo do Titular</Label>
-                          <Input 
-                            id="contactName" 
-                            placeholder="Seu nome completo" 
-                            value={contactName}
-                            onChange={(e) => setContactName(e.target.value)}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="contactCpf">CPF do Titular</Label>
-                          <Input 
-                            id="contactCpf"
-                            placeholder="000.000.000-00" 
-                            value={contactCpf}
-                            onChange={(e) => {
-                                const { value } = e.target;
-                                const formattedValue = value
-                                    .replace(/\D/g, '')
-                                    .replace(/(\d{3})(\d)/, '$1.$2')
-                                    .replace(/(\d{3})(\d)/, '$1.$2')
-                                    .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-                                setContactCpf(formattedValue);
-                            }}
-                            maxLength={14}
-                          />
-                        </div>
-                        {formError && <p className="text-sm text-destructive">{formError}</p>}
-                         <Button 
-                            size="lg" 
-                            className="w-full" 
-                            onClick={handleGeneratePix}
-                            disabled={checkoutStatus === 'loading' || !pageData}
-                        >
-                            {checkoutStatus === 'loading' ? 'Gerando Pix...' : (
-                                <>
-                                    <QrCode className="mr-2 h-5 w-5" />
-                                    Gerar QR Code Pix
-                                </>
-                            )}
-                        </Button>
-                      </div>
                     )}
                    
-                     {checkoutStatus === 'error' && checkoutError && (
+                    {checkoutStatus === 'error' && checkoutError && (
                         <div className="bg-destructive/20 border border-destructive/50 text-destructive-foreground p-4 rounded-lg text-sm mt-4 text-left">
                             <h4 className="font-bold mb-2">Ocorreu um erro:</h4>
                             <p className="font-mono text-xs whitespace-pre-wrap">{checkoutError.error}</p>
@@ -456,6 +412,13 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
                                     {JSON.stringify(checkoutError.details, null, 2)}
                                 </pre>
                             )}
+                             <Button 
+                                size="sm" 
+                                className="w-full mt-4" 
+                                onClick={handleGeneratePix}
+                            >
+                                Tentar gerar novamente
+                            </Button>
                         </div>
                     )}
                 </CardContent>
