@@ -3,7 +3,8 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, QrCode, PlayCircle, Puzzle, Mic } from "react-feather";
+import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, PlayCircle, Puzzle, Mic } from "react-feather";
+import { useQRCode } from 'next-qrcode';
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -19,6 +20,8 @@ import { AnimatedBackground } from "@/components/app/AnimatedBackground";
 import { ScrollFadeIn } from "@/components/app/ScrollFadeIn";
 
 export default function CreatorPage() {
+  const { Canvas } = useQRCode();
+
   const testimonials = [
     { name: "Mariana & João", date: "15 de Maio, 2024", message: "Adorei a experiência! Pude criar uma página especial para o João com nossas fotos favoritas, uma playlist personalizada e um texto que representa nossa história. Ele ficou super emocionado quando viu!", image: "https://picsum.photos/100/100?random=1" },
     { name: "Ana & Pedro", date: "2 de Junho, 2024", message: "Com a Luv, pude expressar meu amor de um jeito totalmente diferente. Adorei criar uma página só para nós dois.", image: "https://picsum.photos/100/100?random=2" },
@@ -62,7 +65,7 @@ export default function CreatorPage() {
       imageHint: "audio recording"
     },
     {
-      icon: QrCode,
+      icon: 'QrCode',
       title: "QR Code Exclusivo",
       description: "Receba um QR Code para imprimir e surpreender de forma criativa.",
       image: "https://picsum.photos/800/600?random=25",
@@ -172,7 +175,25 @@ export default function CreatorPage() {
                         />
                     </div>
                    <CardHeader>
-                      <feature.icon className="w-8 h-8 mb-2 text-primary" />
+                      {feature.icon === 'QrCode' ? (
+                          <div className="w-8 h-8 mb-2 text-primary">
+                            <Canvas
+                              text="https://luv.com"
+                              options={{
+                                level: 'M',
+                                margin: 3,
+                                scale: 4,
+                                width: 32,
+                                color: {
+                                  dark: '#7c3aed',
+                                  light: '#0000',
+                                },
+                              }}
+                            />
+                          </div>
+                        ) : (
+                          <feature.icon className="w-8 h-8 mb-2 text-primary" />
+                        )}
                       <CardTitle>{feature.title}</CardTitle>
                       <CardDescription>{feature.description}</CardDescription>
                    </CardHeader>
