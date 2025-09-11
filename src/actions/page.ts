@@ -81,7 +81,8 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
         delete pageDataForDb.startDate;
       }
     } else if (data.startDate) {
-        // If startDate is not a string, delete it to avoid Firestore errors
+        // If startDate is not a string (e.g. it's a Date object that failed serialization),
+        // delete it to avoid Firestore errors.
         delete pageDataForDb.startDate;
     }
     
@@ -104,6 +105,7 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
     console.error(e);
     console.error('--- ERROR DETAILS (if available) ---');
     if (e.cause) console.error(e.cause);
+    if (e.stack) console.error(e.stack);
     console.error('--- FAILED DATA ---');
     console.error(JSON.stringify(data, null, 2));
 
