@@ -6,7 +6,7 @@
     "dev": "next dev -p 9002",
     "genkit:dev": "genkit start -- tsx ai-dev/dev.ts",
     "genkit:watch": "genkit start -- tsx --watch ai-dev/dev.ts",
-    "build": "next build",
+    "build": "npm run typecheck && next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
@@ -54,7 +54,7 @@
     "nodemailer": "^6.9.14",
     "patch-package": "^8.0.0",
     "react": "19.0.0-rc-65a56d0e-20241020",
-    "react-day-picker": "^8.10.1",
+    "react-day-picker": "8.10.1",
     "react-dom": "19.0.0-rc-65a56d0e-20241020",
     "react-hook-form": "^7.54.2",
     "recharts": "^2.15.1",
@@ -79,6 +79,22 @@
   "overrides": {
     "react-day-picker": {
       "react": "$react"
+    },
+    "@mercadopago/sdk-react": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    },
+    "@tiptap/pm": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    },
+    "@tiptap/react": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    },
+    "@tiptap/starter-kit": {
+      "react": "$react",
+      "react-dom": "$react-dom"
     }
   }
 }
