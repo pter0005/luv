@@ -94,7 +94,10 @@ const formSchema = z.object({
   contactName: z.string().min(1, "O nome é obrigatório.").refine(value => value.trim().split(' ').length >= 2, {
     message: "Por favor, informe seu nome completo.",
   }),
-  contactDoc: z.string().min(11, "CPF/CNPJ inválido.").max(14, "CPF/CNPJ inválido."),
+  contactDoc: z.string().refine(doc => {
+    const cleaned = doc.replace(/\D/g, '');
+    return cleaned.length === 11 || cleaned.length === 14;
+  }, "CPF/CNPJ inválido."),
   contactEmail: z.string().email("Email inválido."),
   contactPhone: z.string().min(10, "Telefone inválido."),
 });
@@ -312,7 +315,13 @@ function CreatorStudioPage() {
     }
 
     try {
-      const pageId = await savePageData(data, user.uid);
+      // Convert date to a serializable format (ISO string)
+      const serializableData: any = { ...data };
+      if (data.startDate) {
+        serializableData.startDate = data.startDate.toISOString();
+      }
+
+      const pageId = await savePageData(serializableData, user.uid);
 
       if (data.plan === 'essencial') {
         toast({
@@ -328,7 +337,7 @@ function CreatorStudioPage() {
         router.push(`/criar/sucesso-orcamento`);
       }
     } catch (error: any) {
-      console.error("Client-side error submitting form:", error);
+      console.error("CRITICAL: Client-side error submitting form:", error);
       toast({
         variant: "destructive",
         title: "Erro ao Criar Página",

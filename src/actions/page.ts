@@ -70,11 +70,14 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
       createdAt: Timestamp.now(),
     };
 
-    // Safely handle date conversion
+    // Safely handle date conversion from ISO string to Firebase Timestamp
     if (data.startDate && typeof data.startDate === 'string') {
       const date = new Date(data.startDate);
       if (!isNaN(date.getTime())) {
         pageDataForDb.startDate = Timestamp.fromDate(date);
+      } else {
+        // Handle invalid date string if necessary, e.g., by deleting it
+        delete pageDataForDb.startDate;
       }
     }
     
