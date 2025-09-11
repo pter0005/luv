@@ -95,6 +95,19 @@
     "@tiptap/starter-kit": {
       "react": "$react",
       "react-dom": "$react-dom"
+    },
+    "framer-motion": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    },
+    "lucide-react": {
+      "react": "$react"
+    },
+    "next-qrcode": {
+      "react": "$react"
+    },
+    "react-hook-form": {
+      "react": "$react"
     }
   }
 }
