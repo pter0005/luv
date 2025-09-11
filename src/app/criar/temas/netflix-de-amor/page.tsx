@@ -16,7 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { ArrowLeft, ChevronRight, Loader, LogIn, PlusCircle, Trash2, Upload, Video, Image as ImageIcon, FileVideo, Gem, FileText } from "lucide-react";
+import { ArrowLeft, ChevronRight, Loader, LogIn, PlusCircle, Trash2, Upload, Video, Image as ImageIcon, FileVideo, Gem, FileText, BadgeCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { savePageData, uploadVideo } from "@/actions/page";
 import { useRouter } from "next/navigation";
@@ -46,6 +46,10 @@ const formSchema = z.object({
   heroDescription: z.string().min(1, "A sinopse é obrigatória."),
   categories: z.array(categorySchema).min(1, "Adicione pelo menos uma categoria."),
   plan: z.string().min(1, "Você deve escolher uma opção.").default("essencial"),
+  contactName: z.string().optional(),
+  contactDoc: z.string().optional(),
+  contactEmail: z.string().optional(),
+  contactPhone: z.string().optional(),
 }).refine(data => {
     if (data.heroType === 'image') return !!data.heroImage;
     if (data.heroType === 'video') return !!data.heroVideoUrl;
@@ -54,6 +58,14 @@ const formSchema = z.object({
 }, {
     message: "Você precisa fornecer uma imagem, um vídeo do YouTube ou anexar um vídeo.",
     path: ["heroType"],
+}).refine(data => {
+    if (data.plan === 'essencial') {
+        return !!data.contactName && !!data.contactEmail && !!data.contactDoc && !!data.contactPhone;
+    }
+    return true;
+}, {
+    message: "Nome, e-mail, documento e telefone são obrigatórios para o plano essencial.",
+    path: ['contactName'], // You can point to any of the fields
 });
 
 
@@ -189,6 +201,7 @@ function NetflixCreatorPage() {
         { title: "Filmes em Alta", items: [] },
       ],
       plan: "essencial",
+      contactEmail: user?.email || '',
     },
   });
 
@@ -198,6 +211,12 @@ function NetflixCreatorPage() {
   });
 
   const watchedData = form.watch();
+
+   React.useEffect(() => {
+    if (user) {
+        form.setValue('contactEmail', user.email || '');
+    }
+   }, [user, form]);
 
   const handleHeroImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -248,7 +267,6 @@ function NetflixCreatorPage() {
         const pageDataForDb = { 
             ...data, 
             title: data.heroTitle, // Use heroTitle as main title for dashboard etc.
-            contactEmail: user.email,
         };
         const pageId = await savePageData(pageDataForDb as any, user.uid);
         
@@ -500,6 +518,15 @@ function NetflixCreatorPage() {
                                         </FormItem>
                                     )}
                                 />
+                                {watchedData.plan === 'essencial' && (
+                                    <div className="p-4 border border-zinc-700 rounded-lg space-y-4">
+                                        <h3 className="font-semibold text-lg flex items-center gap-2"><BadgeCheck className="w-5 h-5 text-red-500" /> Dados para Pagamento</h3>
+                                        <FormField control={form.control} name="contactName" render={({ field }) => (<FormItem><FormLabel>Seu Nome Completo</FormLabel><FormControl><Input placeholder="Seu nome" {...field} className="bg-zinc-800 border-zinc-700" /></FormControl><FormMessage /></FormItem>)} />
+                                        <FormField control={form.control} name="contactEmail" render={({ field }) => (<FormItem><FormLabel>Seu E-mail de Contato</FormLabel><FormControl><Input type="email" placeholder="Seu e-mail" {...field} className="bg-zinc-800 border-zinc-700" /></FormControl><FormMessage /></FormItem>)} />
+                                        <FormField control={form.control} name="contactDoc" render={({ field }) => (<FormItem><FormLabel>Seu CPF/CNPJ</FormLabel><FormControl><Input placeholder="Apenas números" {...field} className="bg-zinc-800 border-zinc-700" /></FormControl><FormMessage /></FormItem>)} />
+                                        <FormField control={form.control} name="contactPhone" render={({ field }) => (<FormItem><FormLabel>Seu Telefone</FormLabel><FormControl><Input placeholder="(99) 99999-9999" {...field} className="bg-zinc-800 border-zinc-700" /></FormControl><FormMessage /></FormItem>)} />
+                                    </div>
+                                )}
                             </div>
 
                             <div className="flex justify-end pt-8">
@@ -542,5 +569,3 @@ function NetflixCreatorPage() {
 }
 
 export default NetflixCreatorPage;
-
-    

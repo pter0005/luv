@@ -28,6 +28,11 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Todos os campos são obrigatórios: pageId, title, email, name, doc, phone' }, { status: 400 });
         }
         
+        const cleanedDoc = contactDoc.replace(/\D/g, '');
+        if (cleanedDoc.length !== 11 && cleanedDoc.length !== 14) {
+             return NextResponse.json({ error: 'O documento (CPF/CNPJ) fornecido é inválido.' }, { status: 400 });
+        }
+
         const payment = new Payment(client);
         
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
@@ -52,8 +57,8 @@ export async function POST(req: NextRequest) {
                 first_name: firstName,
                 last_name: lastName,
                 identification: {
-                    type: contactDoc.length === 11 ? 'CPF' : 'CNPJ',
-                    number: contactDoc.replace(/\D/g, ''),
+                    type: cleanedDoc.length === 11 ? 'CPF' : 'CNPJ',
+                    number: cleanedDoc,
                 },
                  address: {},
             },
@@ -104,5 +109,3 @@ export async function POST(req: NextRequest) {
         }, { status: 500 });
     }
 }
-
-    

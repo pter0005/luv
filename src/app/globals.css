@@ -246,5 +246,14 @@
   aspect-ratio: 3 / 4; /* Mais vertical */
 }
 .slide-image-wrapper img {
-    object-fit: cover;
+    object-fit: contain;
+}
+
+/* Scrollbar hide */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
