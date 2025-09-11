@@ -39,7 +39,7 @@ import {
   LogIn,
   User,
   BadgeCheck
-} from "react-feather";
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Editor } from "@/components/ui/editor";
 import { Progress } from "@/components/ui/progress";
@@ -1149,5 +1149,3 @@ function CreatorStudioPage() {
 }
 
 export default CreatorStudioPage;
-
-    

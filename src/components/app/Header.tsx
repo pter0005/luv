@@ -1,7 +1,7 @@
 
 "use client";
 
-import { Menu, LogOut, LayoutDashboard } from "react-feather";
+import { Menu, LogOut, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import {

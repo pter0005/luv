@@ -7,7 +7,7 @@ import { confirmPaymentAndSendEmail, getPageData, updatePageStatus } from '@/act
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, CheckCircle, Clock, Copy, Download, Share2, Wallet, XCircle, AlertTriangle, QrCode, Loader } from 'react-feather';
+import { ArrowLeft, CheckCircle, Clock, Copy, Download, Share2, Wallet, XCircle, AlertTriangle, QrCode, Loader } from 'lucide-react';
 import Link from 'next/link';
 import { useQRCode } from 'next-qrcode';
 import { useToast } from '@/hooks/use-toast';
@@ -451,5 +451,3 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
-
-    

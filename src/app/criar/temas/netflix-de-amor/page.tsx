@@ -16,7 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { ArrowLeft, ChevronRight, Loader, LogIn, PlusCircle, Trash2, Upload, Video, Image as ImageIcon, FileVideo, Gem, FileText, BadgeCheck } from "react-feather";
+import { ArrowLeft, ChevronRight, Loader, LogIn, PlusCircle, Trash2, Upload, Video, Image as ImageIcon, FileVideo, Gem, FileText, BadgeCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { savePageData, uploadVideo } from "@/actions/page";
 import { useRouter } from "next/navigation";

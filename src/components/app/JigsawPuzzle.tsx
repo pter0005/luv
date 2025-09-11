@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../ui/button';
-import { Puzzle, RefreshCw, X } from 'react-feather';
+import { Puzzle, RefreshCw, X } from 'lucide-react';
 import Image from 'next/image';
 
 interface JigsawPuzzleProps {

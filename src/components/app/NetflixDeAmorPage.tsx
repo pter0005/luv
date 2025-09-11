@@ -3,7 +3,7 @@
 
 import Image from "next/image";
 import * as React from "react";
-import { Play, Info, X } from "react-feather";
+import { Play, Info, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface NetflixDeAmorPageProps {

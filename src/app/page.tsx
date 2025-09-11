@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, PlayCircle, Puzzle, Mic } from "react-feather";
+import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, PlayCircle, Puzzle, Mic, QrCode } from "lucide-react";
 import { useQRCode } from 'next-qrcode';
 import { Button } from "@/components/ui/button";
 import {
@@ -65,7 +65,7 @@ export default function CreatorPage() {
       imageHint: "audio recording"
     },
     {
-      icon: 'QrCode',
+      icon: QrCode,
       title: "QR Code Exclusivo",
       description: "Receba um QR Code para imprimir e surpreender de forma criativa.",
       image: "https://picsum.photos/800/600?random=25",
@@ -175,25 +175,7 @@ export default function CreatorPage() {
                         />
                     </div>
                    <CardHeader>
-                      {feature.icon === 'QrCode' ? (
-                          <div className="w-8 h-8 mb-2 text-primary">
-                            <Canvas
-                              text="https://luv.com"
-                              options={{
-                                level: 'M',
-                                margin: 3,
-                                scale: 4,
-                                width: 32,
-                                color: {
-                                  dark: '#7c3aed',
-                                  light: '#0000',
-                                },
-                              }}
-                            />
-                          </div>
-                        ) : (
-                          <feature.icon className="w-8 h-8 mb-2 text-primary" />
-                        )}
+                      <feature.icon className="w-8 h-8 mb-2 text-primary" />
                       <CardTitle>{feature.title}</CardTitle>
                       <CardDescription>{feature.description}</CardDescription>
                    </CardHeader>
