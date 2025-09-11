@@ -94,9 +94,9 @@ const formSchema = z.object({
   contactName: z.string().min(1, "O nome é obrigatório.").refine(value => value.trim().split(' ').length >= 2, {
     message: "Por favor, informe seu nome completo.",
   }),
-  contactDoc: z.string().min(1, "O CPF/CNPJ é obrigatório."),
+  contactDoc: z.string().min(11, "CPF/CNPJ inválido.").max(14, "CPF/CNPJ inválido."),
   contactEmail: z.string().email("Email inválido."),
-  contactPhone: z.string().min(1, "O telefone é obrigatório."),
+  contactPhone: z.string().min(10, "Telefone inválido."),
 });
 
 
@@ -328,11 +328,15 @@ function CreatorStudioPage() {
         router.push(`/criar/sucesso-orcamento`);
       }
     } catch (error: any) {
-      console.error("Falha ao salvar a página:", error);
+      console.error("Client-side error submitting form:", error);
       toast({
         variant: "destructive",
         title: "Erro ao Criar Página",
-        description: "Ocorreu um erro inesperado ao salvar sua página. Por favor, verifique os dados e tente novamente. Se o problema persistir, contate o suporte.",
+        description: (
+          <pre className="mt-2 w-full rounded-md bg-slate-950 p-4">
+            <code className="text-white whitespace-pre-wrap">{error.message}</code>
+          </pre>
+        ),
       });
     }
   }
@@ -1136,5 +1140,3 @@ function CreatorStudioPage() {
 }
 
 export default CreatorStudioPage;
-
-    

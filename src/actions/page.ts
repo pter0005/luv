@@ -54,14 +54,15 @@ export async function uploadVideo(file: File): Promise<string> {
 
 
 export async function savePageData(data: FormData, userId: string): Promise<string> {
+  if (!userId) {
+      throw new Error('CRITICAL: User ID is missing in savePageData call.');
+  }
+
   try {
-    if (!userId) {
-        throw new Error('User ID is missing.');
-    }
-      
     const pageId = Date.now().toString();
     const status = data.plan === 'essencial' ? 'pending_payment' : 'pending_quote';
     
+    // Combine form data with server-side data
     const pageDataForDb: { [key: string]: any } = {
       ...data,
       userId: userId,
@@ -69,6 +70,7 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
       createdAt: Timestamp.now(),
     };
 
+    // Safely handle date conversion
     if (data.startDate && typeof data.startDate === 'string') {
       const date = new Date(data.startDate);
       if (!isNaN(date.getTime())) {
@@ -89,10 +91,19 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
     return pageId;
 
   } catch (e: any) {
-    console.error('CRITICAL: Error adding document in savePageData. Raw Error:', e);
-    console.error('Error Details (if available):', e.details);
-    console.error('Data that failed:', JSON.stringify(data, null, 2));
-    throw new Error('Failed to save page data due to a server error.');
+    // CRITICAL: This block now returns the full error to the client.
+    console.error('CRITICAL: Error adding document in savePageData.');
+    console.error('--- RAW ERROR OBJECT ---');
+    console.error(e);
+    console.error('--- ERROR DETAILS (if available) ---');
+    console.error(e.details);
+    console.error('--- FAILED DATA ---');
+    console.error(JSON.stringify(data, null, 2));
+
+    // Re-throw a detailed error to be caught by the client.
+    throw new Error(
+      `Server-side save failed. Reason: ${e.message || 'Unknown Firestore Error'}. Check server logs for full details. Raw error: ${JSON.stringify(e)}`
+    );
   }
 }
 
@@ -193,5 +204,3 @@ export async function getPagesByUserId(userId: string) {
     return [];
   }
 }
-
-    
