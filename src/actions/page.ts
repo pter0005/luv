@@ -92,7 +92,7 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
     console.error('CRITICAL: Error adding document in savePageData. Raw Error:', e);
     console.error('Error Details (if available):', e.details);
     console.error('Data that failed:', JSON.stringify(data, null, 2));
-    throw new Error(e.message || 'Failed to save page data due to a server error.');
+    throw new Error('Failed to save page data due to a server error.');
   }
 }
 
@@ -193,3 +193,5 @@ export async function getPagesByUserId(userId: string) {
     return [];
   }
 }
+
+    
