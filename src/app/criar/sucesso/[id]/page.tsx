@@ -244,7 +244,9 @@ export default function SucessoPage({ params }: { params: { id: string } }) {
       downloadLink.download = "qrcode-pagina-especial.png";
       document.body.appendChild(downloadLink);
       downloadLink.click();
-      document.body.removeChild(downloadLink);
+      setTimeout(() => {
+        document.body.removeChild(downloadLink);
+      }, 100);
     }
   };
 
