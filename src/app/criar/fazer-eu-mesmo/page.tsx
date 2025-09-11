@@ -315,7 +315,7 @@ function CreatorStudioPage() {
     }
 
     try {
-      // Convert date to a serializable format (ISO string)
+      // Convert date to a serializable format (ISO string) to prevent server errors
       const serializableData: any = { ...data };
       if (data.startDate) {
         serializableData.startDate = data.startDate.toISOString();
@@ -1149,3 +1149,5 @@ function CreatorStudioPage() {
 }
 
 export default CreatorStudioPage;
+
+    

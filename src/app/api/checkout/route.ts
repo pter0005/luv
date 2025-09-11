@@ -32,16 +32,12 @@ export async function POST(req: NextRequest) {
         
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
         
+        // Correctly format date to ISO 8601 with timezone offset as required by Mercado Pago
+        // Example: 2023-01-01T12:00:00.000-03:00
         const expirationDate = new Date();
         expirationDate.setMinutes(expirationDate.getMinutes() + 30);
-        
-        const pad = (num: number) => num.toString().padStart(2, '0');
-        const timezoneOffset = -expirationDate.getTimezoneOffset();
-        const offsetHours = pad(Math.floor(Math.abs(timezoneOffset) / 60));
-        const offsetMinutes = pad(Math.abs(timezoneOffset) % 60);
-        const timezoneSign = timezoneOffset >= 0 ? '+' : '-';
+        const expirationDateFormatted = expirationDate.toISOString().replace(/\.\d{3}Z$/, '-03:00');
 
-        const expirationDateFormatted = `${expirationDate.getFullYear()}-${pad(expirationDate.getMonth() + 1)}-${pad(expirationDate.getDate())}T${pad(expirationDate.getHours())}:${pad(expirationDate.getMinutes())}:${pad(expirationDate.getSeconds())}.${expirationDate.getMilliseconds().toString().padStart(3, '0')}${timezoneSign}${offsetHours}:${offsetMinutes}`;
 
         const nameParts = name.trim().split(' ');
         const firstName = nameParts.shift() || '';
