@@ -8,3 +8,4 @@ Making a small change to enable a commit.
 // A small change to enable a new commit.
 // Making another small change to enable a commit.
 // Making one more small change to enable a commit.
+// Final change to allow commit.
