@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight } from "react-feather"
 import { DayPicker, DropdownProps } from "react-day-picker"
 import { ptBR } from 'date-fns/locale';
 

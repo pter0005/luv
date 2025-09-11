@@ -8,7 +8,7 @@ import { getPagesByUserId } from '@/actions/page';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { PlusCircle, Eye } from 'lucide-react';
+import { PlusCircle, Eye } from 'react-feather';
 import Link from 'next/link';
 import Image from 'next/image';
 

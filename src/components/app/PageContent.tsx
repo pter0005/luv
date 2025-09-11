@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Button } from "../ui/button";
-import { Music, Pause, Play } from "lucide-react";
+import { Music, Pause, Play } from "react-feather";
 import { FormData } from "@/app/criar/fazer-eu-mesmo/page";
 
 

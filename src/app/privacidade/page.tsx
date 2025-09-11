@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "react-feather";
 import Link from "next/link";
 
 export default function PrivacidadePage() {

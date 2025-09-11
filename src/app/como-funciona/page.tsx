@@ -3,7 +3,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Gift, Puzzle, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Gift, Puzzle, Image as ImageIcon } from "react-feather";
 import Image from "next/image";
 import Link from "next/link";
 import { JigsawPuzzle } from "@/components/app/JigsawPuzzle";

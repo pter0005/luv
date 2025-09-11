@@ -47,15 +47,15 @@
     "firebase": "^10.12.3",
     "framer-motion": "^11.3.12",
     "genkit": "^1.14.1",
-    "lucide-react": "0.417.0",
     "mercadopago": "^2.0.9",
-    "next": "14.2.5",
+    "next": "15.0.0",
     "next-qrcode": "^2.5.1",
     "nodemailer": "^6.9.14",
     "patch-package": "^8.0.0",
     "react": "^18",
     "react-day-picker": "8.10.1",
     "react-dom": "^18",
+    "react-feather": "^2.0.10",
     "react-hook-form": "^7.52.1",
     "recharts": "^2.12.7",
     "swiper": "^11.1.4",
@@ -75,8 +75,5 @@
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
-  },
-  "resolutions": {
-    "react": "18.3.1"
   }
 }

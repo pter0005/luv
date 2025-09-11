@@ -3,7 +3,7 @@
 
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { Bold, Italic, Strikethrough } from "lucide-react";
+import { Bold, Italic, Strikethrough } from "react-feather";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
 

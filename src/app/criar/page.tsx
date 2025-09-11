@@ -3,7 +3,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { ArrowLeft, Brush, Files } from "lucide-react";
+import { ArrowLeft, Brush, Files } from "react-feather";
 import Link from "next/link";
 import { HeartsBackground } from "@/components/app/HeartsBackground";
 import { AnimatedBackground } from "@/components/app/AnimatedBackground";

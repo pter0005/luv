@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, QrCode, PlayCircle, Puzzle, Mic } from "lucide-react";
+import { Heart, ChevronRight, Star, Calendar, ImageIcon, Music, QrCode, PlayCircle, Puzzle, Mic } from "react-feather";
 import { Button } from "@/components/ui/button";
 import {
   Accordion,

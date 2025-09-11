@@ -4,7 +4,7 @@
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, CheckCircle, Mail } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Mail } from 'react-feather';
 import Link from 'next/link';
 
 // Função para disparar eventos de pixel

@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
-import { Loader } from 'lucide-react';
+import { Loader } from 'react-feather';
 
 export default function CadastroPage() {
   const [email, setEmail] = useState('');
