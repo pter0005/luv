@@ -47,7 +47,8 @@ export function TypingAnimation() {
   return (
     <span
       className={cn(
-        "block font-handwriting text-primary text-5xl md:text-6xl lg:text-7xl mt-1 h-20",
+        "block text-primary text-5xl md:text-6xl lg:text-7xl mt-1 h-20",
+        phrases[index] === "para alguém especial!" ? "font-handwriting" : "font-display"
       )}
     >
       {text}
