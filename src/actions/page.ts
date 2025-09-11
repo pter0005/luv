@@ -11,34 +11,35 @@ import { db } from '@/lib/firebase';
 type FormData = { [key: string]: any };
 
 // Helper to convert Firebase Timestamps to serializable strings for client-side use.
-const toJSON = (data: any) => {
-  if (!data) return data;
-  // Firestore data is often nested. We need a recursive conversion.
-  const isObject = (val: any) => val && typeof val === 'object' && !Array.isArray(val);
+// This function is now more robust and handles nested objects and arrays.
+const toJSON = (data: any): any => {
+  if (data === null || data === undefined) {
+    return data;
+  }
 
-  const convertTimestamps = (obj: any): any => {
-    if (!obj || typeof obj !== 'object') return obj;
-    if (obj instanceof Timestamp) return obj.toDate().toISOString();
+  // Firestore Timestamps
+  if (data instanceof Timestamp) {
+    return data.toDate().toISOString();
+  }
 
+  // Arrays
+  if (Array.isArray(data)) {
+    return data.map(item => toJSON(item));
+  }
+
+  // Objects
+  if (typeof data === 'object' && data.constructor === Object) {
     const newObj: { [key: string]: any } = {};
-    for (const key in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, key)) {
-          const value = obj[key];
-          if (value instanceof Timestamp) {
-            newObj[key] = value.toDate().toISOString();
-          } else if (isObject(value)) {
-            newObj[key] = convertTimestamps(value); // Recurse for nested objects
-          } else if (Array.isArray(value)) {
-            newObj[key] = value.map(item => convertTimestamps(item)); // Recurse for arrays
-          } else {
-            newObj[key] = value;
-          }
+    for (const key in data) {
+      if (Object.prototype.hasOwnProperty.call(data, key)) {
+        newObj[key] = toJSON(data[key]);
       }
     }
     return newObj;
-  };
-  
-  return JSON.parse(JSON.stringify(convertTimestamps(data)));
+  }
+
+  // Primitives
+  return data;
 };
 
 
@@ -79,6 +80,9 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
         // Handle invalid date string if necessary, e.g., by deleting it
         delete pageDataForDb.startDate;
       }
+    } else if (data.startDate) {
+        // If startDate is not a string, delete it to avoid Firestore errors
+        delete pageDataForDb.startDate;
     }
     
     // Remove undefined fields before saving
@@ -99,7 +103,7 @@ export async function savePageData(data: FormData, userId: string): Promise<stri
     console.error('--- RAW ERROR OBJECT ---');
     console.error(e);
     console.error('--- ERROR DETAILS (if available) ---');
-    console.error(e.details);
+    if (e.cause) console.error(e.cause);
     console.error('--- FAILED DATA ---');
     console.error(JSON.stringify(data, null, 2));
 
