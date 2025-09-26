@@ -24,7 +24,13 @@ const trackPixelEvent = (eventName: string, data: any = {}) => {
   }
 };
 
-const SucessoPage = ({ params }: { params: { id: string } }) => {
+interface SucessoPageProps {
+  params: {
+    id: string;
+  };
+}
+
+const SucessoPage: FC<SucessoPageProps> = ({ params }) => {
   const { toast } = useToast();
   const searchParams = useSearchParams();
   const [pageData, setPageData] = useState<any>(null);
