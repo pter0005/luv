@@ -145,14 +145,14 @@ function ItemsFieldArray({ categoryIndex, control, setValue }: { categoryIndex: 
                                     <p className="text-xs">Enviar Imagem</p>
                                 </div>
                             )}
-                            <input 
-                                type="file" 
-                                ref={el => {
-                                  if (el) fileInputRefs.current[itemIndex] = el;
-                                }} 
-                                accept="image/*" 
-                                className="hidden" 
-                                onChange={(e) => handleFileChange(e, itemIndex)} 
+                            <input
+                              type="file"
+                              ref={el => {
+                                fileInputRefs.current[itemIndex] = el;
+                              }}
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => handleFileChange(e, itemIndex)}
                             />
                         </div>
                     </FormControl>

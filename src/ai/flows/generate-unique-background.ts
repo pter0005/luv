@@ -67,7 +67,7 @@ const generateUniqueBackgroundFlow = ai.defineFlow(
       model: 'googleai/imagen-4.0-fast-generate-001',
       prompt: input.backgroundDescription,
     });
-    if (!media?.url) {
+    if (!media || !media.url) {
       throw new Error('Failed to generate background image.');
     }
     return {backgroundImageDataUri: media.url};
