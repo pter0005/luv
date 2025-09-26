@@ -1,13 +1,13 @@
 
 "use client";
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, FC } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { confirmPaymentAndSendEmail, getPageData } from '@/actions/page';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, CheckCircle, Clock, Copy, Download, Share2, AlertTriangle, Loader } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Clock, Copy, Download, Share2, AlertTriangle, Loader, XCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useQRCode } from 'next-qrcode';
 import { useToast } from '@/hooks/use-toast';
@@ -30,7 +30,7 @@ interface SucessoPageProps {
   };
 }
 
-export default function SucessoPage({ params }: SucessoPageProps) {
+const SucessoPage: FC<SucessoPageProps> = ({ params }) => {
   const { toast } = useToast();
   const searchParams = useSearchParams();
   const [pageData, setPageData] = useState<any>(null);
@@ -456,5 +456,7 @@ export default function SucessoPage({ params }: SucessoPageProps) {
     </div>
   );
 }
+
+export default SucessoPage;
 
     
