@@ -10,7 +10,7 @@
  *   and returns a data URI representing the generated image.
  * - `GenerateUniqueBackgroundInput`: The input type for the `generateUniqueBackground` function,
  *   containing the background description.
- * - `GenerateUniqueBackgroundOutput`: The output type for the `generateUniqueBackground` function,
+ * - `GenerateUniqueBackgroundOutput`: The output type for the `generateUniquebBackground` function,
  *   containing the data URI of the generated image.
  */
 
@@ -67,6 +67,9 @@ const generateUniqueBackgroundFlow = ai.defineFlow(
       model: 'googleai/imagen-4.0-fast-generate-001',
       prompt: input.backgroundDescription,
     });
-    return {backgroundImageDataUri: media.url!};
+    if (!media?.url) {
+      throw new Error('Failed to generate background image.');
+    }
+    return {backgroundImageDataUri: media.url};
   }
 );

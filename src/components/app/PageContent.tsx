@@ -36,7 +36,14 @@ const Countdown = ({ startDate, displayType }: { startDate?: Date; displayType?:
          return;
       }
       const newDuration = intervalToDuration({ start: startDate, end: now });
-      setDuration(newDuration);
+      setDuration({
+        years: newDuration.years || 0,
+        months: newDuration.months || 0,
+        days: newDuration.days || 0,
+        hours: newDuration.hours || 0,
+        minutes: newDuration.minutes || 0,
+        seconds: newDuration.seconds || 0,
+      });
     }, 1000);
 
     return () => clearInterval(interval);

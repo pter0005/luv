@@ -147,7 +147,9 @@ function ItemsFieldArray({ categoryIndex, control, setValue }: { categoryIndex: 
                             )}
                             <input 
                                 type="file" 
-                                ref={el => fileInputRefs.current[itemIndex] = el} 
+                                ref={el => {
+                                  if (el) fileInputRefs.current[itemIndex] = el;
+                                }} 
                                 accept="image/*" 
                                 className="hidden" 
                                 onChange={(e) => handleFileChange(e, itemIndex)} 
