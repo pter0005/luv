@@ -1,18 +1,17 @@
 
 "use client";
 
-import { useEffect, useState, useCallback, use } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { confirmPaymentAndSendEmail, getPageData, updatePageStatus } from '@/actions/page';
+import { confirmPaymentAndSendEmail, getPageData } from '@/actions/page';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, CheckCircle, Clock, Copy, Download, Share2, Wallet, XCircle, AlertTriangle, QrCode, Loader } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Clock, Copy, Download, Share2, AlertTriangle, Loader } from 'lucide-react';
 import Link from 'next/link';
 import { useQRCode } from 'next-qrcode';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
-import Script from 'next/script';
 
 const NEXT_PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
@@ -25,7 +24,13 @@ const trackPixelEvent = (eventName: string, data: any = {}) => {
   }
 };
 
-export default function SucessoPage({ params }: { params: { id: string } }) {
+interface SucessoPageProps {
+  params: {
+    id: string;
+  };
+}
+
+export default function SucessoPage({ params }: SucessoPageProps) {
   const { toast } = useToast();
   const searchParams = useSearchParams();
   const [pageData, setPageData] = useState<any>(null);
