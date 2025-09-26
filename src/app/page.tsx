@@ -38,7 +38,7 @@ export default function CreatorPage() {
     },
     {
       icon: Calendar,
-      title: "Contador de tempo",
+      title: "Tempo Contador",
       description: "Mostre há quanto tempo vocês estão juntos com um contador em tempo real.",
       image: "https://picsum.photos/800/600?random=28",
       imageHint: "love clock"
@@ -207,7 +207,7 @@ export default function CreatorPage() {
       <section id="avaliacoes" className="section-padding bg-background/80 backdrop-blur-sm">
         <ScrollFadeIn>
           <div className="container text-center">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Histórias que <span className="gradient-text">Inspiram</span></h2>
+            <h2 className="text-4xl lg:text-5xl font-bold mb-4 font-display">Histórias que <span className="gradient-text">Emocionam</span></h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16">Relatos de quem escolheu a Luv para eternizar seus momentos e vivenciou uma experiência única e emocionante.</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {testimonials.map((testimonial, index) => (
